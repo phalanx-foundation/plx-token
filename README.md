@@ -249,6 +249,7 @@ We disclose these not as a formality, but because the alignment between team and
 - [Mainnet Checklist](docs/MAINNET-CHECKLIST.md) — production deploy gates
 - [Testnet Deployment Record](docs/TESTNET-DEPLOYMENT-RECORD.md) — live testnet evidence
 - [Security Policy](SECURITY.md) — vulnerability reporting and internal review log
+- [Terms of Service](docs/TERMS-OF-SERVICE.md) — pre-launch policy framework for the Toolkit
 - [Contributing](CONTRIBUTING.md) — guide for outside contributors
 
 ---
