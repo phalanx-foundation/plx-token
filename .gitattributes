@@ -1,0 +1,22 @@
+# Force LF line endings for shell scripts so they execute on Linux servers
+# regardless of which OS we authored them on. Without this, a Windows
+# checkout converts to CRLF and bash chokes on the \r at end of every line
+# with errors like:  line 17: $'\r': command not found
+*.sh    text eol=lf
+*.bash  text eol=lf
+
+# Tolk + Acton sources should also be LF (consistent with how the build
+# server reads them).
+*.tolk  text eol=lf
+
+# Keep PowerShell scripts CRLF on Windows where they natively run.
+*.ps1   text eol=crlf
+
+# Mark all binary asset types so git never tries to "fix" their line endings.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+*.zip   binary

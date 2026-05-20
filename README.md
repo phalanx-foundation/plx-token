@@ -20,6 +20,27 @@ Phalanx Foundation is an open-source initiative building **on-chain infrastructu
 
 ---
 
+## Investor FAQ — Quick Answers
+
+For investors and builders evaluating PLX, the ten most common questions and where each is fully answered:
+
+| # | Question | Section |
+|---|---|---|
+| 1 | What problem does this solve? | [What We're Building](#what-were-building) |
+| 2 | What is the token's actual utility? | [What We're Building](#what-were-building) |
+| 3 | What are the tokenomics, vesting, and burn mechanics? | [Tokenomics & Deflationary Pressure](#tokenomics--deflationary-pressure) |
+| 4 | Is the smart contract audited and tested? | [Security, Trust & Verifiability](#security-trust--verifiability) |
+| 5 | Who is the team and how are they funded? | [Team & Funding Model](#team--funding-model) |
+| 6 | How is the treasury managed and disclosed? | [Treasury Policy](#treasury-policy) |
+| 7 | What is the governance model? | [Governance & Path to Decentralization](#governance--path-to-decentralization) |
+| 8 | Where does liquidity come from and how is it protected? | [Liquidity & Lock-Up Commitments](#liquidity--lock-up-commitments) |
+| 9 | What is the public roadmap? | [Roadmap](#roadmap) |
+| 10 | What are the principal risks? | [Risk Disclosure](#risk-disclosure) |
+
+Every answer below is reproducible: every claim about supply, vesting, treasury, governance, or LP locking is verifiable either on-chain via Tonviewer or by reading the source in this repository.
+
+---
+
 ## What We're Building
 
 The first product shipping from Phalanx Foundation is the **Tokenization Toolkit** — a self-service launchpad where any TON project can deploy a Jetton with on-chain vesting, optional multisig admin, and configurable governance hooks in minutes rather than months. Today, projects launching on TON typically fork unmaintained reference code, modify it without a formal review, deploy by hand, and hope nothing breaks. Phalanx removes this risk by providing one audited, battle-tested foundation that anyone can use, with transparent deployment costs and verifiable on-chain results. PLX integrates naturally: customers paying with PLX receive a 50% discount on deployment fees, a portion of collected fees is permanently burned to reduce circulating PLX supply, and PLX stakers earn a share of network revenue. This is utility driven by real demand from real builders — not speculation.
@@ -80,6 +101,24 @@ The contract suite has also been internally reviewed against three known TON Jet
 ## Treasury Policy
 
 The Treasury wallet holds 25% of supply (250,000,000 PLX) and its address is published in our transparency document. The Treasury allocation is exclusively for ecosystem development: seeding initial liquidity on TON DEXes (Ston.fi, DeDust), funding partner integrations, executing the buyback-and-burn program, and supporting open-source contributors. Every Treasury movement — every transfer, every burn, every payment — is verifiable on-chain in real time. Starting the quarter after mainnet launch, Phalanx Foundation will publish **quarterly transparency reports** detailing inflows, outflows, remaining balance, and rationale for each significant movement. The Treasury is not a black box; it is a public utility.
+
+---
+
+## Liquidity & Lock-Up Commitments
+
+The 40% Liquidity Provision allocation (400,000,000 PLX) seeds initial pools on TON DEXes (Ston.fi, DeDust) at mainnet launch, paired against TON. The LP tokens minted by these pools will be **locked in a publicly verifiable timelock contract for at least 12 months** from the date of pool creation. The lock transaction will be published as a public commitment on launch day, and the timelock contract source will be open-sourced alongside the rest of the codebase. After the 12-month lock expires, any movement of LP tokens will require a multi-signature approval from the Foundation operators and will be announced publicly **at least 7 days before execution**. This protects against the "rug-pull" pattern that has caused real losses elsewhere on TON: the team cannot withdraw the seed liquidity in the first year, and cannot withdraw silently afterwards.
+
+The 10% Team allocation (100,000,000 PLX) is locked in the on-chain `TeamVesting` contract for 180 days from mainnet launch, releasing linearly. The team cannot sell during the first six months of trading regardless of any party's intent.
+
+Beyond these locks, three deflationary forces (described in [Tokenomics](#tokenomics--deflationary-pressure)) actively reduce circulating supply over time, and the minter admin will be permanently dropped 24–48 hours after distribution completes — locking total supply at 1B PLX forever.
+
+---
+
+## Team & Funding Model
+
+Phalanx Foundation is built and operated by a small team of contributors operating under the **pseudonymous-but-accountable** model described in [Governance](#governance--path-to-decentralization). We do not publish individual identities, but every commit to this repository is cryptographically GPG-signed (see [SECURITY.md](SECURITY.md)) and every Treasury action is verifiable on-chain.
+
+The project is **self-funded**. We have not taken venture capital, conducted any token sale or IDO, accepted private discounts, or sold tokens to insiders. There are no investor allocations. The roadmap is funded from contributor personal capital and from the Treasury allocation released only as the project ships. This is a deliberate choice: it means the team is not under pressure from outside backers to optimise for a quick token-price exit, and every PLX in circulation has been either honestly distributed (LP, treasury committed to ecosystem use) or earned (community rewards, customer payments). It also means we move at the pace that funding allows — and we commit to being honest about that pace in public transparency reports.
 
 ---
 
@@ -210,7 +249,15 @@ The TON ecosystem currently lacks a professional, audited tokenomics-as-a-servic
 
 ## Risk Disclosure
 
-Phalanx Foundation does not promise any specific price, return, or yield, and does not market PLX as an investment product. Our commitments are to ship verifiable on-chain infrastructure, to maintain an open Treasury, and to permanently lock supply through public deployment events. The principal risks to understand are: **adoption risk** — the launchpad must attract real customers, and like any service business, demand is not guaranteed; **ecosystem dependency** — early growth correlates with the TON ecosystem itself, partly mitigated by our multi-chain expansion path; and **regulatory variation** — utility token classification differs across jurisdictions, and participants must evaluate their local law independently. We disclose these not as a formality, but because the alignment between team and community begins with honesty. Anyone evaluating PLX should do so on the basis of verifiable code, disclosed tokenomics, and their own independent assessment of execution risk — not marketing claims.
+Phalanx Foundation does not promise any specific price, return, or yield, and does not market PLX as an investment product. Our commitments are to ship verifiable on-chain infrastructure, to maintain an open Treasury, and to permanently lock supply through public deployment events. The principal risks to understand are:
+
+- **Adoption risk** — the Tokenization Toolkit must attract real customers, and like any service business, demand is not guaranteed.
+- **Ecosystem dependency** — early growth correlates with the TON ecosystem itself; partly mitigated by our multi-chain expansion path on the roadmap.
+- **Regulatory variation** — utility-token classification differs across jurisdictions, and participants must evaluate their local law independently. We do not provide legal or investment advice.
+- **Toolchain dependency** — the contracts in this repository are written in [Tolk](https://docs.ton.org/develop/tolk) and built with the [Acton](https://ton-blockchain.github.io/acton/) toolchain. Our test suite is comprehensive, but a previously unknown defect in Acton or in the underlying TON virtual machine could affect any contract built with that toolchain, including ours. We track upstream releases and will publish advisories if a defect is discovered.
+- **No insurance, no custody** — Phalanx Foundation does not custody anyone's funds. Holders are responsible for their own wallet security, key management, and transaction verification. We will never ask anyone to send tokens or share private keys.
+
+We disclose these not as a formality, but because the alignment between team and community begins with honesty. Anyone evaluating PLX should do so on the basis of verifiable code, disclosed tokenomics, and their own independent assessment of execution risk — not marketing claims.
 
 ---
 
@@ -229,11 +276,16 @@ Phalanx Foundation does not promise any specific price, return, or yield, and do
 
 ## Join
 
-The fastest way to evaluate Phalanx is to read the code yourself. Every contract lives at [github.com/phalanx-foundation/plx-token](https://github.com/phalanx-foundation/plx-token). Every test reproduces on your machine in under five minutes. Every token movement verifies on Tonviewer. Open a pull request, file a discussion, ask a question. Phalanx is open by design — many shields, one formation, one direction.
+The fastest way to evaluate Phalanx is to read the code yourself. Every contract lives at [github.com/phalanx-foundation/plx-token](https://github.com/phalanx-foundation/plx-token). Every test reproduces on your machine in under five minutes. Every token movement verifies on Tonviewer. Open a pull request, send us patches, propose ideas. Phalanx is open by design — many shields, one formation, one direction.
 
-## Built By
+## Contact
 
-The **Phalanx Foundation** team. Find us on [GitHub](https://github.com/phalanx-foundation).
+- **GitHub**: [github.com/phalanx-foundation/plx-token](https://github.com/phalanx-foundation/plx-token) — code contributions via Pull Request. The Issues tab is intentionally disabled at this stage to prevent impersonation; we will re-enable it alongside a community moderation policy when the toolkit MVP launches.
+- **Email**: `ops@phalanx.foundation` (forwarding setup pending domain purchase, planned Q2 2026).
+- **Telegram**: official announcement and support channels will launch alongside mainnet in Q2 2026; the official handles will be published here and signed by the same GPG key used to sign commits.
+- **Discord**: planned for Q3 2026 alongside the Tokenization Toolkit MVP.
+
+We do not solicit DMs from unknown senders, and we will **never** ask you to send tokens or share private keys. Any communication claiming to be from Phalanx Foundation outside the channels above should be treated as a phishing attempt.
 
 ## License
 
