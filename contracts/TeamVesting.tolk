@@ -5,8 +5,8 @@ import "messages"
 
 contract TeamVesting {
     author: "Phalanx Foundation"
-    version: "1.0.0"
-    description: "Linear vesting contract: holds PLX jettons and releases them to beneficiary linearly over duration. Anyone can trigger claim. Admin can revoke unvested portion."
+    version: "1.1.0"
+    description: "Linear vesting contract: holds PLX jettons and releases them to beneficiary linearly over duration. Anyone can trigger claim. Admin can revoke unvested portion. v1.1 adds bounce-rollback for failed transfers and admin-controlled excess TON withdrawal."
     storage: VestingStorage
     incomingMessages: AllowedMessageToVesting
 }
@@ -33,7 +33,12 @@ struct (0x77777702) RevokeVesting {
     queryId: uint64
 }
 
-type AllowedMessageToVesting = ClaimVested | RevokeVesting | TopUpTons
+struct (0x77777703) WithdrawTons {
+    queryId: uint64
+    amount: coins
+}
+
+type AllowedMessageToVesting = ClaimVested | RevokeVesting | WithdrawTons | TopUpTons
 
 const VESTING_TRANSFER_VALUE = 80000000
 
@@ -70,6 +75,26 @@ fun emptyForwardPayload(): slice {
     return beginCell().storeUint(0, 1).toSlice();
 }
 
+fun onBouncedMessage(in: InMessageBounced) {
+    in.bouncedBody.skipBouncedPrefix();
+
+    val op = in.bouncedBody.loadUint(32);
+    if (op != 0x0f8a7ea5) {
+        return;
+    }
+
+    in.bouncedBody.loadUint(64);
+    val refundedAmount = in.bouncedBody.loadCoins();
+
+    var storage = lazy VestingStorage.load();
+    if (storage.claimedAmount >= refundedAmount) {
+        storage.claimedAmount -= refundedAmount;
+    } else {
+        storage.claimedAmount = 0;
+    }
+    storage.save();
+}
+
 fun onInternalMessage(in: InMessage) {
     val msg = lazy AllowedMessageToVesting.fromSlice(in.body);
 
@@ -89,14 +114,14 @@ fun onInternalMessage(in: InMessage) {
             storage.save();
 
             val transferMsg = createMessage({
-                bounce: BounceMode.NoBounce,
+                bounce: BounceMode.Only256BitsOfBody,
                 dest: ownJettonWalletAddress(cfg.minterAddress),
                 value: VESTING_TRANSFER_VALUE,
                 body: AskToTransfer {
                     queryId: msg.queryId,
                     jettonAmount: unclaimed,
                     transferRecipient: cfg.beneficiary,
-                    sendExcessesTo: cfg.beneficiary,
+                    sendExcessesTo: in.senderAddress,
                     customPayload: null,
                     forwardTonAmount: 0,
                     forwardPayload: emptyForwardPayload(),
@@ -126,7 +151,7 @@ fun onInternalMessage(in: InMessage) {
 
             if (toBeneficiary > 0) {
                 val msgB = createMessage({
-                    bounce: BounceMode.NoBounce,
+                    bounce: BounceMode.Only256BitsOfBody,
                     dest: ownWallet,
                     value: VESTING_TRANSFER_VALUE,
                     body: AskToTransfer {
@@ -144,7 +169,7 @@ fun onInternalMessage(in: InMessage) {
 
             if (toAdmin > 0) {
                 val msgA = createMessage({
-                    bounce: BounceMode.NoBounce,
+                    bounce: BounceMode.Only256BitsOfBody,
                     dest: ownWallet,
                     value: VESTING_TRANSFER_VALUE,
                     body: AskToTransfer {
@@ -159,6 +184,20 @@ fun onInternalMessage(in: InMessage) {
                 });
                 msgA.send(SEND_MODE_PAY_FEES_SEPARATELY);
             }
+        }
+
+        WithdrawTons => {
+            val storage = lazy VestingStorage.load();
+            val cfg = storage.config.load();
+            assert (in.senderAddress == cfg.admin) throw Errors.NotOwner;
+
+            val withdrawMsg = createMessage({
+                bounce: BounceMode.NoBounce,
+                dest: cfg.admin,
+                value: msg.amount,
+                body: ReturnExcessesBack { queryId: msg.queryId },
+            });
+            withdrawMsg.send(SEND_MODE_PAY_FEES_SEPARATELY | SEND_MODE_BOUNCE_ON_ACTION_FAIL);
         }
 
         TopUpTons => {}
