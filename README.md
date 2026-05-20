@@ -20,27 +20,6 @@ Phalanx Foundation is an open-source initiative building **on-chain infrastructu
 
 ---
 
-## Investor FAQ — Quick Answers
-
-For investors and builders evaluating PLX, the ten most common questions and where each is fully answered:
-
-| # | Question | Section |
-|---|---|---|
-| 1 | What problem does this solve? | [What We're Building](#what-were-building) |
-| 2 | What is the token's actual utility? | [What We're Building](#what-were-building) |
-| 3 | What are the tokenomics, vesting, and burn mechanics? | [Tokenomics & Deflationary Pressure](#tokenomics--deflationary-pressure) |
-| 4 | Is the smart contract audited and tested? | [Security, Trust & Verifiability](#security-trust--verifiability) |
-| 5 | Who is the team and how are they funded? | [Team & Funding Model](#team--funding-model) |
-| 6 | How is the treasury managed and disclosed? | [Treasury Policy](#treasury-policy) |
-| 7 | What is the governance model? | [Governance & Path to Decentralization](#governance--path-to-decentralization) |
-| 8 | Where does liquidity come from and how is it protected? | [Liquidity & Lock-Up Commitments](#liquidity--lock-up-commitments) |
-| 9 | What is the public roadmap? | [Roadmap](#roadmap) |
-| 10 | What are the principal risks? | [Risk Disclosure](#risk-disclosure) |
-
-Every answer below is reproducible: every claim about supply, vesting, treasury, governance, or LP locking is verifiable either on-chain via Tonviewer or by reading the source in this repository.
-
----
-
 ## What We're Building
 
 The first product shipping from Phalanx Foundation is the **Tokenization Toolkit** — a self-service launchpad where any TON project can deploy a Jetton with on-chain vesting, optional multisig admin, and configurable governance hooks in minutes rather than months. Today, projects launching on TON typically fork unmaintained reference code, modify it without a formal review, deploy by hand, and hope nothing breaks. Phalanx removes this risk by providing one audited, battle-tested foundation that anyone can use, with transparent deployment costs and verifiable on-chain results. PLX integrates naturally: customers paying with PLX receive a 50% discount on deployment fees, a portion of collected fees is permanently burned to reduce circulating PLX supply, and PLX stakers earn a share of network revenue. This is utility driven by real demand from real builders — not speculation.
