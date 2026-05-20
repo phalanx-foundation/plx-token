@@ -18,6 +18,10 @@ global.libraries.toml
 docs/MONETIZATION.md
 docs/SECURITY.md
 docs/NEXT-STEPS.md
+TODO.md
+PLAN.md
+CONTEXT.md
+DONE.md
 .deploy-testnet.log
 .deploy-mainnet.log
 wallets.public.json
