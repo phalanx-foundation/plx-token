@@ -45,15 +45,15 @@ jobs:
       - name: Initialize project (download Tolk stdlib)
         run: acton init
 
+      - name: Build all contracts (generates @gen/* wrappers)
+        run: acton build
+
       - name: Lint (acton check)
         run: acton check
 
       - name: Format check (acton fmt --check)
         run: acton fmt --check
         continue-on-error: true
-
-      - name: Build all contracts
-        run: acton build
 
       - name: Run test suite
         run: acton test
