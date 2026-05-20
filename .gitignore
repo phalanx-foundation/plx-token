@@ -36,6 +36,7 @@ AGENTS.md
 # === Local helper scripts (work-in-progress) ===
 .scripts/
 tmp/
+toolkit-staging/
 
 # === IDE & OS ===
 .DS_Store
