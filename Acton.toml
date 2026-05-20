@@ -1,0 +1,57 @@
+[package]
+name = "phalanx"
+description = "Phalanx (PLX) — Jetton on TON, by Phalanx Foundation team"
+version = "0.1.0"
+license = "MIT"
+
+[toolchain]
+acton = "1.0.0"
+
+[contracts.JettonMinter]
+display-name = "PhalanxJettonMinter"
+src = "contracts/JettonMinter.tolk"
+depends = ["JettonWallet"]
+
+[contracts.JettonWallet]
+display-name = "PhalanxJettonWallet"
+src = "contracts/JettonWallet.tolk"
+depends = []
+
+[contracts.TeamVesting]
+display-name = "TeamVesting"
+src = "contracts/TeamVesting.tolk"
+depends = ["JettonWallet"]
+
+[test]
+
+[fmt]
+width = 100
+ignore = []
+
+[scripts]
+deploy-emulation = "acton script scripts/deploy.tolk"
+deploy-testnet = "acton script scripts/deploy.tolk --net testnet"
+deploy-distribution-emulation = "acton script scripts/deploy-distribution.tolk"
+deploy-distribution-testnet = "acton script scripts/deploy-distribution.tolk --net testnet"
+deploy-distribution-mainnet = "acton script scripts/deploy-distribution.tolk --net mainnet"
+claim-vesting-testnet = "acton script scripts/claim-vesting.tolk --net testnet"
+claim-vesting-mainnet = "acton script scripts/claim-vesting.tolk --net mainnet"
+buyback-burn-testnet = "acton script scripts/buyback-burn.tolk --net testnet"
+buyback-burn-mainnet = "acton script scripts/buyback-burn.tolk --net mainnet"
+drop-admin-testnet = "acton script scripts/drop-admin.tolk --net testnet"
+drop-admin-mainnet = "acton script scripts/drop-admin.tolk --net mainnet"
+info-distribution-testnet = "acton script scripts/info-distribution.tolk --net testnet"
+info-distribution-mainnet = "acton script scripts/info-distribution.tolk --net mainnet"
+jetton-change-admin = "acton script scripts/change-admin.tolk"
+jetton-change-metadata = "acton script scripts/change-metadata.tolk"
+jetton-claim-admin = "acton script scripts/claim-admin.tolk"
+jetton-info = "acton script scripts/info.tolk"
+jetton-mint = "acton script scripts/mint.tolk"
+jetton-transfer = "acton script scripts/transfer.tolk"
+
+[import-mappings]
+acton = ".acton"
+contracts = "contracts"
+gen = "gen"
+tests = "tests"
+wrappers = "wrappers"

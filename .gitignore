@@ -1,0 +1,48 @@
+# === Acton/Tolk ===
+.acton/
+build/
+dist/
+gen/
+lcov.info
+
+# === Wallets & secrets (NEVER commit) ===
+wallets.toml
+global.wallets.toml
+global.libraries.toml
+*.mnemonic
+.env
+.env.*
+!.env.example
+
+# === Phalanx-specific private docs & ops artifacts ===
+docs/MONETIZATION.md
+docs/SECURITY.md
+docs/NEXT-STEPS.md
+.deploy-testnet.log
+.deploy-mainnet.log
+wallets.public.json
+.autopilot.json
+.autopilot.json.example
+AGENTS.md
+.cursor/
+
+# === Local helper scripts (work-in-progress) ===
+.scripts/
+tmp/
+
+# === IDE & OS ===
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+.history/
+*.vsix
+Session.vim
+.vim/
+.nvim/
+.emacs/
+.helix/
+node_modules/
+*.swp
+*.swo
+.github/
