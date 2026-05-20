@@ -1,0 +1,56 @@
+name: Contracts CI
+
+# Run lint, build, and test on every push and PR to master.
+# This protects the master branch — broken code can never land
+# without the maintainer noticing the red ❌ check on the PR.
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Lint · Build · Test (60 tests)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache Acton CLI
+        id: cache-acton
+        uses: actions/cache@v4
+        with:
+          path: ~/.acton
+          key: acton-${{ runner.os }}-latest-v1
+
+      - name: Install Acton CLI
+        if: steps.cache-acton.outputs.cache-hit != 'true'
+        run: curl -LsSf https://github.com/ton-blockchain/acton/releases/latest/download/acton-installer.sh | sh
+
+      - name: Add Acton to PATH
+        run: echo "$HOME/.acton/bin" >> $GITHUB_PATH
+
+      - name: Verify Acton install
+        run: acton --version
+
+      - name: Lint (acton check)
+        run: acton check
+
+      - name: Format check (acton fmt --check)
+        run: acton fmt --check
+        continue-on-error: true
+
+      - name: Build all contracts
+        run: acton build
+
+      - name: Run test suite
+        run: acton test
