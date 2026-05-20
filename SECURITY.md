@@ -131,4 +131,60 @@ opcode.
   inter-contract transfer to actually fail, which has not occurred on the
   live testnet contract.
 
+## Verifying Commits to This Repository
+
+Every commit to `master` on `phalanx-foundation/plx-token` is GPG-signed by the
+Phalanx Foundation operator key. Anyone can verify a commit was authored by us
+(and not by a compromised account or impersonator) without trusting GitHub's
+own UI.
+
+**Operator signing key**
+
+| Field | Value |
+|---|---|
+| UID | `Phalanx Foundation <ops@phalanx.foundation>` |
+| Algorithm | Ed25519 (signing) + Curve25519 (encryption subkey) |
+| Fingerprint | `8A8C 5854 2DE1 AA52 64CE  836A 4B53 081F AB6C 5C63` |
+| Long key id | `4B53081FAB6C5C63` |
+| Created | 2026-05-20 |
+| Expires | 2028-05-19 (renewed and announced before expiry) |
+| Public key file | [`metadata/phalanx-foundation-public.asc`](metadata/phalanx-foundation-public.asc) |
+
+**How to verify any commit**
+
+```bash
+# 1. Clone the repo (or use an existing clone)
+git clone https://github.com/phalanx-foundation/plx-token.git
+cd plx-token
+
+# 2. Import the published public key
+gpg --import metadata/phalanx-foundation-public.asc
+
+# 3. Confirm the fingerprint matches the value in the table above
+gpg --fingerprint ops@phalanx.foundation
+
+# 4. Verify the latest commit (or any specific commit hash)
+git log --show-signature -1
+git verify-commit <commit-hash>
+```
+
+A commit is authentic if and only if the line
+`gpg: Good signature from "Phalanx Foundation <ops@phalanx.foundation>"`
+appears AND the displayed fingerprint matches the table above.
+
+**Why we self-host the public key instead of relying on GitHub's "Verified" badge**
+
+GitHub will not display its green "Verified" badge for our commits at this
+stage because the key is intentionally **not** uploaded to a personal GitHub
+account, in order to keep individual contributor identity unlinked from the
+project. The cryptographic signature is independent of GitHub's UI, so anyone
+who clones the repo and runs `git verify-commit` gets a stronger guarantee
+than the badge alone provides. We will register the same key against the
+`phalanx-foundation` organisation once GitHub's organisation-level GPG
+verification ships, or against `ops@phalanx.foundation` once the domain is
+operational.
+
+**If you ever see an unsigned commit on master, treat it as suspect** and
+verify with the maintainers via a side channel before trusting it.
+
 Thank you for helping keep Phalanx (PLX) and its holders safe.
