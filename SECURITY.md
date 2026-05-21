@@ -161,7 +161,7 @@ cd plx-token
 gpg --import metadata/phalanx-foundation-public.asc
 
 # 3. Confirm the fingerprint matches the value in the table above
-gpg --fingerprint ops@phalanx.foundation
+gpg --fingerprint ops@plx.foundation
 
 # 4. Verify the latest commit (or any specific commit hash)
 git log --show-signature -1
@@ -181,8 +181,14 @@ project. The cryptographic signature is independent of GitHub's UI, so anyone
 who clones the repo and runs `git verify-commit` gets a stronger guarantee
 than the badge alone provides. We will register the same key against the
 `phalanx-foundation` organisation once GitHub's organisation-level GPG
-verification ships, or against `ops@phalanx.foundation` once the domain is
-operational.
+verification ships, or against `ops@plx.foundation` (active primary UID as of 2026-05-21).
+
+## GPG UID rotation history
+
+| UID | Status | Since |
+|---|---|---|
+| `Phalanx Foundation <ops@phalanx.foundation>` | Retained on key for historical commit verification | 2026-05-20 |
+| `Phalanx Foundation <ops@plx.foundation>` | Primary UID for new signatures | 2026-05-21 |
 
 **If you ever see an unsigned commit on master, treat it as suspect** and
 verify with the maintainers via a side channel before trusting it.

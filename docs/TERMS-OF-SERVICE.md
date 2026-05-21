@@ -62,7 +62,7 @@ You acknowledge and agree that:
 
 ### 5.1 Fees
 
-The Toolkit operates on a tiered pricing model published at `phalanx.foundation/pricing` and reproduced in our public documentation. All fees are denominated in TON or in fiat-equivalents at the rate quoted at the time of purchase.
+The Toolkit operates on a tiered pricing model published at `plx.foundation/pricing` and reproduced in our public documentation. All fees are denominated in TON or in fiat-equivalents at the rate quoted at the time of purchase.
 
 Each tier consists of:
 
@@ -95,7 +95,7 @@ We reserve the right to add, remove, or change payment processors at any time, w
 
 ### 5.4 Failed Payments and Service Suspension
 
-If a recurring subscription payment fails or is not received by its due date, hosted services for the affected Customer will be progressively wound down according to the schedule published in the Cancellation & Suspension Policy at `phalanx.foundation/legal/suspension`, which forms part of these Terms by reference.
+If a recurring subscription payment fails or is not received by its due date, hosted services for the affected Customer will be progressively wound down according to the schedule published in the Cancellation & Suspension Policy at `plx.foundation/legal/suspension`, which forms part of these Terms by reference.
 
 ---
 
@@ -136,7 +136,7 @@ We reserve the right to reject a deployment request, suspend hosted services, an
 
 ## 9. Privacy
 
-Our handling of personal data is described in our Privacy Policy at `phalanx.foundation/legal/privacy`, which forms part of these Terms by reference. In summary:
+Our handling of personal data is described in our Privacy Policy at `plx.foundation/legal/privacy`, which forms part of these Terms by reference. In summary:
 
 - We collect the minimum data necessary to provide the Services (account email, billing identifiers, IP for fraud-prevention).
 - We do not sell personal data to third parties.
@@ -199,7 +199,7 @@ You and Phalanx Foundation each waive any right to bring any claim as a class, r
 - [ ] Review by qualified legal counsel in the chosen governing-law jurisdiction.
 - [ ] Fill in `Section 13` jurisdiction, arbitral seat, and arbitral rules with counsel's recommendation.
 - [ ] Set the actual effective date in the header.
-- [ ] Publish at `phalanx.foundation/legal/terms` and link from website footer + Toolkit signup flow.
+- [ ] Publish at `plx.foundation/legal/terms` and link from website footer + Toolkit signup flow.
 - [ ] Publish referenced sub-policies (`/legal/privacy`, `/legal/suspension`).
 - [ ] Add a banner on the Toolkit signup that says "By creating an account you agree to the Terms of Service" with hyperlink.
 - [ ] Sign each public revision with the Foundation's GPG key for tamper-evidence; store signature alongside the published file.
