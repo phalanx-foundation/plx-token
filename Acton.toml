@@ -22,6 +22,11 @@ display-name = "TeamVesting"
 src = "contracts/TeamVesting.tolk"
 depends = ["JettonWallet"]
 
+[contracts.PaymentSplitter]
+display-name = "PaymentSplitter"
+src = "contracts/PaymentSplitter.tolk"
+depends = ["JettonWallet"]
+
 [test]
 
 [fmt]
@@ -34,6 +39,9 @@ deploy-testnet = "acton script scripts/deploy.tolk --net testnet"
 deploy-distribution-emulation = "acton script scripts/deploy-distribution.tolk"
 deploy-distribution-testnet = "acton script scripts/deploy-distribution.tolk --net testnet"
 deploy-distribution-mainnet = "acton script scripts/deploy-distribution.tolk --net mainnet"
+deploy-splitter-emulation = "acton script scripts/deploy-splitter.tolk"
+deploy-splitter-testnet = "acton script scripts/deploy-splitter.tolk --net testnet"
+deploy-splitter-mainnet = "acton script scripts/deploy-splitter.tolk --net mainnet"
 claim-vesting-testnet = "acton script scripts/claim-vesting.tolk --net testnet"
 claim-vesting-mainnet = "acton script scripts/claim-vesting.tolk --net mainnet"
 buyback-burn-testnet = "acton script scripts/buyback-burn.tolk --net testnet"
