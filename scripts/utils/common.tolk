@@ -13,7 +13,7 @@ import "@wrappers/utils"
 const JETTON_DEFAULT_NAME = "Phalanx"
 const JETTON_DEFAULT_SYMBOL = "PLX"
 const JETTON_DEFAULT_DESCRIPTION = "Phalanx (PLX) — utility token powering the Phalanx Foundation ecosystem of developer tools, services, and on-chain products."
-const JETTON_DEFAULT_IMAGE = "https://raw.githubusercontent.com/phalanx-foundation/plx-token/master/metadata/logo.png"
+const JETTON_DEFAULT_IMAGE = "https://plx.foundation/plx-logo.png"
 const JETTON_DEFAULT_DECIMALS = "9"
 const JETTON_DEFAULT_UPDATED_DESCRIPTION = "Phalanx (PLX) — updated metadata"
 

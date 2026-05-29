@@ -52,6 +52,7 @@ info-distribution-testnet = "acton script scripts/info-distribution.tolk --net t
 info-distribution-mainnet = "acton script scripts/info-distribution.tolk --net mainnet"
 jetton-change-admin = "acton script scripts/change-admin.tolk"
 jetton-change-metadata = "acton script scripts/change-metadata.tolk"
+refresh-metadata-testnet = "acton script scripts/refresh-metadata-testnet.tolk --net testnet"
 jetton-claim-admin = "acton script scripts/claim-admin.tolk"
 jetton-info = "acton script scripts/info.tolk"
 jetton-mint = "acton script scripts/mint.tolk"
