@@ -35,6 +35,7 @@ Use this checklist when opening a PR to [tonkeeper/ton-assets](https://github.co
 
 - [x] PR opened to `tonkeeper/ton-assets` — **https://github.com/tonkeeper/ton-assets/pull/5468** (2026-06-02, branch `KelvinHernata:add-plx-mainnet-jetton`)
 - [ ] PR **merged** by Tonkeeper (typical review: beberapa hari; gratis, tanpa bayar)
-- [ ] Setelah merge: tunggu cache wallet 15–60 menit → label “scan” / unverified hilang di Tonkeeper
+- [ ] Setelah merge: tunggu cache wallet 15–60 menit → label **SCAM** / unverified hilang di Tonkeeper
+- [ ] Naskah stakeholder formal: [`TONKEEPER-SCAM-LABEL-APPEAL.md`](TONKEEPER-SCAM-LABEL-APPEAL.md)
 - [ ] MyTonWallet listing (if applicable)
 - [ ] Tonviewer / Tonscan label requests ([`TRANSPARENCY.md`](TRANSPARENCY.md))
