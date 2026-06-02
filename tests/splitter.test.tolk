@@ -191,7 +191,7 @@ get fun `test splitter: notification from non-jetton-wallet is rejected`() {
 get fun `test splitter: zero-amount notification is a no-op`() {
     val (minter, splitter, _, _, payer) = setupSplitter();
 
-    val res = payerSendsToSplitter(minter, splitter, payer, 0, 0, 200000000, 400000000);
+    payerSendsToSplitter(minter, splitter, payer, 0, 0, 200000000, 400000000);
 
     expect(splitter.getBurnedTotal()).toEqual(0);
     expect(splitter.getForwardedTotal()).toEqual(0);

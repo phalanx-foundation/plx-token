@@ -51,7 +51,7 @@ Beyond the launchpad, our roadmap covers a governance module that lets PLX holde
 
 After the initial distribution and a 24–48 hour observation window, the **minter admin will be permanently dropped** via an irreversible on-chain transaction, locking total supply at 1B PLX forever — no party (including Phalanx Foundation itself) will be able to mint additional PLX.
 
-See [docs/TOKENOMICS.md](docs/TOKENOMICS.md) for full details and current testnet addresses.
+See [docs/TOKENOMICS.md](docs/TOKENOMICS.md) for full details. **Mainnet is live** — see [docs/MAINNET-DEPLOYMENT-RECORD.md](docs/MAINNET-DEPLOYMENT-RECORD.md).
 
 ---
 
@@ -121,6 +121,17 @@ Each milestone is a public commitment. If a milestone slips, the slip will be tr
 
 ---
 
+## Mainnet Deployment (live)
+
+| Contract / Role | Address |
+|---|---|
+| **Jetton Minter** | `EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS` |
+| **Team Vesting** | `EQCs-Y2wb83zqjCpRUMiZoKLUqhI3qd6tWWm4ycZBp6lsD5l` |
+| **PaymentSplitter** | `EQBC3QoFri_IENOzVfMpHzs2Yr5_dJpzNsRNqT-XB173jSlv` |
+| **Deployer / minter admin (temporary)** | `EQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anklj` (`UQBfYLpq…anhSm` in Tonkeeper) |
+
+Verify on [Tonviewer mainnet](https://tonviewer.com/EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS). Full registry: [docs/MAINNET-DEPLOYMENT-RECORD.md](docs/MAINNET-DEPLOYMENT-RECORD.md).
+
 ## Testnet Deployment (live)
 
 | Contract / Role | Address |
@@ -130,10 +141,7 @@ Each milestone is a public commitment. If a milestone slips, the slip will be tr
 | **Active deployer / minter admin** | `kQBg9RFEVaQIh3xVonBxCnIb2Vw19y-rSD4uO1LR0eNH4zT2` (wallet `plx-deployer-v2`) |
 | **Retired deployer (security drill 2026-05-20)** | `kQB1GGwuoPV1vS2DjEg-weTPy5_HQU4ipqQm6KO05EyqEizN` |
 
-Verify on [Tonviewer testnet](https://testnet.tonviewer.com/kQAslxaUshiiqy5FrTbYHbBpjBgmcyTHB8vKKCemFKp508xV) or [Tonscan testnet](https://testnet.tonscan.org/address/kQAslxaUshiiqy5FrTbYHbBpjBgmcyTHB8vKKCemFKp508xV).
-
-Genesis tx: [`17879144...d1109`](https://testnet.tonscan.org/tx/17879144d22c2c6e69209515ebb19563a7a76b6b17d44d7f8c28cca6f4dd1109).
-Rotation drill detail: [docs/TESTNET-DEPLOYMENT-RECORD.md](docs/TESTNET-DEPLOYMENT-RECORD.md#security-drill-deployer-rotation-2026-05-20).
+Verify on [Tonviewer testnet](https://testnet.tonviewer.com/kQAslxaUshiiqy5FrTbYHbBpjBgmcyTHB8vKKCemFKp508xV). Detail: [docs/TESTNET-DEPLOYMENT-RECORD.md](docs/TESTNET-DEPLOYMENT-RECORD.md).
 
 ---
 

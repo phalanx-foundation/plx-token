@@ -3,17 +3,18 @@ import "@acton/io"
 import "@acton/emulation/network"
 import "@acton/emulation/scripts"
 import "@wrappers/JettonMinter.gen"
+import "@wrappers/utils"
 
 fun main() {
-    val adminName = env<string>("PLX_ADMIN") ?? "plx-deployer";
+    val adminName = env<string>("PLX_ADMIN") ?? "plx-deployer-v2";
     val admin = scripts.wallet(adminName);
 
     val minterAddr = env<address>("JETTON_MINTER_ADDRESS")!;
     val minter = JettonMinter.fromAddress(minterAddr);
 
-    val confirm = env<string>("PLX_CONFIRM_DROP_ADMIN") ?? "";
-    if (confirm != "I_UNDERSTAND_THIS_IS_FOREVER") {
-        println("[drop-admin] ABORT: set PLX_CONFIRM_DROP_ADMIN=I_UNDERSTAND_THIS_IS_FOREVER");
+    val confirm = env<int>("PLX_CONFIRM_DROP_ADMIN") ?? 0;
+    if (confirm != 1) {
+        println("[drop-admin] ABORT: set PLX_CONFIRM_DROP_ADMIN=1 (irreversible — supply becomes fixed forever)");
         return;
     }
 

@@ -22,11 +22,20 @@
 | **Phalanx Foundation — Deployer (active)** | `kQBg9RFEVaQIh3xVonBxCnIb2Vw19y-rSD4uO1LR0eNH4zT2` | 0 PLX | Contract deployment & admin operations only. **Will renounce minter admin 7 days after mainnet launch.** | — |
 | **Phalanx Foundation — Deployer (retired, drill)** | `kQB1GGwuoPV1vS2DjEg-weTPy5_HQU4ipqQm6KO05EyqEizN` | 0 PLX | Retired during 2026-05-20 rotation drill. No longer holds admin authority. Testnet only. | retired |
 
-### Mainnet
+### Mainnet (live)
 
-To be published after mainnet deployment. Contract addresses are deterministic
-from initial config; you can verify them ahead of time using `acton script
-info-distribution`.
+| Public Label | Address (EQ) | Allocation | Purpose |
+|---|---|---:|---|
+| **Phalanx — Liquidity Reserve** | `EQAiQ41f7R5qzKsoimbujtYdy0bRKW_7Fb0rV5Z4Lw6gr3zH` | 400M PLX | DEX liquidity (Ston.fi / DeDust) |
+| **Phalanx — Treasury** | `EQBBlAF4yz12NbrbKXYfGA1OsZzWFpkRj-TU6ciuYjBjK1aX` | 250M PLX | Ops, buyback, toolkit treasury slice |
+| **Phalanx — Community Treasury** | `EQD1XDv0Awjx0GUVv6YQYYnvEmjcKJ9iEBjvtHPM2nWML-q9` | 200M PLX | Airdrops, contests |
+| **Phalanx — Team Vesting (6mo)** | `EQCs-Y2wb83zqjCpRUMiZoKLUqhI3qd6tWWm4ycZBp6lsD5l` | 100M PLX | On-chain linear vesting |
+| **Phalanx — Marketing** | `EQDB9yVhkPvEhMFo90fqHWzqYj2mESAlwObMbA6LX7fETtN6` | 50M PLX | Listings, campaigns |
+| **Phalanx — Deployer (admin, temporary)** | `EQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anklj` | 0 PLX | Minter admin until drop-admin |
+| **Phalanx — Jetton Minter** | `EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS` | — | PLX contract |
+| **Phalanx — PaymentSplitter** | `EQBC3QoFri_IENOzVfMpHzs2Yr5_dJpzNsRNqT-XB173jSlv` | 0 PLX genesis | Toolkit PLX fee rail (50% burn / 50% treasury) — **not** a distribution wallet |
+
+Full detail: [`MAINNET-DEPLOYMENT-RECORD.md`](MAINNET-DEPLOYMENT-RECORD.md). Tonkeeper listing prep: [`TONKEEPER-ASSET-SUBMISSION.md`](TONKEEPER-ASSET-SUBMISSION.md).
 
 ## Movement Policy
 
@@ -61,7 +70,7 @@ Anyone can verify our claims independently:
 
 1. **Open Tonviewer** for the Jetton Minter:
    - Testnet: https://testnet.tonviewer.com/kQAslxaUshiiqy5FrTbYHbBpjBgmcyTHB8vKKCemFKp508xV
-   - Mainnet: (TBD)
+   - Mainnet: https://tonviewer.com/EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS
 
 2. **Check Total Supply** — should be exactly 1,000,000,000 PLX (1e18 nano)
 

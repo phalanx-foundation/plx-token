@@ -5,7 +5,7 @@ import "@acton/emulation/scripts"
 import "@wrappers/TeamVesting.gen"
 
 fun main() {
-    val callerName = env<string>("PLX_CALLER") ?? "plx-deployer";
+    val callerName = env<string>("PLX_CALLER") ?? "plx-deployer-v2";
     val caller = scripts.wallet(callerName);
 
     val vestingAddr = env<address>("PLX_VESTING_ADDRESS")!;

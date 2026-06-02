@@ -21,7 +21,7 @@ const VESTING_AMOUNT = 100000000 * PLX_NANO
 const VESTING_DURATION_SECONDS = 15552000
 
 fun main() {
-    val deployerName = env<string>("PLX_DEPLOYER") ?? "plx-deployer";
+    val deployerName = env<string>("PLX_DEPLOYER") ?? "plx-deployer-v2";
     val deployer = scripts.wallet(deployerName);
 
     val treasuryAddr = env<address>("PLX_TREASURY") ??

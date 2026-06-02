@@ -4,92 +4,82 @@ Use this as the single source of truth before pushing PLX to TON mainnet. Tick e
 
 ## Pre-flight (1–2 days before)
 
-- [ ] All 60 tests pass: `acton test`
-- [ ] Lint clean: `acton check` (no errors, only acceptable warnings)
-- [ ] Format clean: `acton fmt --check`
-- [ ] CI green on `master` branch
-- [ ] Reviewed every contract file for hardcoded testnet artifacts (none found)
-- [ ] Reviewed `contracts/sharding.tolk` for `MY_WORKCHAIN = BASECHAIN` (correct for mainnet)
-- [ ] Logo (`metadata/logo.png`) is final, 256×256 or 512×512 PNG, transparent background
-- [ ] `metadata/phalanx-metadata.json` has correct values (name, symbol, image URL)
-- [ ] Image URL is publicly accessible (`curl -I` returns 200) at the GitHub raw URL
+- [x] All tests pass: `acton test` (72+ at deploy time)
+- [x] Lint clean: `acton check`
+- [x] Format clean: `acton fmt --check`
+- [x] CI green on `master` branch
+- [x] Reviewed every contract file for hardcoded testnet artifacts (none found)
+- [x] Reviewed `contracts/sharding.tolk` for `MY_WORKCHAIN = BASECHAIN` (correct for mainnet)
+- [x] Logo (`metadata/logo.png`) is final, 256×256 or 512×512 PNG, transparent background
+- [x] `metadata/phalanx-metadata.json` has correct values (name, symbol, image URL)
+- [x] Image URL is publicly accessible at `https://plx.foundation/plx-logo.png`
 
 ## Funding
 
-- [ ] Mainnet deployer wallet created and **mnemonic backed up offline** (paper, hardware, or encrypted USB)
-- [ ] Deployer wallet has **at least 5 TON** (deploys + 5 mints + vesting deploy + 1 vesting mint ≈ 3.1 TON, buffer for retries)
-- [ ] All 5 distribution wallet addresses confirmed (treasury, lp, community, marketing, beneficiary)
-- [ ] Each distribution wallet's address has been double-checked against `acton wallet list`
+- [x] Mainnet deployer wallet created and **mnemonic backed up offline**
+- [x] Deployer wallet funded (≥ 5 TON on mainnet)
+- [x] All 5 distribution wallet addresses confirmed (treasury, lp, community, marketing, beneficiary)
+- [x] Each distribution wallet's address double-checked against `acton wallet list --net mainnet`
 
 ## Deploy
 
-- [ ] Set `PLX_VESTING_START` to the desired start timestamp (defaults to `date +%s`)
-- [ ] Run `acton script scripts/deploy-distribution.tolk --net mainnet`
-- [ ] Save the printed addresses to a secure note:
-  - [ ] `PLX_MINTER_ADDRESS`
-  - [ ] `PLX_VESTING_ADDRESS`
-  - [ ] All 5 jetton wallet addresses
-- [ ] Save the deployment tx hash from the log
+- [x] Set `PLX_VESTING_START` (used: `1780381461`)
+- [x] Run `acton script scripts/deploy-distribution.tolk --net mainnet`
+- [x] Saved addresses — see [`MAINNET-DEPLOYMENT-RECORD.md`](MAINNET-DEPLOYMENT-RECORD.md)
+- [x] Deploy log saved: `~/projects/plx-acton/.deploy-mainnet.log`
+- [x] PaymentSplitter deployed (`deploy-splitter.tolk`, 0.5 TON deploy fee)
 
 ## Verify (immediately after deploy)
 
-- [ ] Open `https://tonviewer.com/<MINTER_ADDRESS>` — confirms minter exists
-- [ ] Total supply = `1000000000000000000` (1B × 10^9)
-- [ ] `MINTABLE = true` (will set to false later when admin is dropped)
-- [ ] Each distribution wallet balance matches expected:
-  - [ ] LP: 400,000,000 PLX
-  - [ ] Treasury: 250,000,000 PLX
-  - [ ] Community: 200,000,000 PLX
-  - [ ] Marketing: 50,000,000 PLX
-  - [ ] Vesting: 100,000,000 PLX (in vesting contract's jetton wallet)
-- [ ] Metadata fields render correctly in Tonviewer
-- [ ] Logo image loads in Tonviewer
+- [x] Tonviewer minter exists
+- [x] Total supply = `1000000000000000000` (1B × 10^9)
+- [x] `MINTABLE = true` (admin not yet dropped)
+- [x] Distribution balances: LP 400M, Treasury 250M, Community 200M, Marketing 50M, Vesting 100M
+- [x] Metadata + logo URL on-chain (`https://plx.foundation/plx-logo.png`)
 
 ## Source verification
 
-- [ ] `acton verify JettonMinter --net mainnet` — publishes source to TON Verifier
+- [ ] `acton verify JettonMinter --net mainnet`
 - [ ] `acton verify JettonWallet --net mainnet`
 - [ ] `acton verify TeamVesting --net mainnet`
-- [ ] On Tonviewer, the contracts show "verified" badge
+- [ ] `acton verify PaymentSplitter --net mainnet`
+- [ ] Verified badge on Tonviewer
 
 ## Documentation update
 
-- [ ] Replace testnet addresses in `README.md` with mainnet addresses
-- [ ] Replace testnet addresses in `docs/TOKENOMICS.md` with mainnet addresses
-- [ ] Add mainnet deployment tx hash to `docs/TOKENOMICS.md`
-- [ ] Commit & push docs update
+- [x] Mainnet addresses in `README.md`, `docs/TOKENOMICS.md`
+- [x] [`docs/MAINNET-DEPLOYMENT-RECORD.md`](MAINNET-DEPLOYMENT-RECORD.md) created
+- [x] [`docs/TRANSPARENCY.md`](TRANSPARENCY.md) mainnet registry
+- [ ] Commit & push docs update (when ready)
 
 ## Optional but recommended hardening
 
-- [ ] After 24–48 hours of monitoring, run drop-admin script to make supply permanently fixed:
+- [ ] After 24–48 hours monitoring, run drop-admin:
   ```bash
-  acton run jetton-change-admin   # send DropMinterAdmin (or use direct script)
+  PLX_CONFIRM_DROP_ADMIN=1 acton script scripts/drop-admin.tolk --net mainnet
   ```
-  > **Irreversible.** Only do this when you're certain the distribution is final.
+  > **Irreversible.** Only when distribution is final.
 
 ## Liquidity & Listing (after mainnet deploy)
 
-- [ ] Provide initial liquidity on Ston.fi: pair PLX/TON
-  - Suggested ratio: 100k PLX × X TON (decide opening price)
-  - Use `plx-lp` wallet (has 400M PLX)
-- [ ] Provide initial liquidity on DeDust (alternative DEX)
-- [ ] Submit token to Tonkeeper for default-asset listing
-- [ ] Submit token to MyTonWallet
-- [ ] Apply to TON Foundation token whitelist
+- [ ] Initial liquidity on Ston.fi (PLX/TON from LP wallet)
+- [ ] DeDust (optional)
+- [ ] Tonkeeper `ton-assets` PR — see [`TONKEEPER-ASSET-SUBMISSION.md`](TONKEEPER-ASSET-SUBMISSION.md)
+- [ ] MyTonWallet listing
+- [ ] TON Foundation token whitelist (if applicable)
 
 ## Marketing & Community
 
-- [ ] Pin contract addresses on Phalanx Foundation website / GitHub readme
-- [ ] Tweet announcement with minter address + Tonviewer link
-- [ ] Telegram announcement
-- [ ] Update Phalanx Foundation LinkedIn
-- [ ] Reach out to TON ecosystem partners
+- [x] Addresses on GitHub README + deployment record
+- [ ] Website plx.foundation `/plx-token` mainnet section
+- [ ] Tweet / Telegram announcement
+- [ ] LinkedIn update
 
 ## Audit trail
 
-- [ ] Tag the deploy commit with `mainnet-deploy-v1.0.0` and add a release on GitHub
-- [ ] Save mainnet `wallets.toml` to encrypted offline backup
-- [ ] Save deploy log (`.deploy-mainnet.log`) to private repo or password manager
+- [ ] Tag `mainnet-deploy-v1.0.0` on GitHub
+- [ ] Encrypted offline backup of mainnet `wallets.toml`
+- [x] Deploy log on server (private)
 
 ---
 
@@ -101,4 +91,4 @@ If something goes catastrophically wrong **before** dropping admin:
 - Admin can be transferred to an emergency multisig via `ChangeMinterAdmin`
 - Vesting cannot be paused once funded (only revoked)
 
-There is **no rollback after dropping admin**. Make sure everything is correct before that step.
+There is **no rollback after dropping admin**.

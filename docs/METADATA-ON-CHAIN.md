@@ -59,6 +59,19 @@ Open [Tonviewer testnet minter](https://testnet.tonviewer.com/kQAslxaUshiiqy5FrT
 - Square PNG/WebP, ideally **256×256** or **512×512**, **≤ 256 KB** (Tonkeeper guidance).
 - Prefer a stable CDN URL (`plx.foundation`, GitHub raw, or IPFS) you control.
 
-## Mainnet
+## Mainnet (live)
 
-Repeat the same flow on mainnet **before** public launch. See `docs/MAINNET-CHECKLIST.md` → metadata + logo verification steps.
+Mainnet minter: `EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS`
+
+On-chain `image` at deploy: `https://plx.foundation/plx-logo.png`
+
+Verify:
+
+```bash
+curl -s "https://tonapi.io/v2/jettons/EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS" | jq .metadata.image
+curl -I https://plx.foundation/plx-logo.png
+```
+
+Tonkeeper: mainnet → add custom jetton → paste **minter** address (not your wallet). Allow 15–60 minutes for image cache.
+
+To update metadata after deploy, use the same `jetton-change-metadata` / refresh script flow with `--net mainnet` and `JETTON_ADMIN=plx-deployer-v2-mainnet`. See `docs/MAINNET-CHECKLIST.md`.
