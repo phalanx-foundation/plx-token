@@ -39,6 +39,26 @@ Six operational wallets (`acton wallet new --version v5r1`) — each has its **o
 
 **Total supply on-chain:** `1,000,000,000,000,000,000` nano-PLX = 1,000,000,000 PLX.
 
+### Why TonAPI shows **5 holders**, not 6
+
+Genesis mint created **five jetton wallets with PLX balance**:
+
+| # | Holder (jetton wallet owner) | PLX |
+|---|------------------------------|-----|
+| 1 | LP wallet | 400M |
+| 2 | Treasury wallet | 250M |
+| 3 | Community wallet | 200M |
+| 4 | **TeamVesting contract** (not beneficiary wallet yet) | 100M |
+| 5 | Marketing wallet | 50M |
+
+**Not counted as holders** (balance 0 PLX):
+
+- **Deployer** — minter admin only, received no PLX mint
+- **Vesting beneficiary** — personal wallet; team tokens sit in the **vesting contract’s** jetton wallet until `claim-vesting`
+- **PaymentSplitter** — no genesis PLX; only receives PLX when Toolkit users pay
+
+Ops docs sometimes list **six named wallets** in `wallets.toml` (deployer + 5 recipients). That is wallet inventory, not holder count on the jetton.
+
 ## Vesting contract live state
 
 ```
