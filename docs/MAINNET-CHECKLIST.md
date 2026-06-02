@@ -64,7 +64,7 @@ Use this as the single source of truth before pushing PLX to TON mainnet. Tick e
 
 - [ ] Initial liquidity on Ston.fi (PLX/TON from LP wallet)
 - [ ] DeDust (optional)
-- [ ] Tonkeeper `ton-assets` PR — see [`TONKEEPER-ASSET-SUBMISSION.md`](TONKEEPER-ASSET-SUBMISSION.md)
+- [x] Tonkeeper `ton-assets` PR opened — https://github.com/tonkeeper/ton-assets/pull/5468 (merge pending)
 - [ ] MyTonWallet listing
 - [ ] TON Foundation token whitelist (if applicable)
 

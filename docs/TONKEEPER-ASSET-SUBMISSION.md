@@ -19,10 +19,10 @@ Use this checklist when opening a PR to [tonkeeper/ton-assets](https://github.co
 
 ## Verification before PR
 
-- [ ] `curl -I https://plx.foundation/plx-logo.png` → HTTP 200, HTTPS
-- [ ] TonAPI: `GET https://tonapi.io/v2/jettons/EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS` → `metadata.image` matches URL above
-- [ ] Total supply = `1000000000000000000` nano (1B PLX)
-- [ ] Follow upstream `ton-assets` folder layout and naming in their README
+- [x] `curl -I https://plx.foundation/plx-logo.png` → HTTP 200, HTTPS
+- [x] TonAPI: `GET https://tonapi.io/v2/jettons/EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS` → `metadata.image` matches URL above
+- [x] Total supply = `1000000000000000000` nano (1B PLX)
+- [x] Follow upstream `ton-assets` folder layout (`jettons/PLX.yaml`)
 
 ## Related contracts (for reviewers, not separate jetton entries)
 
@@ -33,6 +33,8 @@ Use this checklist when opening a PR to [tonkeeper/ton-assets](https://github.co
 
 ## Status
 
-- [ ] PR opened to `tonkeeper/ton-assets`
+- [x] PR opened to `tonkeeper/ton-assets` — **https://github.com/tonkeeper/ton-assets/pull/5468** (2026-06-02, branch `KelvinHernata:add-plx-mainnet-jetton`)
+- [ ] PR **merged** by Tonkeeper (typical review: beberapa hari; gratis, tanpa bayar)
+- [ ] Setelah merge: tunggu cache wallet 15–60 menit → label “scan” / unverified hilang di Tonkeeper
 - [ ] MyTonWallet listing (if applicable)
 - [ ] Tonviewer / Tonscan label requests ([`TRANSPARENCY.md`](TRANSPARENCY.md))
