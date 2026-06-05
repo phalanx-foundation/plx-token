@@ -11,6 +11,29 @@ Dokumen internal untuk tim Phalanx dan reviewer `ton-assets`. Label **SCAM** di 
 | **Admin deployer** | `is_scam: false` |
 | **ton-assets PR** | https://github.com/tonkeeper/ton-assets/pull/5468 (OPEN) |
 
+## Penjelasan pernyataan agent sebelumnya (TonAPI `blacklist`)
+
+Pernyataan itu **sebagian besar benar**, dengan nuansa berikut:
+
+| Klaim agent | Penilaian |
+|-------------|-----------|
+| `verification: blacklist` = heuristik jetton baru / belum dikenal | **Benar** — bukan bukti kontrak rusak; deployer `is_scam: false`, metadata on-chain konsisten. |
+| Bukan masalah kontrak | **Benar** — genesis, supply, dan alamat mainnet sesuai dokumentasi deploy. |
+| Hilang setelah masuk daftar resmi TON (Tonkeeper `ton-assets`) | **Benar untuk label di Tonkeeper** — satu-satunya jalur resmi yang kita kendalikan lewat PR [#5468](https://github.com/tonkeeper/ton-assets/pull/5468). Setelah **merge**, Tonkeeper memakai `jettons.json` dari repo itu; label SCAM/unverified pada wallet biasanya hilang setelah cache (15–60 menit). TonAPI sering menyelaraskan status verifikasi dengan daftar yang sama, tetapi **bukan instan** dan **bukan dijamin** hanya karena submit PR — harus **disetujui dan di-merge**. |
+| Ston.fi juga disebut | **Bukan pengganti verifikasi wallet** — listing DEX = likuiditas & discoverability di Ston.fi, **tidak** otomatis menghapus label SCAM di Tonkeeper atau `blacklist` di TonAPI. |
+
+**Mengapa label masih ada sekarang:** PR #5468 masih **OPEN** (belum di-merge Tonkeeper). Submission sudah diajukan; penghapusan label menunggu review mereka.
+
+### Tiga opsi yang ditawarkan agent — status Phalanx
+
+| Opsi agent | Status proyek |
+|------------|----------------|
+| Commit perubahan | Sudah dilakukan (docs mainnet, `TONKEEPER-*`, push `plx-token` master). |
+| Update `TOKENOMICS` alamat mainnet | Sudah ada (tabel distribusi + `MAINNET-DEPLOYMENT-RECORD.md`). |
+| Siapkan submission token list (hapus blacklist) | **Sudah diajukan** — PR #5468 + komentar appeal ke reviewer. **Belum selesai** sampai merge. |
+
+**Kesimpulan:** Agent sebelumnya mengarahkan ke langkah yang tepat; yang belum selesai bukan “belum disubmit”, melainkan **menunggu merge Tonkeeper**. Tidak ada skrip lokal yang bisa memaksa TonAPI mengubah `blacklist` hari ini.
+
 ## Satu-satunya jalur resmi penghapusan label (Tonkeeper)
 
 Sesuai [dokumentasi verifikasi Tonkeeper](https://tonkeeper.helpscoutdocs.com/article/127-tokennftverification):

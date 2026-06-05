@@ -57,6 +57,10 @@ jetton-claim-admin = "acton script scripts/claim-admin.tolk"
 jetton-info = "acton script scripts/info.tolk"
 jetton-mint = "acton script scripts/mint.tolk"
 jetton-transfer = "acton script scripts/transfer.tolk"
+deploy-client-jetton-emulation = "acton script scripts/deploy-client-jetton.tolk"
+deploy-client-jetton-testnet = "acton script scripts/deploy-client-jetton.tolk --net testnet"
+deploy-client-jetton-mainnet = "acton script scripts/deploy-client-jetton.tolk --net mainnet"
+toolkit-broadcast-testnet = "bash scripts/toolkit-broadcast.sh"
 
 [import-mappings]
 acton = ".acton"
