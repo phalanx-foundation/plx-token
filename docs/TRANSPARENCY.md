@@ -60,7 +60,15 @@ To prevent market shock and uphold trust:
    accompanied by an on-chain memo and reported in the quarterly transparency
    update.
 
-5. **No private sale, no presale, no pre-mine to insiders.** Initial
+5. **Liquidity awareness program (disclosed micro-swaps):** Phalanx may run
+   small, capped Ston.fi swaps from operational wallets (`plx-marketing`,
+   `plx-toolkit-ops`) to keep the DEX pair discoverable while LP is thin (~$34
+   seed). This is **not** wash trading for CEX listing — caps are enforced in
+   `scripts/plx-branding-swap.py` (`BRANDING_MAX_TON_NANO_PER_DAY`, max swaps
+   per day). Logs: `data/branding-swap-log.json`. Quest swaps for builders are
+   encouraged separately ([`TELEGRAM-QUEST-SWAPS.md`](TELEGRAM-QUEST-SWAPS.md)).
+
+6. **No private sale, no presale, no pre-mine to insiders.** Initial
    distribution went only to the addresses listed above. There is no
    undocumented allocation.
 
@@ -115,4 +123,4 @@ the cost (~$5K-$15K from third-party auditor). Will be funded from treasury.
 
 ---
 
-*Last updated: 2026-05-20 — Phalanx Foundation.*
+*Last updated: 2026-06-09 — Phalanx Foundation.*
