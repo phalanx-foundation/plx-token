@@ -23,7 +23,7 @@ pie title PLX Distribution (1B total)
     "Marketing (5%)" : 50
 ```
 
-| % | Amount | Allocation | Mainnet (UQ / EQ) | Testnet | Status |
+| % | Amount | Allocation | Mainnet (EQ) | Testnet (kQ) | Status |
 |---:|---:|---|---|---|---|
 | 40% | 400,000,000 PLX | **Liquidity Provision** | `EQAiQ41f7R5qzKsoimbujtYdy0bRKW_7Fb0rV5Z4Lw6gr3zH` | `kQD4-ER4sDGmw4PcPPJ-AwLYG9TORvZ5sJ-xNKthunKz0AOP` | Reserved for DEX (Ston.fi / DeDust) |
 | 25% | 250,000,000 PLX | **Treasury** | `EQBBlAF4yz12NbrbKXYfGA1OsZzWFpkRj-TU6ciuYjBjK1aX` | `kQCAfIuFFlS8RJyYQU7pFaN1XqcO8V4lZl-SH8Ca950XqGal` | Operational, buyback & burn |
@@ -31,7 +31,7 @@ pie title PLX Distribution (1B total)
 | 10% | 100,000,000 PLX | **Team** | `EQCs-Y2wb83zqjCpRUMiZoKLUqhI3qd6tWWm4ycZBp6lsD5l` (vesting) | `kQDNPoiPbKXwjt4i9SqtBmvbUlMgWz1jCR7M5Uwjj5fI8t1l` | **Locked 6 months linear** |
 | 5% | 50,000,000 PLX | **Marketing** | `EQDB9yVhkPvEhMFo90fqHWzqYj2mESAlwObMbA6LX7fETtN6` | `kQD51illBEG2sQ5do-28UoVDyiQbyRMVagzfwnWV7QCginMA` | Listing, marketing campaigns |
 
-> **Address formats:** Tonkeeper shows **UQ** (non-bounceable); docs/CLI often use **EQ** (bounceable) — same wallet. See [`MAINNET-DEPLOYMENT-RECORD.md`](MAINNET-DEPLOYMENT-RECORD.md).
+> **Penting:** Mainnet dan testnet di atas adalah **dompet berbeda** (mnemonic berbeda), bukan format UQ/EQ dari seed yang sama. Tonkeeper mainnet: **UQ** untuk akun yang sama dengan **EQ** di docs. Lihat [`MAINNET-DEPLOYMENT-RECORD.md`](MAINNET-DEPLOYMENT-RECORD.md) dan [`INCIDENT-PLX-SCAM-WALLET.md`](INCIDENT-PLX-SCAM-WALLET.md).
 
 ## Vesting Schedule (Team Allocation)
 
@@ -100,6 +100,10 @@ flowchart LR
     Client[Client wallet] -- "2.5 TON-eq PLX" --> Splitter
     Splitter[PaymentSplitter contract<br/>on TON] -- 50% burn --> Burn[(Supply − x)]
     Splitter -- 50% forward --> Treasury[Treasury wallet]
+    Treasury --> JettonSweep[PLX jetton sweep 20/15/15]
+    JettonSweep --> LP[plx-lp]
+    JettonSweep --> Growth[plx-marketing]
+    JettonSweep --> Ops[plx-toolkit-ops]
 ```
 
 The split is enforced **on-chain** by the `PaymentSplitter.tolk` contract
@@ -118,12 +122,28 @@ splitter (and the old splitter address keeps a public history).
 The treasury slice is **further subdivided 25/25/25/25** with a public
 quarterly report. Categories:
 
-| Category | Share | Purpose |
-|---|---|---|
-| **Buyback** | 25% | Treasury buys PLX from Stonfi/DeDust LP and burns. Compounds the burn slice — an extra deflationary pulse on top of the on-receipt burn. |
-| **LP deepening** | 25% | TON-side liquidity injection into Stonfi/DeDust pairs. Tighter spreads + lower slippage → more organic trading volume → more LP fee accrual. |
-| **Operations** | 25% | Gas reserves for the operator wallet, infra (Cloudflare, Railway, Neon DB), audit retainers, and core team compensation. |
-| **Growth** | 25% | Marketing campaigns, community contests, listing fees, partnership grants, hackathon sponsorships. |
+| Category | Share | Purpose | Automated? |
+|---|---|---|---|
+| **Buyback** | 25% | Treasury buys PLX from Stonfi/DeDust LP and burns. Compounds the burn slice — an extra deflationary pulse on top of the on-receipt burn. | **Yes** (TON / PayPal virtual sweep) — queued then Ston.fi swap + burn ([`TREASURY-SWEEP.md`](TREASURY-SWEEP.md)) |
+| **LP deepening** | 25% | TON-side liquidity injection into Stonfi/DeDust pairs. Tighter spreads + lower slippage → more organic trading volume → more LP fee accrual. | **Yes** (Phase 1: TON → `plx-lp`; Phase 3: Ston.fi add-liquidity) |
+| **Operations** | 25% | Gas reserves for the operator wallet, infra (Cloudflare, Railway, Neon DB), audit retainers, and core team compensation. | **Yes** → PLX TOOLKIT ops wallet (`EQC5X2o...`) |
+| **Growth** | 25% | Marketing campaigns, community contests, listing fees, partnership grants, hackathon sponsorships. | **Yes** → `plx-marketing` (`EQDB9yV...`) |
+
+#### Payment rails — how fees flow (2026-06)
+
+| Rail | Client pays | Post-payment automation |
+|------|-------------|-------------------------|
+| **TON** | Full TON (e.g. 20 Standard) | Fee lands in `plx-treasury` → toolkit triggers **treasury sweep** 25/25/25/25 ([`TREASURY-SWEEP.md`](TREASURY-SWEEP.md)) |
+| **PLX** (−50%) | Half PLX (e.g. 10 Standard) | Client sends to **PaymentSplitter jetton wallet** → on-chain **50% burn + 50% PLX to treasury** → toolkit triggers **PLX jetton sweep** of treasury slice: **20% LP / 15% growth / 15% ops** (40/30/30 of the 50% treasury slice) |
+| **PayPal** | USD fiat | Fiat stays in PayPal Business; toolkit schedules **virtual TON sweep** from `plx-treasury` float proportional to net USD. If TON balance insufficient → queue + cron retry + Telegram ops alert |
+| **USDT** | USDt jetton | **Phase 1b deferred** — mainnet rail hidden in UI until automated USDT→TON sweep exists. Testnet verify only; no automated 25/25/25/25 yet |
+
+Details:
+
+- **TON / PayPal** use the same **25/25/25/25 TON treasury sweep** script on the Acton worker host.
+- **PLX** burn is enforced **on-chain** by `PaymentSplitter.tolk`; the jetton sweep (`plx-treasury-jetton-sweep`) distributes the treasury slice only — it does **not** repeat the TON 25/25/25/25 split on PLX jettons.
+- **PayPal** is not “quarterly manual only” — virtual sweep runs per capture when treasury TON float is sufficient; quarterly report remains for transparency.
+- Enable mainnet USDT when ready: `USDT_RAIL_MAINNET_ENABLED=true` (API) and `NEXT_PUBLIC_USDT_RAIL_MAINNET_ENABLED=true` (web).
 
 #### Why hybrid (vs 100% burn or 100% treasury)?
 
