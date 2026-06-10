@@ -64,3 +64,7 @@ LISTING_AUTOMATION_ENABLED=true python3 scripts/plx-listing-automation.py
 ```
 
 See also [`TOKEN-LISTING-INDEX-MATRIX.md`](TOKEN-LISTING-INDEX-MATRIX.md).
+
+## Dashboard user LP (TonConnect)
+
+Operators can add Ston.fi liquidity from the toolkit dashboard (Start new pool / Top up). Foundation treasury auto-LP remains separate — see [`DASHBOARD-LP-AUTO-FOUNDATION.md`](DASHBOARD-LP-AUTO-FOUNDATION.md).
