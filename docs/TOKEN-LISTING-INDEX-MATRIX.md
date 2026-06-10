@@ -27,7 +27,7 @@ Single checklist for **Phalanx (PLX)** discoverability after mainnet LP. Update 
 | # | Platform | Submit URL | Gate | Status | Evidence |
 |---|----------|------------|------|--------|----------|
 | B1 | Tonscan labels | https://tonscan.org/labels | Verified addresses | **TODO** | [`TONSCAN-DYOR-SUBMIT.md`](TONSCAN-DYOR-SUBMIT.md) |
-| B2 | DYOR.io | https://dyor.io/requests | Site + pool + description | **TODO** | Same doc |
+| B2 | DYOR.io | https://dyor.io/requests | Site + pool + description | **Indexed** | API probe `indexed: true` |
 | B3 | Tonviewer contact | https://tonviewer.com/contact | Labels for treasury/LP | **TODO** | [`TRANSPARENCY.md`](TRANSPARENCY.md) |
 | B4 | MyTonWallet assets | Follow ton-assets pattern | ton-assets merge helps | **TODO** | [`TONKEEPER-ASSET-SUBMISSION.md`](TONKEEPER-ASSET-SUBMISSION.md) |
 
@@ -67,6 +67,7 @@ Single checklist for **Phalanx (PLX)** discoverability after mainnet LP. Update 
 
 | Script | Purpose |
 |--------|---------|
+| **`scripts/plx-listing-automation.py`** | **Agent cron — checks + Telegram + PR nudge** ([`LISTING-AUTOMATION.md`](LISTING-AUTOMATION.md)) |
 | `scripts/plx-dex-dashboard.py` | Price + swap snapshot |
 | `scripts/plx-branding-swap.py` | Disclosed micro-MM (post-whitelist) |
 | `scripts/lib/stonfi_swap.py` | Ston.fi simulate + queue |

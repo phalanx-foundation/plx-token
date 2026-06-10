@@ -1,0 +1,32 @@
+name: PLX listing automation
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install gh
+        run: type gh || sudo apt-get update && sudo apt-get install -y gh
+
+      - name: Run listing automation
+        env:
+          LISTING_AUTOMATION_ENABLED: "true"
+          LISTING_QUEST_ENABLED: ${{ vars.LISTING_QUEST_ENABLED || 'true' }}
+          LISTING_PR_NUDGE_ENABLED: "true"
+          LISTING_RUN_BRANDING: "false"
+          TOKEN_TELEGRAM_BOT: ${{ secrets.TOKEN_TELEGRAM_BOT }}
+          TELEGRAM_OPS_CHAT_ID: ${{ secrets.TELEGRAM_OPS_CHAT_ID }}
+          LISTING_QUEST_CHAT_ID: ${{ secrets.LISTING_QUEST_CHAT_ID }}
+          TONAPI_KEY: ${{ secrets.TONAPI_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/plx-listing-automation.py

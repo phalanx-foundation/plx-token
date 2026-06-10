@@ -1,0 +1,77 @@
+{
+  "runs": [
+    {
+      "at": "2026-06-10T01:19:56.636659+00:00",
+      "checks": {
+        "dexscreener_pair": {
+          "ok": true,
+          "liquidity_usd": 33.82,
+          "url": "https://dexscreener.com/ton/eqam-5hxqpfql8_lqyvax4aeps9lxp6re8afr35hcfrpyztq",
+          "price_usd": "0.0001755",
+          "txns_24h": {
+            "buys": 1,
+            "sells": 1
+          }
+        },
+        "dexscreener_orders": {
+          "ok": true,
+          "orders": []
+        },
+        "tonapi": {
+          "ok": true,
+          "verification": "graylist",
+          "holders": 6,
+          "symbol": "PLX"
+        },
+        "dyor": {
+          "ok": true,
+          "indexed": true,
+          "count": 1
+        },
+        "coingecko": {
+          "ok": false,
+          "coin": null
+        },
+        "ton_assets_pr": {
+          "ok": true,
+          "state": "OPEN",
+          "merged": false,
+          "url": "https://github.com/tonkeeper/ton-assets/pull/5540",
+          "phalanx_comment_count": 0,
+          "updated_at": "2026-06-09T12:51:48Z"
+        },
+        "eligibility": {
+          "coingecko_ready": false,
+          "coingecko_min_usd": 5000,
+          "cmc_ready": false,
+          "cmc_min_usd": 10000,
+          "liquidity_usd": 33.82
+        }
+      },
+      "actions": {
+        "quest": {
+          "posted": false,
+          "reason": "no_telegram_bot"
+        },
+        "pr_nudge": {
+          "nudged": false,
+          "reason": "disabled"
+        },
+        "branding_swap": {
+          "skipped": "LISTING_RUN_BRANDING false"
+        },
+        "telegram_summary": false
+      },
+      "platform_notes": {
+        "tonscan_labels": "no_api \u2014 automation monitors only",
+        "tonviewer_labels": "no_api \u2014 automation monitors only",
+        "tapps_center": "blocked_until_mini_app_demo",
+        "coinmarketcap": "blocked_until_volume_gate",
+        "coingecko": "blocked_until_lp_gate"
+      }
+    }
+  ],
+  "last_quest_post": null,
+  "last_pr_nudge": null,
+  "last_run": "2026-06-10T01:19:56.636659+00:00"
+}
