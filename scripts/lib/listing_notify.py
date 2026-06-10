@@ -10,6 +10,14 @@ import urllib.request
 DEFAULT_OPS_CHAT = "930979766"
 
 
+def _bot_token() -> str:
+    for key in ("TOKEN_TELEGRAM_BOT", "TELEGRAM_BOT_TOKEN", "TELEGRAM_TOKEN"):
+        val = os.environ.get(key, "").strip()
+        if val:
+            return val
+    return ""
+
+
 def _chat_ids() -> list[str]:
     ids: list[str] = []
     for key in ("LISTING_QUEST_CHAT_ID", "TELEGRAM_PUBLIC_CHAT_ID", "TELEGRAM_OPS_CHAT_ID"):
@@ -24,11 +32,11 @@ def _chat_ids() -> list[str]:
 
 
 def telegram_configured() -> bool:
-    return bool(os.environ.get("TOKEN_TELEGRAM_BOT", "").strip())
+    return bool(_bot_token())
 
 
 def send_telegram(text: str, *, chat_id: str | None = None) -> bool:
-    token = os.environ.get("TOKEN_TELEGRAM_BOT", "").strip()
+    token = _bot_token()
     if not token:
         return False
     targets = [chat_id] if chat_id else _chat_ids()
