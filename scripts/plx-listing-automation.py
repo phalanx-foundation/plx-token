@@ -195,6 +195,21 @@ def main() -> int:
     summary = _build_summary(run)
     run["actions"]["telegram_summary"] = send_telegram(summary)
 
+    if os.environ.get("TELEGRAM_MARKETING_ENABLED", "").lower() == "true":
+        proc = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "plx-telegram-marketing.py")],
+            capture_output=True,
+            text=True,
+            cwd=str(ROOT),
+            env=os.environ.copy(),
+            timeout=120,
+            check=False,
+        )
+        try:
+            run["actions"]["telegram_marketing"] = json.loads(proc.stdout or "{}")
+        except json.JSONDecodeError:
+            run["actions"]["telegram_marketing"] = {"raw": (proc.stdout or proc.stderr)[:500]}
+
     state["runs"] = (state.get("runs") or [])[-49:] + [run]
     state["last_run"] = run["at"]
     _save_state(state)
