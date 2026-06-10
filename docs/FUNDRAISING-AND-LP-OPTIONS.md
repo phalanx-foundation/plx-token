@@ -43,7 +43,7 @@
 
 **LP dari hibah:** grant sering bayar **TON/USDC ke treasury** atau **milestone** — alokasikan transparan ke `plx-lp` (lihat `TRANSPARENCY.md`).
 
-**Otomasi:** `scripts/plx-listing-automation.py` + issue template grant di GitHub; checklist di bawah.
+**Otomasi:** `scripts/plx-fundraising-automation.py` (buka GitHub issue per jalur + Telegram) + `plx-listing-automation.py`.
 
 ---
 
@@ -112,19 +112,20 @@ flowchart TB
 
 ---
 
-## Checklist apply (agent-tracked)
+## Checklist apply (otomatis — GitHub Issues)
 
-Salin ke issue GitHub `phalanx-foundation/plx-token` label `funding`:
+Jalankan: `FUNDRAISING_AUTOMATION_ENABLED=true python scripts/plx-fundraising-automation.py`
 
-- [ ] **TON ecosystem** — pitch + demo link + ton-assets #5540 status
-- [ ] **Gitcoin** — repo public, README, dependency
-- [ ] **Microsoft Founders Hub** — entity Phalanx Foundation, website
-- [ ] **Google Cloud Startup** — sama
-- [ ] **Kickstarter** — tier produk, bukan token
-- [ ] **Animoca** — intro deck (opsional)
-- [ ] **Launchpad** — defer sampai revenue proof
+| Issue | Jalur |
+|-------|--------|
+| [#1](https://github.com/phalanx-foundation/plx-token/issues/1) | TON ecosystem grant |
+| [#2](https://github.com/phalanx-foundation/plx-token/issues/2) | Gitcoin OSS |
+| [#3](https://github.com/phalanx-foundation/plx-token/issues/3) | Animoca intro |
+| [#4](https://github.com/phalanx-foundation/plx-token/issues/4) | Microsoft Founders Hub |
+| [#5](https://github.com/phalanx-foundation/plx-token/issues/5) | Google Cloud Startup |
+| [#6](https://github.com/phalanx-foundation/plx-token/issues/6) | Kickstarter / Indiegogo |
 
-Update status di [`TOKEN-LISTING-INDEX-MATRIX.md`](TOKEN-LISTING-INDEX-MATRIX.md) baris funding.
+Langkah Anda: klik **Apply URL** di setiap issue → submit form portal (portal tidak punya API publik).
 
 ---
 

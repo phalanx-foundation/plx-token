@@ -1,0 +1,24 @@
+name: PLX fundraising automation
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run fundraising tracker
+        env:
+          FUNDRAISING_AUTOMATION_ENABLED: "true"
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TOKEN_TELEGRAM_BOT: ${{ secrets.TOKEN_TELEGRAM_BOT }}
+          TELEGRAM_OPS_CHAT_ID: ${{ secrets.TELEGRAM_OPS_CHAT_ID }}
+        run: python3 scripts/plx-fundraising-automation.py

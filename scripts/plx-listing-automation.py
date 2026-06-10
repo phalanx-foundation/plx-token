@@ -24,6 +24,10 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
+from lib.dotenv_load import load_project_dotenv  # noqa: E402
+
+load_project_dotenv()
+
 from lib.listing_checks import (  # noqa: E402
     check_coingecko_listed,
     check_dexscreener_orders,
