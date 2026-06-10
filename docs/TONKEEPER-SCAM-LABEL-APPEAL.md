@@ -7,9 +7,26 @@ Dokumen internal untuk tim Phalanx dan reviewer `ton-assets`. Label **SCAM** di 
 | Sumber | Status |
 |--------|--------|
 | **Tonkeeper wallet** | Label SCAM / peringatan penipuan (sampai verifikasi resmi) |
-| **TonAPI** | `verification: blacklist` pada minter `EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS` |
+| **TonAPI** | `verification: blacklist` pada minter `EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS` (bukan default semua jetton baru — lihat bagian koreksi di bawah) |
+| **Tonviewer** | Transaksi genesis (JettonMint 250M ke treasury) ditampilkan sebagai **FAKE** — **bukan** karena opcode salah; label yang sama dari status verifikasi jetton |
 | **Admin deployer** | `is_scam: false` |
 | **ton-assets PR** | https://github.com/tonkeeper/ton-assets/pull/5468 (OPEN) |
+
+## Koreksi: Tonviewer “Recently added” ≠ tidak ada risiko
+
+Halaman [Tonviewer → Tokens → Recently added](https://tonviewer.com/tokens?section=recently) adalah **feed indeks jetton baru** untuk eksplorasi pasar. Halaman itu **tidak menampilkan kolom SCAM/FAKE** — banyak token spam (termasuk ticker `$SCAM`, `$FROG`, dll.) tetap muncul di daftar; itu **bukan** sertifikat “aman”.
+
+Perbandingan status TonAPI (contoh riil, mainnet):
+
+| Jetton | Umur / konteks | `verification` (TonAPI) | Label di Tonkeeper (umum) |
+|--------|----------------|-------------------------|---------------------------|
+| **PLX (Phalanx)** | Mainnet Phalanx | **`blacklist`** | **SCAM** / peringatan keras |
+| **SHREK** (contoh baru) | Jetton meme, 3 holder | **`none`** | Biasanya **Unverified**, bukan SCAM |
+| **NOT** | Resmi | **`whitelist`** | Terverifikasi |
+
+Kesimpulan: **bukan** semua jetton 1–2 jam otomatis `blacklist`. PLX mendapat status **`blacklist`** khusus (kemungkinan heuristik distribusi genesis / risiko spam / belum ada di `jettons.json` + sinyal tambahan). Alamat PLX **tidak** ada di `to_review/blacklist.csv` publik ton-assets — jadi flag kemungkinan dari **mesin risiko TonAPI/Tonkeeper** (`scam_backoffice_rules`), bukan entri manual di CSV.
+
+**Tindakan:** tetap dorong merge PR #5468 → `whitelist`; di thread PR minta konfirmasi: “Why is minter on blacklist while `admin.is_scam` is false?”
 
 ## Penjelasan pernyataan agent sebelumnya (TonAPI `blacklist`)
 
@@ -55,7 +72,8 @@ Label SCAM untuk token yang **belum** diverifikasi sering muncul bersama peringa
 | Repo kontrak (publik) | https://github.com/phalanx-foundation/plx-token |
 | Catatan deploy | `docs/MAINNET-DEPLOYMENT-RECORD.md` di repo di atas |
 | Supply on-chain | 1 000 000 000 PLX (9 desimal) — genesis ke 5 holder + vesting contract |
-| Telegram resmi | https://t.me/phalanxfoundationbot |
+| Telegram channel | https://t.me/phalanxfoundation |
+| Telegram bot | https://t.me/phalanxfoundationbot |
 
 **Bukan** token impersonasi: nama **Phalanx**, simbol **PLX**, tanpa karakter `$` di ticker, tanpa klaim airdrop Tonkeeper di metadata.
 

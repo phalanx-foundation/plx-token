@@ -53,6 +53,25 @@ Commands: /site /swap /price /quest
 Not investment advice. Utility token for builders on TON.
 """
 
+TELEGRAM_CHANNEL = "https://t.me/phalanxfoundation"
+TELEGRAM_BOT = "https://t.me/phalanxfoundationbot"
+
+CHANNEL_WELCOME = f"""Welcome to the official Phalanx Foundation channel
+
+PLX is live on TON mainnet — utility jetton for Phalanx Toolkit (deploy jettons, pay with PLX -50%, burn-on-receipt).
+
+Token page: {TOKEN_PAGE}
+Ston.fi pool: {STONFI_POOL_URL}
+Chart: {DEXSCREENER_PAIR_URL}
+Minter: `{PLX_MINTER}`
+
+Bot: {TELEGRAM_BOT} — send /start for commands (/site /swap /price /quest)
+
+Builders: join the swap quest, follow listing updates, transparent treasury policy.
+
+Not investment advice.
+"""
+
 
 def _token() -> str:
     return (
@@ -117,7 +136,8 @@ def setup_bot_profile() -> dict[str, Any]:
             {
                 "description": (
                     "Phalanx (PLX) on TON mainnet — utility jetton for Phalanx Toolkit. "
-                    "Swap on Ston.fi, explore at plx.foundation/plx-token. Not financial advice."
+                    f"Channel: {TELEGRAM_CHANNEL} · Swap on Ston.fi · plx.foundation/plx-token. "
+                    "Not financial advice."
                 )[:512],
             },
         ),
@@ -151,13 +171,60 @@ def send_message(chat_id: str, text: str) -> dict[str, Any]:
     )
 
 
+def pin_message(chat_id: str, message_id: int) -> dict[str, Any]:
+    return _api("pinChatMessage", {"chat_id": chat_id, "message_id": message_id})
+
+
+def setup_webhook() -> dict[str, Any]:
+    secret = os.environ.get("TELEGRAM_WEBHOOK_SECRET", "").strip()
+    if not secret:
+        return {"ok": False, "skipped": "TELEGRAM_WEBHOOK_SECRET missing"}
+    base = os.environ.get("PUBLIC_API_URL", "https://api.plx.foundation").rstrip("/")
+    url = f"{base}/telegram/webhook?secret={urllib.parse.quote(secret, safe='')}"
+    _api("deleteWebhook", {"drop_pending_updates": False})
+    return _api(
+        "setWebhook",
+        {"url": url, "allowed_updates": ["message", "edited_message"]},
+    )
+
+
+def post_channel_welcome(chat_id: str, *, force: bool = False) -> dict[str, Any]:
+    state = _load_state()
+    key = f"channel_welcome_{chat_id}"
+    if state.get(key) and not force:
+        return {"skipped": "channel_welcome_already_sent", "chat": chat_id}
+
+    sent = send_message(chat_id, CHANNEL_WELCOME)
+    result: dict[str, Any] = {"chat": chat_id, "send": sent.get("ok"), "pinned": False}
+    if not sent.get("ok"):
+        result["error"] = sent.get("description", sent)
+        return result
+
+    msg_id = (sent.get("result") or {}).get("message_id")
+    if msg_id:
+        pin = pin_message(chat_id, int(msg_id))
+        result["pinned"] = pin.get("ok", False)
+        if not pin.get("ok"):
+            result["pin_error"] = pin.get("description", pin)
+
+    state[key] = datetime.now(timezone.utc).isoformat()
+    _save_state(state)
+    return result
+
+
 def run_broadcast(force: bool = False) -> dict[str, Any]:
     state = _load_state()
     if state.get("launch_sent") and not force:
         return {"skipped": "launch_already_sent", "use": "TELEGRAM_MARKETING_FORCE=true"}
 
-    results: dict[str, Any] = {"targets": {}, "profile": setup_bot_profile()}
+    results: dict[str, Any] = {
+        "targets": {},
+        "profile": setup_bot_profile(),
+        "webhook": setup_webhook(),
+        "channel_welcome": {},
+    }
     for chat in _broadcast_targets():
+        results["channel_welcome"][chat] = post_channel_welcome(chat, force=force)
         launch = send_message(chat, LAUNCH_MESSAGE)
         quest = send_message(chat, QUEST_MESSAGE)
         results["targets"][chat] = {"launch": launch.get("ok"), "quest": quest.get("ok"), "errors": []}

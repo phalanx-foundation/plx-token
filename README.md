@@ -270,7 +270,8 @@ The fastest way to evaluate Phalanx is to read the code yourself. Every contract
 
 - **GitHub**: [github.com/phalanx-foundation/plx-token](https://github.com/phalanx-foundation/plx-token) — code contributions via Pull Request. The Issues tab is intentionally disabled at this stage to prevent impersonation; we will re-enable it alongside a community moderation policy when the toolkit MVP launches.
 - **Email**: `ops@plx.foundation` (Cloudflare Email Routing — configure forwarding in dashboard).
-- **Telegram**: official announcement and support channels will launch alongside mainnet in Q2 2026; the official handles will be published here and signed by the same GPG key used to sign commits.
+- **Telegram channel**: [@phalanxfoundation](https://t.me/phalanxfoundation) — announcements, builder quest, listing updates.
+- **Telegram bot**: [@phalanxfoundationbot](https://t.me/phalanxfoundationbot) — `/start`, `/site`, `/swap`, `/price`, `/quest`.
 - **Discord**: planned for Q3 2026 alongside the Tokenization Toolkit MVP.
 
 We do not solicit DMs from unknown senders, and we will **never** ask you to send tokens or share private keys. Any communication claiming to be from Phalanx Foundation outside the channels above should be treated as a phishing attempt.
