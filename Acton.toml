@@ -27,6 +27,16 @@ display-name = "PaymentSplitter"
 src = "contracts/PaymentSplitter.tolk"
 depends = ["JettonWallet"]
 
+[contracts.PlxLockVault]
+display-name = "PlxLockVault"
+src = "contracts/PlxLockVault.tolk"
+depends = ["JettonWallet"]
+
+[contracts.PlxStaking]
+display-name = "PlxStaking"
+src = "contracts/PlxStaking.tolk"
+depends = ["JettonWallet"]
+
 [test]
 
 [fmt]
@@ -46,6 +56,14 @@ claim-vesting-testnet = "acton script scripts/claim-vesting.tolk --net testnet"
 claim-vesting-mainnet = "acton script scripts/claim-vesting.tolk --net mainnet"
 buyback-burn-testnet = "acton script scripts/buyback-burn.tolk --net testnet"
 buyback-burn-mainnet = "acton script scripts/buyback-burn.tolk --net mainnet"
+treasury-sweep-emulation = "acton script scripts/treasury-sweep.tolk"
+treasury-sweep-testnet = "acton script scripts/treasury-sweep.tolk --net testnet"
+treasury-sweep-mainnet = "bash scripts/treasury-sweep.sh"
+plx-treasury-sweep-emulation = "acton script scripts/plx-treasury-jetton-sweep.tolk"
+plx-treasury-sweep-testnet = "bash scripts/plx-treasury-jetton-sweep.sh"
+plx-treasury-sweep-mainnet = "bash scripts/plx-treasury-jetton-sweep.sh"
+buyback-process-queue = "bash scripts/process-buyback-queue.sh"
+stonfi-lp-add = "bash scripts/stonfi-add-liquidity.sh"
 drop-admin-testnet = "acton script scripts/drop-admin.tolk --net testnet"
 drop-admin-mainnet = "acton script scripts/drop-admin.tolk --net mainnet"
 info-distribution-testnet = "acton script scripts/info-distribution.tolk --net testnet"
