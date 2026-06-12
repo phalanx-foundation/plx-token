@@ -17,7 +17,7 @@ Single checklist for **Phalanx (PLX)** discoverability after mainnet LP. Update 
 | A1 | Tonkeeper ton-assets | https://github.com/tonkeeper/ton-assets/pull/5540 | YAML + metadata | **OPEN** — wait merge | PR from `phalanx-foundation` |
 | A2 | TonAPI verification | `curl tonapi.io/v2/jettons/{minter}` | ton-assets merge | **graylist** | After merge → `whitelist` |
 | A3 | Ston.fi pool | https://app.ston.fi/pools/EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq | LP seeded | **Live** | Tx `9eb42e70…` |
-| A4 | DexScreener pair | https://dexscreener.com/ton/eqam-5hxqpfql8_lqyvax4aeps9lxp6re8afr35hcfrpyztq | Pool live | **Indexed** | See [`DEXSCREENER-PROFILE.md`](DEXSCREENER-PROFILE.md) |
+| A4 | DexScreener pair | https://dexscreener.com/ton/eqam-5hxqpfql8_lqyvax4aeps9lxp6re8afr35hcfrpyztq | Pool live + min TVL | **De-indexed** (2026-06-12) | Re-index auto after deepen + organic swaps |
 | A5 | DexScreener token profile | https://docs.dexscreener.com/token-listing | Logo + links | **TODO** | Boost optional (paid) |
 
 ---
@@ -49,6 +49,7 @@ Single checklist for **Phalanx (PLX)** discoverability after mainnet LP. Update 
 |---|----------|------------|------|--------|----------|
 | D1 | TON Console | https://tonconsole.com | Product + TonAPI key | **Key in `.env`** | [`TON-CONSOLE-PLX.md`](TON-CONSOLE-PLX.md) — infra, not listing |
 | D2 | tApps Center | https://ton.org/dev/opportunities/tapps-listing | Mini App demo | **TODO** | [`TAPPS-TON-FOUNDATION.md`](TAPPS-TON-FOUNDATION.md) |
+| D2b | Entertainment spin-off | Brand terpisah | WL casino + quest | **PLAN** | [`PLX-ENTERTAINMENT-AND-GAME-SUPPLY-PLAN.md`](PLX-ENTERTAINMENT-AND-GAME-SUPPLY-PLAN.md) |
 | D3 | tonscan apps | https://t.me/SubmitAppBot | Public app URL | **TODO** | After Mini App |
 | D4 | TON Foundation grants | https://ton.org / opportunities | Pitch + live product | **TODO** | Same doc |
 
@@ -70,6 +71,7 @@ Single checklist for **Phalanx (PLX)** discoverability after mainnet LP. Update 
 | **`scripts/plx-listing-automation.py`** | **Agent cron — checks + Telegram + PR nudge** ([`LISTING-AUTOMATION.md`](LISTING-AUTOMATION.md)) |
 | `scripts/plx-dex-dashboard.py` | Price + swap snapshot |
 | `scripts/plx-branding-swap.py` | Disclosed micro-MM (post-whitelist) |
+| [`docs/TELEGRAM-PROMO-TARGETS.md`](TELEGRAM-PROMO-TARGETS.md) | Curated TG channels/groups for outreach |
 | `scripts/lib/stonfi_swap.py` | Ston.fi simulate + queue |
 | `scripts/stonfi-swap/` | Node executor (`npm install` on Acton server) |
 
@@ -80,7 +82,7 @@ Single checklist for **Phalanx (PLX)** discoverability after mainnet LP. Update 
 1. A1 merge → A2 whitelist  
 2. A4/A5 DexScreener surface + deploy `plx.foundation` price chip  
 3. B1–B3 Tonscan + DYOR + Tonviewer  
-4. Organic quest [`TELEGRAM-QUEST-SWAPS.md`](TELEGRAM-QUEST-SWAPS.md)  
+4. Organic quest [`TELEGRAM-QUEST-SWAPS.md`](TELEGRAM-QUEST-SWAPS.md) + [`PLX-AIRDROP-AND-RETENTION-CAMPAIGN.md`](PLX-AIRDROP-AND-RETENTION-CAMPAIGN.md)  
 5. C1 CoinGecko when LP ≥ ~$5k recommended  
 6. C2 CMC when volume supports  
 7. D2–D4 when Mini App ready  

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PLX Market Dashboard</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #121820;
+      --border: #1e2a38;
+      --text: #e8eef5;
+      --muted: #8b9bb4;
+      --accent: #3d9eff;
+      --buy: #22c55e;
+      --sell: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    h1 { margin: 0; font-size: 1.25rem; }
+    .links a {
+      color: var(--accent);
+      margin-right: 1rem;
+      text-decoration: none;
+    }
+    .links a:hover { text-decoration: underline; }
+    main { padding: 1rem 1.5rem 2rem; max-width: 1200px; margin: 0 auto; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+    }
+    .card .label { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .card .value { font-size: 1.15rem; font-weight: 600; margin-top: 0.25rem; }
+    .chart-wrap {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      background: var(--card);
+    }
+    iframe { width: 100%; height: 480px; border: 0; display: block; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    th, td {
+      padding: 0.55rem 0.65rem;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+    th { color: var(--muted); font-weight: 500; }
+    .side-buy { color: var(--buy); }
+    .side-sell { color: var(--sell); }
+    .muted { color: var(--muted); font-size: 0.8rem; }
+    .refresh { color: var(--muted); font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PLX / TON — Phalanx Market</h1>
+    <div class="links">
+      <a href="https://dexscreener.com/ton/eqam-5hxqpfql8_lqyvax4aeps9lxp6re8afr35hcfrpyztq" target="_blank" rel="noopener">DexScreener</a>
+      <a href="https://app.ston.fi/pools/EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq" target="_blank" rel="noopener">Ston.fi Pool</a>
+      <a href="https://tonviewer.com/EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq" target="_blank" rel="noopener">Tonviewer</a>
+    </div>
+  </header>
+  <main>
+    <p class="refresh" id="meta">Loading…</p>
+    <div class="grid" id="stats"></div>
+    <div class="chart-wrap">
+      <iframe src="https://dexscreener.com/ton/eqam-5hxqpfql8_lqyvax4aeps9lxp6re8afr35hcfrpyztq?embed=1&theme=dark&trades=1&info=0" title="PLX chart"></iframe>
+    </div>
+    <h2>Recent swaps (pool)</h2>
+    <p class="muted">Buy = someone spent TON to receive PLX. Sell = someone sold PLX for TON.</p>
+    <div class="card" style="padding:0; overflow:hidden;">
+      <table>
+        <thead>
+          <tr>
+            <th>Side</th>
+            <th>PLX</th>
+            <th>TON</th>
+            <th>Maker</th>
+            <th>Tx</th>
+          </tr>
+        </thead>
+        <tbody id="swaps"></tbody>
+      </table>
+    </div>
+  </main>
+  <script id="snapshot" type="application/json">{
+  "generated_at": "2026-06-12T10:05:26.764880+00:00",
+  "pool_address": "EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq",
+  "minter_address": "EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS",
+  "dexscreener_url": "https://dexscreener.com/ton/eqam-5hxqpfql8_lqyvax4aeps9lxp6re8afr35hcfrpyztq",
+  "stonfi_pool_url": "https://app.ston.fi/pools/EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq",
+  "tonviewer_pool_url": "https://tonviewer.com/EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq",
+  "price": {
+    "ton_per_plx": null,
+    "usd_per_plx": null,
+    "fdv_usd": null,
+    "liquidity_usd": null
+  },
+  "volume_usd": {},
+  "txns": {},
+  "price_change_pct": {},
+  "reserves": {
+    "plx": "96498525868138",
+    "ton": "9650737396",
+    "plx_human": 96498.525868138,
+    "ton_human": 9.650737396
+  },
+  "recent_swaps": [],
+  "swap_count_24h": 0
+}</script>
+  <script>
+    const POOL = "EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq";
+    const DEX_URL = "https://api.dexscreener.com/latest/dex/pairs/ton/" + POOL;
+
+    function fmtUsd(n) {
+      if (n == null) return "—";
+      const x = Number(n);
+      if (Number.isNaN(x)) return n;
+      if (x < 0.01) return "$" + x.toFixed(6);
+      return "$" + x.toLocaleString(undefined, { maximumFractionDigits: 2 });
+    }
+
+    function card(label, value) {
+      return `<div class="card"><div class="label">${label}</div><div class="value">${value}</div></div>`;
+    }
+
+    function renderStats(snap, live) {
+      const p = live?.priceNative ? live : null;
+      const priceTon = p?.priceNative ?? snap.price?.ton_per_plx ?? "—";
+      const priceUsd = p?.priceUsd ?? snap.price?.usd_per_plx ?? "—";
+      const fdv = p?.fdv ?? snap.price?.fdv_usd;
+      const liq = p?.liquidity?.usd ?? snap.price?.liquidity_usd;
+      const vol = p?.volume?.h24 ?? snap.volume_usd?.h24;
+      const buys = p?.txns?.h24?.buys ?? snap.txns?.h24?.buys ?? 0;
+      const sells = p?.txns?.h24?.sells ?? snap.txns?.h24?.sells ?? 0;
+      const chg = p?.priceChange?.h24 ?? snap.price_change_pct?.h24;
+
+      document.getElementById("stats").innerHTML = [
+        card("Price (TON)", priceTon),
+        card("Price (USD)", fmtUsd(priceUsd)),
+        card("FDV", fmtUsd(fdv)),
+        card("Liquidity", fmtUsd(liq)),
+        card("24h Volume", fmtUsd(vol)),
+        card("24h Buys / Sells", `${buys} / ${sells}`),
+        card("24h Change", chg != null ? `${Number(chg).toFixed(2)}%` : "—"),
+        card("Pool swaps (24h)", snap.swap_count_24h ?? "—"),
+      ].join("");
+    }
+
+    function renderSwaps(swaps) {
+      const rows = (swaps || []).map(s => {
+        const side = s.side || "?";
+        const cls = side === "buy" ? "side-buy" : side === "sell" ? "side-sell" : "";
+        const shortMaker = s.maker ? s.maker.slice(0, 6) + "…" + s.maker.slice(-4) : "—";
+        const tx = s.txn_id ? `<a href="${s.tonviewer}" target="_blank" rel="noopener">${s.txn_id.slice(0, 10)}…</a>` : "—";
+        return `<tr><td class="${cls}">${side}</td><td>${s.plx_amount || "—"}</td><td>${s.ton_amount || "—"}</td><td class="muted">${shortMaker}</td><td>${tx}</td></tr>`;
+      }).join("");
+      document.getElementById("swaps").innerHTML = rows || "<tr><td colspan=5 class=muted>No swaps in last 24h window</td></tr>";
+    }
+
+    async function refresh() {
+      const snap = JSON.parse(document.getElementById("snapshot").textContent);
+      let live = null;
+      try {
+        const r = await fetch(DEX_URL);
+        const j = await r.json();
+        live = j.pair || (j.pairs && j.pairs[0]);
+      } catch (_) {}
+      renderStats(snap, live);
+      renderSwaps(snap.recent_swaps);
+      document.getElementById("meta").textContent =
+        `Snapshot: ${snap.generated_at} · Live refresh: ${new Date().toISOString()} · Run: python3 scripts/plx-dex-dashboard.py --write`;
+    }
+
+    refresh();
+    setInterval(refresh, 60000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "checked_at": "2026-06-12T10:15:00+00:00",
+  "verification": "graylist",
+  "is_scam": false,
+  "holders_count": 6,
+  "ton_assets_pr": 5540,
+  "pr_state": "OPEN",
+  "pr_url": "https://github.com/tonkeeper/ton-assets/pull/5540",
+  "mergeable": true,
+  "ci": "source-syntax-check PASS",
+  "last_nudge": "2026-06-12 comment on PR #5540",
+  "success_criteria": "verification=whitelist after maintainer merge + 15-60 min cache"
+}

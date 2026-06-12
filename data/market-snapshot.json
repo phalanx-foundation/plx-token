@@ -1,0 +1,25 @@
+{
+  "generated_at": "2026-06-12T10:05:26.764880+00:00",
+  "pool_address": "EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq",
+  "minter_address": "EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS",
+  "dexscreener_url": "https://dexscreener.com/ton/eqam-5hxqpfql8_lqyvax4aeps9lxp6re8afr35hcfrpyztq",
+  "stonfi_pool_url": "https://app.ston.fi/pools/EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq",
+  "tonviewer_pool_url": "https://tonviewer.com/EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq",
+  "price": {
+    "ton_per_plx": null,
+    "usd_per_plx": null,
+    "fdv_usd": null,
+    "liquidity_usd": null
+  },
+  "volume_usd": {},
+  "txns": {},
+  "price_change_pct": {},
+  "reserves": {
+    "plx": "96498525868138",
+    "ton": "9650737396",
+    "plx_human": 96498.525868138,
+    "ton_human": 9.650737396
+  },
+  "recent_swaps": [],
+  "swap_count_24h": 0
+}

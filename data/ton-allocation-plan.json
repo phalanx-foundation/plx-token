@@ -1,0 +1,39 @@
+{
+  "updated_at": "2026-06-12T10:15:00+00:00",
+  "source_wallet": "plx-lp",
+  "source_address": "EQAiQ41f7R5qzKsoimbujtYdy0bRKW_7Fb0rV5Z4Lw6gr3zH",
+  "starting_ton": 16.106,
+  "current_lp_ton": 13.104,
+  "community_ton": 3.05,
+  "plan": {
+    "A_lp_deepen": {
+      "ton": 10.35,
+      "executor": "operator_dashboard",
+      "status": "pending_user_dashboard",
+      "target_pool_ton": 20,
+      "notes": "Simulate -> Add liquidity; Historygram checkpoint"
+    },
+    "B_pioneer_gas": {
+      "ton": 3.0,
+      "destination_wallet": "plx-community-mainnet",
+      "destination_address": "EQD1XDv0Awjx0GUVv6YQYYnvEmjcKJ9iEBjvtHPM2nWML-q9",
+      "script": "scripts/transfer-lp-gas-to-community.sh",
+      "status": "completed",
+      "tx_note": "3 TON sent via send-ton.tolk TON_AMOUNT_NANO=3000000000 (2026-06-12)"
+    },
+    "C_demand_float": {
+      "ton": 2.0,
+      "purpose": "quest_swap_incentives_real_participants_only",
+      "status": "reserved"
+    },
+    "D_ops_buffer": {
+      "ton": 6.0,
+      "purpose": "gas_contingency_listing_optional_paid",
+      "status": "reserved_after_ab",
+      "notes": "Actual remainder after A+B; do not seed DeDust"
+    }
+  },
+  "plx_hold_minimum": 25000,
+  "dexscreener_reindex": "automatic_after_tvl_and_real_swaps",
+  "tonkeeper_pr": "https://github.com/tonkeeper/ton-assets/pull/5540"
+}

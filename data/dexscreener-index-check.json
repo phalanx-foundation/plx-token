@@ -1,0 +1,9 @@
+{
+  "checked_at": "2026-06-12T10:15:00+00:00",
+  "minter": "EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS",
+  "pool": "EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq",
+  "token_pairs_count": 0,
+  "pair_direct": null,
+  "status": "de_indexed",
+  "remediation": "Deepen LP (~10.35 TON via dashboard) + organic swaps; no manual submit required"
+}
