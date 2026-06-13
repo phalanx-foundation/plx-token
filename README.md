@@ -228,6 +228,24 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the production checklist.
 
 ---
 
+## Deploy with Phalanx Toolkit (no-code Jetton)
+
+These contracts power **[Phalanx Toolkit](https://plx.foundation)** — a browser-based Web3 crypto tokenization deployer on the TON/GRAM Blockchain. You do **not** need to fork this repo or run deploy scripts manually if you want a standard audited Jetton:
+
+| Resource | URL |
+|----------|-----|
+| **Create your own token (step-by-step guide)** | https://plx.foundation/guides/create-token |
+| Product home | https://plx.foundation |
+| Pricing (testnet free tier) | https://plx.foundation/pricing |
+| Pre-deploy checklist | https://plx.foundation/prepare |
+| Reference Jetton (PLX) | https://plx.foundation/plx-token |
+
+**Workflow:** sign in → pick tier → customize metadata → pay (or TestnetFree) → sign with Tonkeeper via TON Connect → receive Tonviewer link and audit packet.
+
+**For developers:** this repository remains the source of truth for `JettonMinter`, `JettonWallet`, and `TeamVesting`. Phalanx Toolkit deploys the same audited Tolk bytecode via Acton. Clone and test here; deploy through the toolkit for production wizard, payments, and dashboard.
+
+---
+
 ## Differentiation & Long-Term Defensibility
 
 The TON ecosystem currently lacks a professional, audited tokenomics-as-a-service offering. Most projects launch tokens by forking unmaintained reference code, modifying it without formal review, and deploying by hand — a pattern that has caused real losses on other chains. Phalanx Foundation enters this gap as a **first mover** with three durable advantages: a contract library that is deeply tested on testnet (60+ tests passing), a foundation operating model designed for long-term independence rather than quick exits, and a token economy where revenue flows back to holders through buyback-and-burn instead of diluting them. These are not promises; they are mechanisms encoded in smart contracts that anyone can verify.
