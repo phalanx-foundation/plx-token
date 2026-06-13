@@ -1,21 +1,323 @@
-import "@stdlib/assert"
-import "@stdlib/test"
-import "@gen/PlxLockVault.code"
-import "@gen/PlxStaking.code"
+import "@acton/emulation/network"
+import "@acton/emulation/testing"
+import "@acton/testing/expect"
 
-test "PlxLockVault deploys with empty storage" {
-    val lockCode = plxLockVaultCompiledCode();
-    val stakingCode = plxStakingCompiledCode();
-    assert(lockCode.hash() != 0);
-    assert(stakingCode.hash() != 0);
+import "@contracts/PlxLockVault"
+import "@contracts/PlxStaking"
+import "@contracts/errors"
+import "@contracts/messages"
+import "@contracts/storage"
+import "@wrappers/JettonMinter.gen"
+import "@wrappers/PlxLockVault.gen"
+import "@wrappers/PlxStaking.gen"
+import "@wrappers/utils"
+
+import "test-utils"
+
+const ONE_MONTH_SEC = 2592000
+const SECONDS_PER_YEAR = 31536000
+const THREE_MONTH_SEC = 7776000
+const SIX_MONTH_SEC = 15552000
+const PLX_UNIT = 1000000000
+const MIN_LOCK = 25000 * PLX_UNIT
+const SOVEREIGN_MIN = 1000000 * PLX_UNIT
+const REWARD_FUND = 500000 * PLX_UNIT
+
+fun makeLockDepositPayload(tierIndex: int, sovereign: bool = false): slice {
+    return beginCell()
+        .storeUint(0x4c4f434b01, 32)
+        .storeUint(tierIndex, 8)
+        .storeUint(sovereign ? 1 : 0, 1)
+        .endCell()
+        .beginParse();
 }
 
-test "Lock tier bonus bps within range" {
-    val bonusBps: int = 6000;
-    assert(bonusBps <= 10000);
+fun makeRewardPoolPayload(op: int): slice {
+    return beginCell().storeUint(op, 32).endCell().beginParse();
 }
 
-test "Staking APR bps default 800" {
-    val aprBps: int = 800;
-    assert(aprBps > 0);
+fun setupLockVault(): (JettonMinter, PlxLockVault, Treasury, Treasury) {
+    val deployer = testing.treasury("lock-deployer");
+    val user = testing.treasury("lock-user");
+    testing.setNow(1700000000);
+
+    val minter = JettonMinter.fromStorage({
+        totalSupply: 0,
+        adminAddress: deployer.address,
+        nextAdminAddress: null,
+        metadata: buildTestMetadata("plx-lock-test"),
+    });
+    expect(minter.sendDeploy(deployer.address, { value: ton("10") })).toHaveSuccessfulDeploy({
+        to: minter.address,
+    });
+
+    val config: LockVaultConfig = {
+        admin: deployer.address,
+        minterAddress: minter.address,
+        tierCount: 4,
+        tier0: LockTier { durationSec: 604800, bonusBps: 50 },
+        tier1: LockTier { durationSec: ONE_MONTH_SEC, bonusBps: 200 },
+        tier2: LockTier { durationSec: THREE_MONTH_SEC, bonusBps: 800 },
+        tier3: LockTier { durationSec: SIX_MONTH_SEC, bonusBps: 2000 },
+        eventEndAt: 0,
+        minLockAmount: MIN_LOCK,
+        sovereignMinAmount: SOVEREIGN_MIN,
+    };
+
+    val vault = PlxLockVault.fromStorage({
+        config: config.toCell(),
+        nextPositionId: 0,
+        totalLocked: 0,
+        rewardPool: 0,
+        positions: [],
+    });
+    expect(vault.sendDeploy(deployer.address, { value: ton("5") })).toHaveSuccessfulDeploy({
+        to: vault.address,
+    });
+
+    expect(
+        minter.sendMint(deployer.address, user.address, MIN_LOCK * 100, ton("0.05"), ton("0.5")),
+    ).toHaveSuccessfulTx<MintNewJettons>({ from: deployer.address, to: minter.address });
+
+    return (minter, vault, deployer, user);
 }
+
+fun userLocksToVault(
+    minter: JettonMinter,
+    vault: PlxLockVault,
+    user: Treasury,
+    amount: coins,
+    tierIndex: int,
+    sovereign: bool = false,
+): SendResultList {
+    val userWallet = userWallet(minter, user.address);
+    val body = AskToTransfer {
+        queryId: 0,
+        jettonAmount: amount,
+        transferRecipient: vault.address,
+        sendExcessesTo: user.address,
+        customPayload: null,
+        forwardTonAmount: 100000000,
+        forwardPayload: makeLockDepositPayload(tierIndex, sovereign),
+    };
+    return sendRawTransferPayload(user.address, userWallet.address, body.toCell(), 400000000);
+}
+
+fun fundVaultRewardPool(
+    minter: JettonMinter,
+    vault: PlxLockVault,
+    from: Treasury,
+    amount: coins,
+): SendResultList {
+    val wallet = userWallet(minter, from.address);
+    val body = AskToTransfer {
+        queryId: 0,
+        jettonAmount: amount,
+        transferRecipient: vault.address,
+        sendExcessesTo: from.address,
+        customPayload: null,
+        forwardTonAmount: 100000000,
+        forwardPayload: makeRewardPoolPayload(0x4c4f434b06),
+    };
+    return sendRawTransferPayload(from.address, wallet.address, body.toCell(), 400000000);
+}
+
+fun fundStakingRewardPool(
+    minter: JettonMinter,
+    staking: PlxStaking,
+    from: Treasury,
+    amount: coins,
+): SendResultList {
+    val wallet = userWallet(minter, from.address);
+    val body = AskToTransfer {
+        queryId: 0,
+        jettonAmount: amount,
+        transferRecipient: staking.address,
+        sendExcessesTo: from.address,
+        customPayload: null,
+        forwardTonAmount: 100000000,
+        forwardPayload: makeRewardPoolPayload(0x5354414b06),
+    };
+    return sendRawTransferPayload(from.address, wallet.address, body.toCell(), 400000000);
+}
+
+get fun `test lock vault: deploy and lock creates position`() {
+    val (minter, vault, deployer, user) = setupLockVault();
+    fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+
+    val res = userLocksToVault(minter, vault, user, MIN_LOCK, 1);
+    expect(res).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: vault.address });
+
+    val (nextId, totalLocked, rewardPool, _) = vault.getLockVaultData();
+    expect(nextId).toEqual(1);
+    expect(totalLocked).toEqual(MIN_LOCK);
+    expect(rewardPool).toEqual(REWARD_FUND);
+}
+
+get fun `test lock vault: layered positions have independent unlock`() {
+    val (minter, vault, deployer, user) = setupLockVault();
+    fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+
+    userLocksToVault(minter, vault, user, MIN_LOCK, 1);
+    testing.setNow(1700000000 + ONE_MONTH_SEC / 2);
+    userLocksToVault(minter, vault, user, MIN_LOCK * 2, 2);
+
+    val (nextId, totalLocked, _, _) = vault.getLockVaultData();
+    expect(nextId).toEqual(2);
+    expect(totalLocked).toEqual(MIN_LOCK * 3);
+
+    val pos0 = vault.getPosition(0)!.load();
+    val pos1 = vault.getPosition(1)!.load();
+    expect(pos0.unlockAt).toEqual(1700000000 + ONE_MONTH_SEC);
+    expect(pos1.unlockAt).toEqual(1700000000 + ONE_MONTH_SEC / 2 + THREE_MONTH_SEC);
+}
+
+get fun `test lock vault: early claim rejected`() {
+    val (minter, vault, deployer, user) = setupLockVault();
+    fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    userLocksToVault(minter, vault, user, MIN_LOCK, 1);
+
+    val res = vault.sendReleaseLock(user.address, 0, 0, { bounce: false, value: ton("0.2") });
+    expect(res).toHaveFailedTx<ReleaseLock>({ from: user.address, to: vault.address });
+}
+
+get fun `test lock vault: maturity claim returns principal and bonus`() {
+    val (minter, vault, deployer, user) = setupLockVault();
+    fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    userLocksToVault(minter, vault, user, MIN_LOCK, 1);
+
+    testing.setNow(1700000000 + ONE_MONTH_SEC + 1);
+    val res = vault.sendReleaseLock(user.address, 0, 0, { bounce: false, value: ton("0.2") });
+    expect(res).toHaveSuccessfulTx<ReleaseLock>({ from: user.address, to: vault.address });
+
+    val pos = vault.getPosition(0)!.load();
+    expect(pos.released).toEqual(true);
+}
+
+get fun `test lock vault: event end before maturity forfeits bonus`() {
+    val (minter, vault, deployer, user) = setupLockVault();
+    fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    userLocksToVault(minter, vault, user, MIN_LOCK, 2);
+
+    vault.sendSetEventEnd(deployer.address, 0, 1700000000 + ONE_MONTH_SEC, {
+        bounce: false,
+        value: ton("0.1"),
+    });
+
+    testing.setNow(1700000000 + THREE_MONTH_SEC + 1);
+    val before = vault.getLockVaultData();
+    val res = vault.sendReleaseLock(user.address, 0, 0, { bounce: false, value: ton("0.2") });
+    expect(res).toHaveSuccessfulTx<ReleaseLock>({ from: user.address, to: vault.address });
+    val after = vault.getLockVaultData();
+    expect(after.rewardPool).toEqual(before.rewardPool);
+}
+
+get fun `test lock vault: unauthorized claim rejected`() {
+    val (minter, vault, deployer, user) = setupLockVault();
+    fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    userLocksToVault(minter, vault, user, MIN_LOCK, 1);
+    testing.setNow(1700000000 + ONE_MONTH_SEC + 1);
+
+    val res = vault.sendReleaseLock(deployer.address, 0, 0, { bounce: false, value: ton("0.2") });
+    expect(res).toHaveFailedTx<ReleaseLock>({ from: deployer.address, to: vault.address });
+}
+
+fun setupStaking(): (JettonMinter, PlxStaking, Treasury, Treasury) {
+    val deployer = testing.treasury("stake-deployer");
+    val user = testing.treasury("stake-user");
+    testing.setNow(1700000000);
+
+    val minter = JettonMinter.fromStorage({
+        totalSupply: 0,
+        adminAddress: deployer.address,
+        nextAdminAddress: null,
+        metadata: buildTestMetadata("plx-stake-test"),
+    });
+    expect(minter.sendDeploy(deployer.address, { value: ton("10") })).toHaveSuccessfulDeploy({
+        to: minter.address,
+    });
+
+    val config: StakingConfig = {
+        admin: deployer.address,
+        minterAddress: minter.address,
+        aprBps: 800,
+        minLockSec: ONE_MONTH_SEC,
+    };
+
+    val staking = PlxStaking.fromStorage({
+        config: config.toCell(),
+        totalStaked: 0,
+        rewardPerTokenStored: 0,
+        lastUpdateTime: 1700000000,
+        rewardPool: 0,
+        nextStakeId: 0,
+        stakes: [],
+    });
+    expect(staking.sendDeploy(deployer.address, { value: ton("5") })).toHaveSuccessfulDeploy({
+        to: staking.address,
+    });
+
+    expect(
+        minter.sendMint(deployer.address, user.address, MIN_LOCK * 100, ton("0.05"), ton("0.5")),
+    ).toHaveSuccessfulTx<MintNewJettons>({ from: deployer.address, to: minter.address });
+
+    return (minter, staking, deployer, user);
+}
+
+fun makeStakeDepositPayload(lockSec: int): slice {
+    return beginCell().storeUint(0x5354414b01, 32).storeUint(lockSec, 32).endCell().beginParse();
+}
+
+fun userStakesToContract(
+    minter: JettonMinter,
+    staking: PlxStaking,
+    user: Treasury,
+    amount: coins,
+    lockSec: int,
+): SendResultList {
+    val userWallet = userWallet(minter, user.address);
+    val body = AskToTransfer {
+        queryId: 0,
+        jettonAmount: amount,
+        transferRecipient: staking.address,
+        sendExcessesTo: user.address,
+        customPayload: null,
+        forwardTonAmount: 100000000,
+        forwardPayload: makeStakeDepositPayload(lockSec),
+    };
+    return sendRawTransferPayload(user.address, userWallet.address, body.toCell(), 400000000);
+}
+
+get fun `test staking: deposit increases totalStaked`() {
+    val (minter, staking, deployer, user) = setupStaking();
+    fundStakingRewardPool(minter, staking, deployer, REWARD_FUND);
+
+    val res = userStakesToContract(minter, staking, user, MIN_LOCK, ONE_MONTH_SEC);
+    expect(res).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: staking.address });
+
+    val (totalStaked, _, _, _, nextId) = staking.getStakingData();
+    expect(totalStaked).toEqual(MIN_LOCK);
+    expect(nextId).toEqual(1);
+}
+
+get fun `test staking: early unstake rejected`() {
+    val (minter, staking, deployer, user) = setupStaking();
+    userStakesToContract(minter, staking, user, MIN_LOCK, ONE_MONTH_SEC);
+
+    val res = staking.sendUnstakePlx(user.address, 0, 0, { bounce: false, value: ton("0.2") });
+    expect(res).toHaveFailedTx<UnstakePlx>({ from: user.address, to: staking.address });
+}
+
+get fun `test staking: unstake after lock period`() {
+    val (minter, staking, deployer, user) = setupStaking();
+    fundStakingRewardPool(minter, staking, deployer, REWARD_FUND);
+    userStakesToContract(minter, staking, user, MIN_LOCK, ONE_MONTH_SEC);
+
+    testing.setNow(1700000000 + ONE_MONTH_SEC + SECONDS_PER_YEAR / 2);
+    val res = staking.sendUnstakePlx(user.address, 0, 0, { bounce: false, value: ton("0.2") });
+    expect(res).toHaveSuccessfulTx<UnstakePlx>({ from: user.address, to: staking.address });
+
+    val stake = staking.getStake(0)!.load();
+    expect(stake.active).toEqual(false);
+}
+
