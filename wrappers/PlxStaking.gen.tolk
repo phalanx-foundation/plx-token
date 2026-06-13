@@ -114,12 +114,12 @@ fun PlxStaking.sendAny(self, from: address, body: cell, config: SendParams = {})
     return net.send(from, genericMsg);
 }
 
-fun PlxStaking.getStakingData(self): (coins, int, uint32, coins, uint64) {
+fun PlxStaking.getStakingData(self): (coins, uint64, uint32, coins, uint64) {
     return net.runGetMethod(self.address, "get_staking_data");
 }
 
 fun PlxStaking.getStake(self, stakeId: uint64): Cell<StakeRecord>? {
-    return net.runGetMethod(self.address, "get_stake", stakeId);
+    return net.runGetMethod(self.address, "get_stake", [stakeId]);
 }
 
 fun PlxStaking.getAprBps(self): uint32 {

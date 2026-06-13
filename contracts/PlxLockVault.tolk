@@ -85,8 +85,8 @@ type AllowedMessageToLockVault =
     | TopUpTons
 
 const LOCK_TRANSFER_VALUE = 80000000
-const LOCK_FORWARD_DEPOSIT_OP: uint32 = 0x4c4f434b01
-const LOCK_FORWARD_REWARD_POOL_OP: uint32 = 0x4c4f434b06
+const LOCK_FORWARD_DEPOSIT_OP: uint32 = 0x4f434b01
+const LOCK_FORWARD_REWARD_POOL_OP: uint32 = 0x4f434b06
 const SIX_MONTHS_SEC: uint32 = 15552000
 
 fun LockVaultStorage.load(): LockVaultStorage {
@@ -100,10 +100,6 @@ fun LockVaultStorage.save(self) {
 fun lockVaultOwnJettonWallet(minterAddress: address): address {
     val jettonWalletCode = jettonWalletCompiledCode();
     return calcAddressOfJettonWallet(contract.getAddress(), minterAddress, jettonWalletCode);
-}
-
-fun emptyForwardPayload(): slice {
-    return beginCell().storeUint(0, 1).toSlice();
 }
 
 fun parseLockForwardPayload(payload: ForwardPayloadRemainder): (uint8, bool, bool) {
@@ -200,7 +196,7 @@ fun onInternalMessage(in: InMessage) {
                 assert (tier.durationSec >= SIX_MONTHS_SEC) throw Errors.InvalidOp;
             }
 
-            val now = contract.getNow();
+            val now = blockchain.now();
             val positionId = storage.nextPositionId;
             val position: LockPositionOnChain = {
                 owner: msg.transferInitiator!,
@@ -221,13 +217,13 @@ fun onInternalMessage(in: InMessage) {
         ReleaseLock => {
             var storage = lazy LockVaultStorage.load();
             val config = storage.config.load();
-            val positionCell = storage.positions.get(msg.positionId);
-            assert (positionCell != null) throw Errors.InvalidOp;
+            val positionEntry = storage.positions.get(msg.positionId);
+            assert (positionEntry.isFound) throw Errors.InvalidOp;
 
-            var position = positionCell!.load();
+            var position = positionEntry.loadValue().load();
             assert (in.senderAddress == position.owner) throw Errors.NotOwner;
             assert (!position.released) throw Errors.InvalidOp;
-            assert (contract.getNow() >= position.unlockAt) throw Errors.NothingToClaim;
+            assert (blockchain.now() >= position.unlockAt) throw Errors.NothingToClaim;
 
             var bonus = 0;
             if (bonusEligible(position.unlockAt, config.eventEndAt)) {
@@ -253,7 +249,7 @@ fun onInternalMessage(in: InMessage) {
                     sendExcessesTo: in.senderAddress,
                     customPayload: null,
                     forwardTonAmount: 0,
-                    forwardPayload: emptyForwardPayload(),
+                    forwardPayload: jettonEmptyForwardPayload(),
                 },
             });
             transferMsg.send(SEND_MODE_PAY_FEES_SEPARATELY | SEND_MODE_BOUNCE_ON_ACTION_FAIL);
@@ -261,7 +257,7 @@ fun onInternalMessage(in: InMessage) {
 
         UpdateTiers => {
             var storage = lazy LockVaultStorage.load();
-            val config = storage.config.load();
+            var config = storage.config.load();
             assert (in.senderAddress == config.admin) throw Errors.NotOwner;
             assert (msg.tierCount > 0 && msg.tierCount <= 16) throw Errors.InvalidOp;
             config.tierCount = msg.tierCount;
@@ -275,7 +271,7 @@ fun onInternalMessage(in: InMessage) {
 
         SetEventEnd => {
             var storage = lazy LockVaultStorage.load();
-            val config = storage.config.load();
+            var config = storage.config.load();
             assert (in.senderAddress == config.admin) throw Errors.NotOwner;
             config.eventEndAt = msg.eventEndAt;
             storage.config = config.toCell();
@@ -284,7 +280,7 @@ fun onInternalMessage(in: InMessage) {
 
         SetMinAmounts => {
             var storage = lazy LockVaultStorage.load();
-            val config = storage.config.load();
+            var config = storage.config.load();
             assert (in.senderAddress == config.admin) throw Errors.NotOwner;
             config.minLockAmount = msg.minLockAmount;
             config.sovereignMinAmount = msg.sovereignMinAmount;
@@ -296,13 +292,17 @@ fun onInternalMessage(in: InMessage) {
     }
 }
 
-get fun getLockVaultData(): (uint64, coins, coins, uint32) {
+get fun get_lock_vault_data(): (uint64, coins, coins, uint32) {
     val storage = LockVaultStorage.load();
     val config = storage.config.load();
     return (storage.nextPositionId, storage.totalLocked, storage.rewardPool, config.eventEndAt);
 }
 
-get fun getPosition(positionId: uint64): Cell<LockPositionOnChain>? {
+get fun get_position(positionId: uint64): Cell<LockPositionOnChain>? {
     val storage = LockVaultStorage.load();
-    return storage.positions.get(positionId);
+    val entry = storage.positions.get(positionId);
+    if (!entry.isFound) {
+        return null;
+    }
+    return entry.loadValue();
 }

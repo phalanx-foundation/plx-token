@@ -27,3 +27,7 @@ fun calcAddressOfJettonWallet(
     val jwDeployed = calcDeployedJettonWallet(ownerAddress, minterAddress, jettonWalletCode);
     return jwDeployed.calculateAddress();
 }
+
+fun jettonEmptyForwardPayload(): slice {
+    return beginCell().storeUint(0, 1).toSlice();
+}

@@ -123,5 +123,5 @@ fun PlxLockVault.getLockVaultData(self): (uint64, coins, coins, uint32) {
 }
 
 fun PlxLockVault.getPosition(self, positionId: uint64): Cell<LockPositionOnChain>? {
-    return net.runGetMethod(self.address, "get_position", positionId);
+    return net.runGetMethod(self.address, "get_position", [positionId]);
 }

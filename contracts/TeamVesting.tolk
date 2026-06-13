@@ -71,10 +71,6 @@ fun ownJettonWalletAddress(minterAddress: address): address {
     return calcAddressOfJettonWallet(contract.getAddress(), minterAddress, jettonWalletCode);
 }
 
-fun emptyForwardPayload(): slice {
-    return beginCell().storeUint(0, 1).toSlice();
-}
-
 fun onBouncedMessage(in: InMessageBounced) {
     in.bouncedBody.skipBouncedPrefix();
 
@@ -124,7 +120,7 @@ fun onInternalMessage(in: InMessage) {
                     sendExcessesTo: in.senderAddress,
                     customPayload: null,
                     forwardTonAmount: 0,
-                    forwardPayload: emptyForwardPayload(),
+                    forwardPayload: jettonEmptyForwardPayload(),
                 },
             });
             transferMsg.send(SEND_MODE_PAY_FEES_SEPARATELY | SEND_MODE_BOUNCE_ON_ACTION_FAIL);
@@ -161,7 +157,7 @@ fun onInternalMessage(in: InMessage) {
                         sendExcessesTo: cfg.beneficiary,
                         customPayload: null,
                         forwardTonAmount: 0,
-                        forwardPayload: emptyForwardPayload(),
+                        forwardPayload: jettonEmptyForwardPayload(),
                     },
                 });
                 msgB.send(SEND_MODE_PAY_FEES_SEPARATELY);
@@ -179,7 +175,7 @@ fun onInternalMessage(in: InMessage) {
                         sendExcessesTo: cfg.admin,
                         customPayload: null,
                         forwardTonAmount: 0,
-                        forwardPayload: emptyForwardPayload(),
+                        forwardPayload: jettonEmptyForwardPayload(),
                     },
                 });
                 msgA.send(SEND_MODE_PAY_FEES_SEPARATELY);

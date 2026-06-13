@@ -23,7 +23,7 @@ struct StakingConfig {
 struct StakeRecord {
     owner: address
     stakedAmount: coins
-    rewardDebt: int
+    rewardDebt: uint64
     stakedAt: uint32
     lockUntil: uint32
     active: bool
@@ -33,7 +33,7 @@ struct StakeRecord {
 struct StakingStorage {
     config: Cell<StakingConfig>
     totalStaked: coins
-    rewardPerTokenStored: int
+    rewardPerTokenStored: uint64
     lastUpdateTime: uint32
     rewardPool: coins
     nextStakeId: uint64
@@ -69,9 +69,9 @@ type AllowedMessageToStaking =
     | TopUpTons
 
 const STAKE_TRANSFER_VALUE = 80000000
-const STAKE_FORWARD_DEPOSIT_OP: uint32 = 0x5354414b01
-const STAKE_FORWARD_REWARD_POOL_OP: uint32 = 0x5354414b06
-const REWARD_SCALE: int = 1000000000000
+const STAKE_FORWARD_DEPOSIT_OP: uint32 = 0x54414b01
+const STAKE_FORWARD_REWARD_POOL_OP: uint32 = 0x54414b06
+const REWARD_SCALE: uint64 = 1000000000000
 const SECONDS_PER_YEAR: int = 31536000
 
 fun StakingStorage.load(): StakingStorage {
@@ -85,10 +85,6 @@ fun StakingStorage.save(self) {
 fun stakingOwnJettonWallet(minterAddress: address): address {
     val jettonWalletCode = jettonWalletCompiledCode();
     return calcAddressOfJettonWallet(contract.getAddress(), minterAddress, jettonWalletCode);
-}
-
-fun emptyForwardPayload(): slice {
-    return beginCell().storeUint(0, 1).toSlice();
 }
 
 fun parseStakeForwardPayload(payload: ForwardPayloadRemainder): (uint32, bool) {
@@ -108,7 +104,7 @@ fun parseStakeForwardPayload(payload: ForwardPayloadRemainder): (uint32, bool) {
 }
 
 fun accrueRewards(storage: StakingStorage, config: StakingConfig) {
-    val now = contract.getNow();
+    val now = blockchain.now();
     if (storage.totalStaked == 0 || now <= storage.lastUpdateTime) {
         storage.lastUpdateTime = now;
         return;
@@ -119,13 +115,12 @@ fun accrueRewards(storage: StakingStorage, config: StakingConfig) {
     storage.lastUpdateTime = now;
 }
 
-fun pendingReward(stake: StakeRecord, rewardPerTokenStored: int): coins {
+fun pendingReward(stake: StakeRecord, rewardPerTokenStored: uint64): coins {
     val accumulated = stake.stakedAmount * rewardPerTokenStored / REWARD_SCALE;
-    val pending = accumulated - stake.rewardDebt;
-    if (pending < 0) {
+    if (accumulated < stake.rewardDebt) {
         return 0;
     }
-    return pending;
+    return accumulated - stake.rewardDebt;
 }
 
 fun onBouncedMessage(in: InMessageBounced) {
@@ -176,7 +171,7 @@ fun onInternalMessage(in: InMessage) {
 
             accrueRewards(storage, config);
 
-            val now = contract.getNow();
+            val now = blockchain.now();
             val stakeId = storage.nextStakeId;
             val rewardDebt = incomingAmount * storage.rewardPerTokenStored / REWARD_SCALE;
             val stake: StakeRecord = {
@@ -197,13 +192,13 @@ fun onInternalMessage(in: InMessage) {
         UnstakePlx => {
             var storage = lazy StakingStorage.load();
             val config = storage.config.load();
-            val stakeCell = storage.stakes.get(msg.stakeId);
-            assert (stakeCell != null) throw Errors.InvalidOp;
+            val stakeEntry = storage.stakes.get(msg.stakeId);
+            assert (stakeEntry.isFound) throw Errors.InvalidOp;
 
-            var stake = stakeCell!.load();
+            var stake = stakeEntry.loadValue().load();
             assert (in.senderAddress == stake.owner) throw Errors.NotOwner;
             assert (stake.active) throw Errors.InvalidOp;
-            assert (contract.getNow() >= stake.lockUntil) throw Errors.NothingToClaim;
+            assert (blockchain.now() >= stake.lockUntil) throw Errors.NothingToClaim;
 
             accrueRewards(storage, config);
             val pending = pendingReward(stake, storage.rewardPerTokenStored);
@@ -227,7 +222,7 @@ fun onInternalMessage(in: InMessage) {
                     sendExcessesTo: in.senderAddress,
                     customPayload: null,
                     forwardTonAmount: 0,
-                    forwardPayload: emptyForwardPayload(),
+                    forwardPayload: jettonEmptyForwardPayload(),
                 },
             });
             transferMsg.send(SEND_MODE_PAY_FEES_SEPARATELY | SEND_MODE_BOUNCE_ON_ACTION_FAIL);
@@ -236,10 +231,10 @@ fun onInternalMessage(in: InMessage) {
         ClaimRewards => {
             var storage = lazy StakingStorage.load();
             val config = storage.config.load();
-            val stakeCell = storage.stakes.get(msg.stakeId);
-            assert (stakeCell != null) throw Errors.InvalidOp;
+            val stakeEntry = storage.stakes.get(msg.stakeId);
+            assert (stakeEntry.isFound) throw Errors.InvalidOp;
 
-            var stake = stakeCell!.load();
+            var stake = stakeEntry.loadValue().load();
             assert (in.senderAddress == stake.owner) throw Errors.NotOwner;
             assert (stake.active) throw Errors.InvalidOp;
 
@@ -264,7 +259,7 @@ fun onInternalMessage(in: InMessage) {
                     sendExcessesTo: in.senderAddress,
                     customPayload: null,
                     forwardTonAmount: 0,
-                    forwardPayload: emptyForwardPayload(),
+                    forwardPayload: jettonEmptyForwardPayload(),
                 },
             });
             transferMsg.send(SEND_MODE_PAY_FEES_SEPARATELY | SEND_MODE_BOUNCE_ON_ACTION_FAIL);
@@ -272,7 +267,7 @@ fun onInternalMessage(in: InMessage) {
 
         UpdateApr => {
             var storage = lazy StakingStorage.load();
-            val config = storage.config.load();
+            var config = storage.config.load();
             assert (in.senderAddress == config.admin) throw Errors.NotOwner;
             accrueRewards(storage, config);
             config.aprBps = msg.aprBps;
@@ -282,7 +277,7 @@ fun onInternalMessage(in: InMessage) {
 
         SetMinLock => {
             var storage = lazy StakingStorage.load();
-            val config = storage.config.load();
+            var config = storage.config.load();
             assert (in.senderAddress == config.admin) throw Errors.NotOwner;
             config.minLockSec = msg.minLockSec;
             storage.config = config.toCell();
@@ -293,7 +288,7 @@ fun onInternalMessage(in: InMessage) {
     }
 }
 
-get fun getStakingData(): (coins, int, uint32, coins, uint64) {
+get fun get_staking_data(): (coins, uint64, uint32, coins, uint64) {
     val storage = StakingStorage.load();
     return (
         storage.totalStaked,
@@ -304,12 +299,16 @@ get fun getStakingData(): (coins, int, uint32, coins, uint64) {
     );
 }
 
-get fun getStake(stakeId: uint64): Cell<StakeRecord>? {
+get fun get_stake(stakeId: uint64): Cell<StakeRecord>? {
     val storage = StakingStorage.load();
-    return storage.stakes.get(stakeId);
+    val entry = storage.stakes.get(stakeId);
+    if (!entry.isFound) {
+        return null;
+    }
+    return entry.loadValue();
 }
 
-get fun getAprBps(): uint32 {
+get fun get_apr_bps(): uint32 {
     val storage = StakingStorage.load();
     val config = storage.config.load();
     return config.aprBps;

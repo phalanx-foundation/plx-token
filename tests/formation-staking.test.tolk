@@ -13,13 +13,20 @@ import "@wrappers/utils"
 import "test-utils"
 
 const ONE_MONTH_SEC = 2592000
-const SECONDS_PER_YEAR = 31536000
+const TEST_SECONDS_PER_YEAR = 31536000
 const PLX_UNIT = 1000000000
 const MIN_LOCK = 25000 * PLX_UNIT
 const REWARD_FUND = 500000 * PLX_UNIT
 
+const TEST_STAKE_FORWARD_DEPOSIT_OP: uint32 = 0x54414b01
+const TEST_STAKE_FORWARD_REWARD_POOL_OP: uint32 = 0x54414b06
+
+fun makeStakeDepositPayload(lockSec: int): slice {
+    return beginCell().storeUint(TEST_STAKE_FORWARD_DEPOSIT_OP, 32).storeUint(lockSec, 32).endCell().beginParse();
+}
+
 fun makeStakeRewardPoolPayload(): slice {
-    return beginCell().storeUint(0x5354414b06, 32).endCell().beginParse();
+    return beginCell().storeUint(TEST_STAKE_FORWARD_REWARD_POOL_OP, 32).endCell().beginParse();
 }
 
 fun setupStaking(): (JettonMinter, PlxStaking, Treasury, Treasury) {
@@ -58,14 +65,14 @@ fun setupStaking(): (JettonMinter, PlxStaking, Treasury, Treasury) {
     });
 
     expect(
+        minter.sendMint(deployer.address, deployer.address, REWARD_FUND * 2, ton("0.05"), ton("0.5")),
+    ).toHaveSuccessfulTx<MintNewJettons>({ from: deployer.address, to: minter.address });
+
+    expect(
         minter.sendMint(deployer.address, user.address, MIN_LOCK * 100, ton("0.05"), ton("0.5")),
     ).toHaveSuccessfulTx<MintNewJettons>({ from: deployer.address, to: minter.address });
 
     return (minter, staking, deployer, user);
-}
-
-fun makeStakeDepositPayload(lockSec: int): slice {
-    return beginCell().storeUint(0x5354414b01, 32).storeUint(lockSec, 32).endCell().beginParse();
 }
 
 fun fundStakingRewardPool(
@@ -109,7 +116,8 @@ fun userStakesToContract(
 
 get fun `test staking: deposit increases totalStaked`() {
     val (minter, staking, deployer, user) = setupStaking();
-    fundStakingRewardPool(minter, staking, deployer, REWARD_FUND);
+    val fundRes = fundStakingRewardPool(minter, staking, deployer, REWARD_FUND);
+    expect(fundRes).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: staking.address });
 
     val res = userStakesToContract(minter, staking, user, MIN_LOCK, ONE_MONTH_SEC);
     expect(res).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: staking.address });
@@ -124,15 +132,16 @@ get fun `test staking: early unstake rejected`() {
     userStakesToContract(minter, staking, user, MIN_LOCK, ONE_MONTH_SEC);
 
     val res = staking.sendUnstakePlx(user.address, 0, 0, { bounce: false, value: ton("0.2") });
-    expect(res).toHaveFailedTx<UnstakePlx>({ from: user.address, to: staking.address });
+    expect(res).toHaveFailedTx<UnstakePlx>({ from: user.address, to: staking.address, exitCode: 100 });
 }
 
 get fun `test staking: unstake after lock period`() {
     val (minter, staking, deployer, user) = setupStaking();
-    fundStakingRewardPool(minter, staking, deployer, REWARD_FUND);
+    val fundRes = fundStakingRewardPool(minter, staking, deployer, REWARD_FUND);
+    expect(fundRes).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: staking.address });
     userStakesToContract(minter, staking, user, MIN_LOCK, ONE_MONTH_SEC);
 
-    testing.setNow(1700000000 + ONE_MONTH_SEC + SECONDS_PER_YEAR / 2);
+    testing.setNow(1700000000 + ONE_MONTH_SEC + TEST_SECONDS_PER_YEAR / 2);
     val res = staking.sendUnstakePlx(user.address, 0, 0, { bounce: false, value: ton("0.2") });
     expect(res).toHaveSuccessfulTx<UnstakePlx>({ from: user.address, to: staking.address });
 

@@ -21,17 +21,20 @@ const MIN_LOCK = 25000 * PLX_UNIT
 const SOVEREIGN_MIN = 1000000 * PLX_UNIT
 const REWARD_FUND = 500000 * PLX_UNIT
 
+const TEST_LOCK_FORWARD_DEPOSIT_OP: uint32 = 0x4f434b01
+const TEST_LOCK_FORWARD_REWARD_POOL_OP: uint32 = 0x4f434b06
+
 fun makeLockDepositPayload(tierIndex: int, sovereign: bool = false): slice {
     return beginCell()
-        .storeUint(0x4c4f434b01, 32)
+        .storeUint(TEST_LOCK_FORWARD_DEPOSIT_OP, 32)
         .storeUint(tierIndex, 8)
         .storeUint(sovereign ? 1 : 0, 1)
         .endCell()
         .beginParse();
 }
 
-fun makeRewardPoolPayload(op: int): slice {
-    return beginCell().storeUint(op, 32).endCell().beginParse();
+fun makeRewardPoolPayload(): slice {
+    return beginCell().storeUint(TEST_LOCK_FORWARD_REWARD_POOL_OP, 32).endCell().beginParse();
 }
 
 fun setupLockVault(): (JettonMinter, PlxLockVault, Treasury, Treasury) {
@@ -72,6 +75,10 @@ fun setupLockVault(): (JettonMinter, PlxLockVault, Treasury, Treasury) {
     expect(vault.sendDeploy(deployer.address, { value: ton("5") })).toHaveSuccessfulDeploy({
         to: vault.address,
     });
+
+    expect(
+        minter.sendMint(deployer.address, deployer.address, REWARD_FUND * 2, ton("0.05"), ton("0.5")),
+    ).toHaveSuccessfulTx<MintNewJettons>({ from: deployer.address, to: minter.address });
 
     expect(
         minter.sendMint(deployer.address, user.address, MIN_LOCK * 100, ton("0.05"), ton("0.5")),
@@ -115,14 +122,15 @@ fun fundVaultRewardPool(
         sendExcessesTo: from.address,
         customPayload: null,
         forwardTonAmount: 100000000,
-        forwardPayload: makeRewardPoolPayload(0x4c4f434b06),
+        forwardPayload: makeRewardPoolPayload(),
     };
     return sendRawTransferPayload(from.address, wallet.address, body.toCell(), 400000000);
 }
 
 get fun `test lock vault: deploy and lock creates position`() {
     val (minter, vault, deployer, user) = setupLockVault();
-    fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    val fundRes = fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    expect(fundRes).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: vault.address });
 
     val res = userLocksToVault(minter, vault, user, MIN_LOCK, 1);
     expect(res).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: vault.address });
@@ -135,7 +143,8 @@ get fun `test lock vault: deploy and lock creates position`() {
 
 get fun `test lock vault: layered positions have independent unlock`() {
     val (minter, vault, deployer, user) = setupLockVault();
-    fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    val fundRes = fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    expect(fundRes).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: vault.address });
 
     userLocksToVault(minter, vault, user, MIN_LOCK, 1);
     testing.setNow(1700000000 + ONE_MONTH_SEC / 2);
@@ -153,16 +162,18 @@ get fun `test lock vault: layered positions have independent unlock`() {
 
 get fun `test lock vault: early claim rejected`() {
     val (minter, vault, deployer, user) = setupLockVault();
-    fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    val fundRes = fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    expect(fundRes).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: vault.address });
     userLocksToVault(minter, vault, user, MIN_LOCK, 1);
 
     val res = vault.sendReleaseLock(user.address, 0, 0, { bounce: false, value: ton("0.2") });
-    expect(res).toHaveFailedTx<ReleaseLock>({ from: user.address, to: vault.address });
+    expect(res).toHaveFailedTx<ReleaseLock>({ from: user.address, to: vault.address, exitCode: 100 });
 }
 
 get fun `test lock vault: maturity claim returns principal and bonus`() {
     val (minter, vault, deployer, user) = setupLockVault();
-    fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    val fundRes = fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    expect(fundRes).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: vault.address });
     userLocksToVault(minter, vault, user, MIN_LOCK, 1);
 
     testing.setNow(1700000000 + ONE_MONTH_SEC + 1);
@@ -175,7 +186,8 @@ get fun `test lock vault: maturity claim returns principal and bonus`() {
 
 get fun `test lock vault: event end before maturity forfeits bonus`() {
     val (minter, vault, deployer, user) = setupLockVault();
-    fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    val fundRes = fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    expect(fundRes).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: vault.address });
     userLocksToVault(minter, vault, user, MIN_LOCK, 2);
 
     vault.sendSetEventEnd(deployer.address, 0, 1700000000 + ONE_MONTH_SEC, {
@@ -184,20 +196,21 @@ get fun `test lock vault: event end before maturity forfeits bonus`() {
     });
 
     testing.setNow(1700000000 + THREE_MONTH_SEC + 1);
-    val before = vault.getLockVaultData();
+    val (_, _, beforePool, _) = vault.getLockVaultData();
     val res = vault.sendReleaseLock(user.address, 0, 0, { bounce: false, value: ton("0.2") });
     expect(res).toHaveSuccessfulTx<ReleaseLock>({ from: user.address, to: vault.address });
-    val after = vault.getLockVaultData();
-    expect(after.rewardPool).toEqual(before.rewardPool);
+    val (_, _, afterPool, _) = vault.getLockVaultData();
+    expect(afterPool).toEqual(beforePool);
 }
 
 get fun `test lock vault: unauthorized claim rejected`() {
     val (minter, vault, deployer, user) = setupLockVault();
-    fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    val fundRes = fundVaultRewardPool(minter, vault, deployer, REWARD_FUND);
+    expect(fundRes).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: vault.address });
     userLocksToVault(minter, vault, user, MIN_LOCK, 1);
     testing.setNow(1700000000 + ONE_MONTH_SEC + 1);
 
     val res = vault.sendReleaseLock(deployer.address, 0, 0, { bounce: false, value: ton("0.2") });
-    expect(res).toHaveFailedTx<ReleaseLock>({ from: deployer.address, to: vault.address });
+    expect(res).toHaveFailedTx<ReleaseLock>({ from: deployer.address, to: vault.address, exitCode: 73 });
 }
 
