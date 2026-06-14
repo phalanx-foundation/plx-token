@@ -5,7 +5,7 @@ version = "0.1.0"
 license = "MIT"
 
 [toolchain]
-acton = "1.0.0"
+acton = "1.1.0"
 
 [contracts.JettonMinter]
 display-name = "PhalanxJettonMinter"
@@ -40,7 +40,7 @@ depends = ["JettonWallet"]
 [contracts.FeeJettonWallet]
 display-name = "FeeJettonWallet"
 src = "contracts/FeeJettonWallet.tolk"
-depends = ["JettonWallet"]
+depends = []
 
 [contracts.FeeJettonMinter]
 display-name = "FeeJettonMinter"
@@ -50,7 +50,7 @@ depends = ["FeeJettonWallet"]
 [contracts.AntiWhaleJettonWallet]
 display-name = "AntiWhaleJettonWallet"
 src = "contracts/AntiWhaleJettonWallet.tolk"
-depends = ["JettonWallet"]
+depends = []
 
 [contracts.PlxAirdrop]
 display-name = "PlxAirdrop"
@@ -109,6 +109,10 @@ deploy-fee-jetton-testnet = "acton script scripts/deploy-fee-jetton.tolk --net t
 deploy-fee-jetton-mainnet = "acton script scripts/deploy-fee-jetton.tolk --net mainnet"
 deploy-airdrop-emulation = "acton script scripts/deploy-airdrop.tolk"
 deploy-airdrop-testnet = "acton script scripts/deploy-airdrop.tolk --net testnet"
+deploy-anti-whale-emulation = "acton script scripts/deploy-anti-whale.tolk"
+deploy-anti-whale-testnet = "acton script scripts/deploy-anti-whale.tolk --net testnet"
+deploy-custom-staking-emulation = "acton script scripts/deploy-custom-staking.tolk"
+deploy-custom-staking-testnet = "acton script scripts/deploy-custom-staking.tolk --net testnet"
 
 [import-mappings]
 acton = ".acton"
