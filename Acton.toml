@@ -37,6 +37,31 @@ display-name = "PlxStaking"
 src = "contracts/PlxStaking.tolk"
 depends = ["JettonWallet"]
 
+[contracts.FeeJettonWallet]
+display-name = "FeeJettonWallet"
+src = "contracts/FeeJettonWallet.tolk"
+depends = ["JettonWallet"]
+
+[contracts.FeeJettonMinter]
+display-name = "FeeJettonMinter"
+src = "contracts/FeeJettonMinter.tolk"
+depends = ["FeeJettonWallet"]
+
+[contracts.AntiWhaleJettonWallet]
+display-name = "AntiWhaleJettonWallet"
+src = "contracts/AntiWhaleJettonWallet.tolk"
+depends = ["JettonWallet"]
+
+[contracts.PlxAirdrop]
+display-name = "PlxAirdrop"
+src = "contracts/PlxAirdrop.tolk"
+depends = ["JettonWallet"]
+
+[contracts.CustomStakingParams]
+display-name = "CustomStakingParams"
+src = "contracts/CustomStakingParams.tolk"
+depends = ["JettonWallet"]
+
 [test]
 
 [fmt]
@@ -79,6 +104,11 @@ deploy-client-jetton-emulation = "acton script scripts/deploy-client-jetton.tolk
 deploy-client-jetton-testnet = "acton script scripts/deploy-client-jetton.tolk --net testnet"
 deploy-client-jetton-mainnet = "acton script scripts/deploy-client-jetton.tolk --net mainnet"
 toolkit-broadcast-testnet = "bash scripts/toolkit-broadcast.sh"
+deploy-fee-jetton-emulation = "acton script scripts/deploy-fee-jetton.tolk"
+deploy-fee-jetton-testnet = "acton script scripts/deploy-fee-jetton.tolk --net testnet"
+deploy-fee-jetton-mainnet = "acton script scripts/deploy-fee-jetton.tolk --net mainnet"
+deploy-airdrop-emulation = "acton script scripts/deploy-airdrop.tolk"
+deploy-airdrop-testnet = "acton script scripts/deploy-airdrop.tolk --net testnet"
 
 [import-mappings]
 acton = ".acton"
