@@ -96,12 +96,12 @@ Satu key TonAPI dipakai di **dua** tempat (nilai **identik**):
 
 | Tempat | Variable | Catatan |
 |--------|----------|---------|
-| Railway → service `plx-toolkit` | `TONAPI_KEY` | API backend (`api.plx.foundation`) |
+| Ubuntu API (`~/services/plx-toolkit-api/.env`) | `TONAPI_KEY` | API backend (`api.plx.foundation`) — sync via `deploy-api-acton.ps1` |
 | Cloudflare Pages → web prod | `TONAPI_KEY` atau `NEXT_PUBLIC_TONAPI_KEY` | Jika web panggil TonAPI dari browser |
 
-**Jangan** commit key ke GitHub. Set manual di dashboard Railway/Cloudflare (sama seperti `DATABASE_URL`).
+**Jangan** commit key ke GitHub. Set di `.env` lokal lalu deploy ke Ubuntu API + Cloudflare Pages bila perlu.
 
-Setelah set di Railway, redeploy tidak wajib jika hanya tambah variable — restart service jika API sudah jalan.
+Setelah set di server `.env`, jalankan `deploy-api-acton.ps1` atau restart container API.
 
 ---
 
@@ -159,7 +159,7 @@ Connect Console + CONSOLE_TOKEN di .env
 |--------|--------|
 | Rate limit tanpa key | Tambahkan `TONAPI_KEY` |
 | Jetton tidak ditemukan | Pastikan query pakai minter **EQCbaUJqi…** mainnet |
-| Key di `.env` tapi toolkit gagal | Copy key yang sama ke **Railway Variables** |
+| Key di `.env` tapi toolkit gagal | Deploy ulang ke Ubuntu: `deploy-api-acton.ps1` |
 | Dua project Console | Pakai **satu** key prod untuk Phalanx; jangan campur testnet |
 
 ---
@@ -169,7 +169,7 @@ Connect Console + CONSOLE_TOKEN di .env
 - [ ] Project dibuat di https://tonconsole.com
 - [ ] API key dibuat & disimpan di `.env` lokal
 - [ ] `test-tonapi-key.ps1` → OK
-- [ ] `TONAPI_KEY` di Railway (+ CF jika perlu)
+- [ ] `TONAPI_KEY` di Ubuntu API `.env` (+ CF jika perlu)
 - [ ] PR ton-assets #5468 tetap dikejar (terpisah dari Console)
 
 ## Verifikasi prod (2026-06-09)

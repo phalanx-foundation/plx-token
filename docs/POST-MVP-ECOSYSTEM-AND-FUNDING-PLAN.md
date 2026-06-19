@@ -14,6 +14,8 @@
 | TON Console mempercepat pengindeksan? | Membantu **dApp Anda** (rate limit, webhook, analytics SQL) — **bukan** pengganti merge PR **ton-assets** untuk label SCAM Tonkeeper. |
 | Jejak nama pribadi di GitHub? | PR [#5468](https://github.com/tonkeeper/ton-assets/pull/5468) saat ini dari fork akun pribadi. **Ke depan:** semua submission dari org **`phalanx-foundation`**. |
 | Mini App Telegram? | Direncanakan **Fase 2** (setelah web inti stabil) + listing **tApps** / tonscan apps. |
+| Entertainment / casino / game B2B? | **Jangka panjang (referensi):** [`PLX-ENTERTAINMENT-AND-GAME-SUPPLY-PLAN.md`](PLX-ENTERTAINMENT-AND-GAME-SUPPLY-PLAN.md). |
+| Airdrop / holder growth sekarang? | [`PLX-AIRDROP-AND-RETENTION-CAMPAIGN.md`](PLX-AIRDROP-AND-RETENTION-CAMPAIGN.md) — Pioneer Seasons + psikologi retention. |
 | Dana untuk LP tanpa pemasukan bulanan? | Lihat **Bagian 4** + [`FUNDRAISING-AND-LP-OPTIONS.md`](FUNDRAISING-AND-LP-OPTIONS.md) (launchpad, grants, VC, AI credits, crowdfunding). |
 
 ---
@@ -26,7 +28,7 @@
 
 - [ ] Auth (Google/GitHub) production-ready — [`docs/OAUTH-SETUP-GUIDE.md`](OAUTH-SETUP-GUIDE.md)
 - [ ] `/build` wizard: draft → pembayaran (TON/PLX/PayPal sesuai katalog) → deploy/emulasi
-- [ ] API Railway + env prod selaras [`toolkit-staging/docs/MAINNET-ENV-CLOUDFLARE.md`](../toolkit-staging/docs/MAINNET-ENV-CLOUDFLARE.md)
+- [ ] API Ubuntu + env prod selaras [`toolkit-staging/docs/MAINNET-ENV-CLOUDFLARE.md`](../toolkit-staging/docs/MAINNET-ENV-CLOUDFLARE.md) — deploy via `deploy-api-acton.ps1`
 - [ ] Smoke: landing, pricing, `/plx-token`, dashboard user
 - [ ] Satu runbook “happy path” terdokumentasi di `ROUTES.md`
 
@@ -36,7 +38,7 @@
 
 1. Buka https://tonconsole.com → Connect (Telegram).
 2. Buat **project** atas nama **Phalanx Foundation** (bukan nama pribadi di display name jika bisa dihindari).
-3. Generate **TonAPI key** → simpan di `.env` (gitignored): `TONAPI_KEY=` / di Railway & Cloudflare Pages untuk toolkit.
+3. Generate **TonAPI key** → simpan di `.env` (gitignored): `TONAPI_KEY=` / deploy ke Ubuntu API + Cloudflare Pages untuk toolkit.
 4. Manfaat langsung untuk produk:
    - Rate limit lebih tinggi untuk `/api/plx-stats`, jetton balances, payment verify
    - Opsional: webhook transfer, Tonkeeper Messages (nanti, dengan Mini App)
@@ -126,7 +128,7 @@ Checklist deploy: [`MAINNET-CHECKLIST.md`](MAINNET-CHECKLIST.md) bagian Liquidit
 | Traffic situs | Cloudflare Analytics (`plx.foundation`) |
 | Holder count | TonAPI / Tonviewer (naik dari 5 setelah ada transfer retail) |
 | Transaksi minter | Tonviewer |
-| Wizard/deploy | Log Railway + DB toolkit |
+| Wizard/deploy | Log Ubuntu API + DB toolkit |
 | DYOR | Setelah listing |
 
 ---

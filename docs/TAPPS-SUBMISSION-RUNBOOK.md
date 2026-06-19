@@ -51,7 +51,7 @@ Notes:
 | **Open PLX App** | Menu inside chat (☰ / bottom) | `https://app.plx.foundation/` | `setChatMenuButton` via API |
 | **Open PLX App** | Inline button after `/start` | `app.plx.foundation` in WebView | API webhook `reply_markup` |
 
-Production `/start` text is handled by **Railway API** (`api/routes/telegram.py`), not the Cloudflare `toolkit-staging/bot` worker.
+Production `/start` text is handled by **Ubuntu API** (`api/routes/telegram.py` at `api.plx.foundation`), not the Cloudflare `toolkit-staging/bot` worker.
 
 ---
 
