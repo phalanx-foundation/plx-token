@@ -8,6 +8,8 @@ Run on Ubuntu (~/projects/plx-acton):
 Endpoints:
   POST /deploy                 - toolkit client jetton (toolkit-broadcast.sh)
   POST /treasury-sweep         - 25/25/25/25 treasury split (treasury-sweep.sh)
+  POST /plx-treasury-sweep     - PLX jetton treasury split (plx-treasury-jetton-sweep.sh)
+  POST /formation-quest-payout - single PLX jetton reward (formation-quest-payout.sh)
   POST /sweep-queue/enqueue    - append to data/sweep-pending.json (dedupe pending)
   GET  /health                 - liveness
 """
@@ -166,6 +168,10 @@ class Handler(BaseHTTPRequestHandler):
             script = "toolkit-broadcast.sh"
         elif path == "/treasury-sweep":
             script = "treasury-sweep.sh"
+        elif path == "/plx-treasury-sweep":
+            script = "plx-treasury-jetton-sweep.sh"
+        elif path == "/formation-quest-payout":
+            script = "formation-quest-payout.sh"
         else:
             self._json(404, {"error": "not found"})
             return
