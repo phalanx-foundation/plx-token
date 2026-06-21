@@ -28,18 +28,24 @@ manual intervention.
 
 ## Exact callback URLs you must paste
 
-| Provider | Exact callback URL (production) |
-|---|---|
-| Google | `https://plx.foundation/api/auth/callback/google` |
-| GitHub | `https://plx.foundation/api/auth/callback/github` |
+**Satu OAuth client Google** dipakai untuk web pelanggan **dan** admin dashboard
+(`dev.plx.foundation`). Jangan buat client baru — cukup tambah URI kedua ke
+client **Phalanx Toolkit (production)** yang sudah ada.
+
+| Provider | Callback URL | Dipakai oleh |
+|---|---|---|
+| Google | `https://plx.foundation/api/auth/callback/google` | `plx.foundation` (web) |
+| Google | `https://dev.plx.foundation/api/auth/callback/google` | `dev.plx.foundation` (admin) |
+| GitHub | `https://plx.foundation/api/auth/callback/github` | `plx.foundation` (web saja) |
+
+Authorized JavaScript origins (Google, client yang sama):
+
+- `https://plx.foundation`
+- `https://dev.plx.foundation`
 
 These are the URLs the OAuth provider will redirect the browser back to
 after the user clicks "Allow". They are **required** to be added to the
 provider's allow-list, otherwise sign-in returns a 400 error.
-
-If you ever add a staging/preview environment (e.g. `staging.plx.foundation`),
-register its callback URLs too — providers reject any redirect URI that isn't
-explicitly listed.
 
 ---
 
@@ -66,9 +72,11 @@ explicitly listed.
    credentials** → **OAuth client ID**:
    - Application type: **Web application**.
    - Name: `Phalanx Toolkit (production)`.
-   - Authorized JavaScript origins: `https://plx.foundation`.
-   - Authorized redirect URIs:
-     `https://plx.foundation/api/auth/callback/google`
+   - Authorized JavaScript origins:
+     `https://plx.foundation`, `https://dev.plx.foundation`
+   - Authorized redirect URIs (satu client, dua subdomain):
+     `https://plx.foundation/api/auth/callback/google`,
+     `https://dev.plx.foundation/api/auth/callback/google`
    - Click **Create**.
 5. Google shows a modal with the **Client ID** and **Client secret**. Copy
    both — you cannot retrieve the secret again later (you can only rotate it).

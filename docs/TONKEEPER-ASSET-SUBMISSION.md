@@ -33,7 +33,9 @@ Use this checklist when opening a PR to [tonkeeper/ton-assets](https://github.co
 
 ## Status
 
-- [x] PR opened to `tonkeeper/ton-assets` — **https://github.com/tonkeeper/ton-assets/pull/5468** (2026-06-02, branch `KelvinHernata:add-plx-mainnet-jetton`)
+- [x] PR #5468 closed without merge (2026-06-05 — reviewer: develop product first)
+- [x] PR opened from **`phalanx-foundation`** — **https://github.com/tonkeeper/ton-assets/pull/5540** (2026-06-09, supersedes #5468; Ston.fi LP live)
+- [x] GitHub App bot auth — `phalanx-foundation[bot]` via `.scripts/ops/github-app-auth.ps1` (App ID in `.env`)
 - [ ] PR **merged** by Tonkeeper (typical review: beberapa hari; gratis, tanpa bayar)
 - [ ] Setelah merge: tunggu cache wallet 15–60 menit → label **SCAM** / unverified hilang di Tonkeeper
 - [ ] Naskah stakeholder formal: [`TONKEEPER-SCAM-LABEL-APPEAL.md`](TONKEEPER-SCAM-LABEL-APPEAL.md)

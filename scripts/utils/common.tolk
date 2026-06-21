@@ -13,7 +13,7 @@ import "@wrappers/utils"
 const JETTON_DEFAULT_NAME = "Phalanx"
 const JETTON_DEFAULT_SYMBOL = "PLX"
 const JETTON_DEFAULT_DESCRIPTION = "Phalanx (PLX) — utility token powering the Phalanx Foundation ecosystem of developer tools, services, and on-chain products."
-const JETTON_DEFAULT_IMAGE = "https://plx.foundation/plx-logo.png"
+const JETTON_DEFAULT_IMAGE_FALLBACK = "https://plx.foundation/plx-logo.png"
 const JETTON_DEFAULT_DECIMALS = "9"
 const JETTON_DEFAULT_UPDATED_DESCRIPTION = "Phalanx (PLX) — updated metadata"
 
@@ -66,6 +66,22 @@ fun promptJettonMinter(message: string): JettonMinter {
     return JettonMinter.fromAddress(addr);
 }
 
+fun defaultJettonImageUrl(): string {
+    val fromImage = env<string>("JETTON_IMAGE");
+    if (fromImage != null) {
+        return fromImage;
+    }
+    val fromGateway = env<string>("PLX_LOGO_GATEWAY_URL");
+    if (fromGateway != null) {
+        return fromGateway;
+    }
+    val fromIpfsUri = env<string>("PLX_LOGO_IPFS_URI");
+    if (fromIpfsUri != null) {
+        return fromIpfsUri;
+    }
+    return JETTON_DEFAULT_IMAGE_FALLBACK;
+}
+
 fun promptJettonMetadata(descriptionDefault: string): JettonMetadata {
     return {
         name: promptJettonString("JETTON_NAME", "Enter jetton name", JETTON_DEFAULT_NAME),
@@ -75,7 +91,7 @@ fun promptJettonMetadata(descriptionDefault: string): JettonMetadata {
             "Enter jetton description",
             descriptionDefault,
         ),
-        image: promptJettonString("JETTON_IMAGE", "Enter jetton image URL", JETTON_DEFAULT_IMAGE),
+        image: promptJettonString("JETTON_IMAGE", "Enter jetton image URL", defaultJettonImageUrl()),
         decimals: promptJettonString(
             "JETTON_DECIMALS",
             "Enter jetton decimals",

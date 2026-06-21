@@ -1,11 +1,11 @@
 {
   "issues": {
-    "ton_ecosystem_grant": "https://github.com/phalanx-foundation/plx-token/issues/1",
-    "gitcoin_oss": "https://github.com/phalanx-foundation/plx-token/issues/2",
-    "animoca_intro": "https://github.com/phalanx-foundation/plx-token/issues/3",
+    "ton_ecosystem_grant": "https://github.com/phalanx-foundation/plx-token/issues/7",
+    "gitcoin_oss": "https://github.com/phalanx-foundation/plx-token/issues/8",
+    "animoca_intro": "https://github.com/phalanx-foundation/plx-token/issues/9",
     "microsoft_founders_hub": "https://github.com/phalanx-foundation/plx-token/issues/4",
     "google_cloud_startup": "https://github.com/phalanx-foundation/plx-token/issues/5",
-    "kickstarter_toolkit": "https://github.com/phalanx-foundation/plx-token/issues/6"
+    "kickstarter_toolkit": "https://github.com/phalanx-foundation/plx-token/issues/10"
   },
-  "last_run": "2026-06-10T02:06:35.447455+00:00"
+  "last_run": "2026-06-10T03:07:50.596330+00:00"
 }

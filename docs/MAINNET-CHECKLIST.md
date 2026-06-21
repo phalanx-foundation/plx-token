@@ -17,7 +17,8 @@ Use this as the single source of truth before pushing PLX to TON mainnet. Tick e
 ## Funding
 
 - [x] Mainnet deployer wallet created and **mnemonic backed up offline**
-- [x] Deployer wallet funded (≥ 5 TON on mainnet)
+- [x] Deployer wallet funded (≥ 5 TON on mainnet) — **deploy selesai; tidak perlu top-up 5 TON lagi**
+- [x] Gas ops: treasury dapat mengisi deployer via `scripts/send-ton.tolk` (tanpa fiat user)
 - [x] All 5 distribution wallet addresses confirmed (treasury, lp, community, marketing, beneficiary)
 - [x] Each distribution wallet's address double-checked against `acton wallet list --net mainnet`
 
@@ -60,9 +61,14 @@ Use this as the single source of truth before pushing PLX to TON mainnet. Tick e
   ```
   > **Irreversible.** Only when distribution is final.
 
+## Product & ecosystem (after web services stable)
+
+- [ ] See phased plan: [`POST-MVP-ECOSYSTEM-AND-FUNDING-PLAN.md`](POST-MVP-ECOSYSTEM-AND-FUNDING-PLAN.md) (TON Console, org GitHub, DYOR, tApps, LP funding)
+- [ ] TON Console project + TonAPI key — [`TON-CONSOLE-PLX.md`](TON-CONSOLE-PLX.md) + `test-tonapi-key.ps1`
+
 ## Liquidity & Listing (after mainnet deploy)
 
-- [ ] Initial liquidity on Ston.fi (PLX/TON from LP wallet)
+- [ ] Initial liquidity on Ston.fi (PLX/TON from LP wallet; requires TON capital — see funding section in plan above)
 - [ ] DeDust (optional)
 - [x] Tonkeeper `ton-assets` PR opened — https://github.com/tonkeeper/ton-assets/pull/5468 (merge pending)
 - [ ] MyTonWallet listing

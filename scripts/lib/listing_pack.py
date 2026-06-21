@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from lib.plx_logo_ipfs import plx_listing_logo_url
+
 PLX_MINTER = "EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS"
 STONFI_POOL = "EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq"
 TON_ASSETS_PR = 5540
@@ -9,7 +11,7 @@ TON_ASSETS_REPO = "tonkeeper/ton-assets"
 
 SITE = "https://plx.foundation"
 TOKEN_PAGE = "https://plx.foundation/plx-token"
-LOGO = "https://plx.foundation/plx-logo.png"
+LOGO = plx_listing_logo_url()
 GITHUB = "https://github.com/phalanx-foundation/plx-token"
 STONFI_POOL_URL = f"https://app.ston.fi/pools/{STONFI_POOL}"
 DEXSCREENER_PAIR_URL = f"https://dexscreener.com/ton/{STONFI_POOL.lower()}"

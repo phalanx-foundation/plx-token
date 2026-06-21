@@ -67,7 +67,7 @@ fun main() {
         name: "Phalanx",
         symbol: "PLX",
         description: JETTON_DEFAULT_DESCRIPTION,
-        image: JETTON_DEFAULT_IMAGE,
+        image: defaultJettonImageUrl(),
         decimals: "9",
     };
     val minter = JettonMinter.fromStorage({

@@ -3,7 +3,7 @@
 # Run on Ubuntu server: ~/projects/plx-acton with acton + wallets.toml.
 #
 # Prerequisites:
-#   - plx-deployer-v2 funded with >= 5 TON on mainnet
+#   - plx-deployer-v2-mainnet funded with >= 5 TON on mainnet
 #   - PLX_VESTING_START set (unix timestamp, e.g. date +%s)
 #
 # Usage:
@@ -19,7 +19,7 @@ ACTON="${ACTON:-$HOME/.acton/bin/acton}"
 
 : "${PLX_VESTING_START:?Set PLX_VESTING_START (unix timestamp)}"
 
-export PLX_DEPLOYER="${PLX_DEPLOYER:-plx-deployer-v2}"
+export PLX_DEPLOYER="${PLX_DEPLOYER:-plx-deployer-v2-mainnet}"
 # Mainnet distribution wallets (EQ). Override via env if rotating wallets.
 export PLX_TREASURY="${PLX_TREASURY:-EQBBlAF4yz12NbrbKXYfGA1OsZzWFpkRj-TU6ciuYjBjK1aX}"
 export PLX_LP="${PLX_LP:-EQAiQ41f7R5qzKsoimbujtYdy0bRKW_7Fb0rV5Z4Lw6gr3zH}"

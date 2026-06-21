@@ -36,7 +36,15 @@ AGENTS.md
 # === Local helper scripts (work-in-progress) ===
 .scripts/
 tmp/
+.backup-railway/
 toolkit-staging/
+
+# === Browser automation profiles & debug (never commit) ===
+data/x-browser-profile/
+data/x-browser-profile-test/
+debug.log
+__pycache__/
+*.pyc
 
 # === IDE & OS ===
 .DS_Store
@@ -54,3 +62,6 @@ node_modules/
 *.swp
 *.swo
 
+
+# Acton related files
+libraries.toml

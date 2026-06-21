@@ -30,6 +30,10 @@ Utility token — Phalanx Toolkit. Not investment advice.
 Site: https://plx.foundation/plx-token
 ```
 
+## Where to cross-post (curated)
+
+See [`TELEGRAM-PROMO-TARGETS.md`](TELEGRAM-PROMO-TARGETS.md) — STON.fi chat, Tact builders, TON Builders Portal, DeDust partnership, etc.
+
 ## Ops disclosure
 
 If team runs **disclosed** micro-swaps from ops wallets, say so in same channel ([`TRANSPARENCY.md`](TRANSPARENCY.md) — liquidity awareness program).

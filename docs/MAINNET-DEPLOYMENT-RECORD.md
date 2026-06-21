@@ -19,14 +19,16 @@
 
 Six operational wallets (`acton wallet new --version v5r1`) — each has its **own** 24-word mnemonic in `wallets.toml` on the deploy server. `UQ…` = non-bounceable (Tonkeeper); `EQ…` = bounceable (CLI/explorer); **same account**.
 
-| Role | Wallet name (Acton) | UQ (Tonkeeper) | EQ (docs/CLI) |
+| Role | Wallet name (Acton server) | UQ (Tonkeeper — verified) | EQ (explorer/CLI) |
 |---|---|---|---|
-| Deployer / minter admin (temporary) | `plx-deployer-v2-mainnet` | `UQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anhSm` | `EQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anklj` |
-| Treasury (250M PLX) | `plx-treasury-mainnet` | `UQBB…KwtS` | `EQBBlAF4yz12NbrbKXYfGA1OsZzWFpkRj-TU6ciuYjBjK1aX` |
-| LP (400M PLX) | `plx-lp-mainnet` | `UQAi…eyEC` | `EQAiQ41f7R5qzKsoimbujtYdy0bRKW_7Fb0rV5Z4Lw6gr3zH` |
-| Community (200M PLX) | `plx-community-mainnet` | — | `EQD1XDv0Awjx0GUVv6YQYYnvEmjcKJ9iEBjvtHPM2nWML-q9` |
-| Marketing (50M PLX) | `plx-marketing-mainnet` | `UQDB…To6_` | `EQDB9yVhkPvEhMFo90fqHWzqYj2mESAlwObMbA6LX7fETtN6` |
-| Vesting beneficiary | `plx-vesting-beneficiary-mainnet` | `UQB5…LYvC` | `EQB5_ndfsF6gSuMDYYA4Uq2R26jPRzEsvFK-glI9VwbzLdYH` |
+| Deployer / minter admin | `plx-deployer-v2` | `UQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anhSm` | `EQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anklj` |
+| Treasury (250M PLX) | `plx-treasury` | `UQBB…KwtS` | `EQBBlAF4yz12NbrbKXYfGA1OsZzWFpkRj-TU6ciuYjBjK1aX` |
+| LP (400M PLX) | `plx-lp` | `UQAi…eyEC` | `EQAiQ41f7R5qzKsoimbujtYdy0bRKW_7Fb0rV5Z4Lw6gr3zH` |
+| Community (200M PLX) | `plx-community` | `UQD1…L7d4` | `EQD1XDv0Awjx0GUVv6YQYYnvEmjcKJ9iEBjvtHPM2nWML-q9` |
+| Marketing (50M PLX) | `plx-marketing` | `UQDB…To6_` | `EQDB9yVhkPvEhMFo90fqHWzqYj2mESAlwObMbA6LX7fETtN6` |
+| Vesting beneficiary | `plx-vesting-beneficiary` | `UQB5…LYvC` | `EQB5_ndfsF6gSuMDYYA4Uq2R26jPRzEsvFK-glI9VwbzLdYH` |
+
+Tampilkan PLX di app: [`TONKEEPER-TAMPILKAN-PLX.md`](TONKEEPER-TAMPILKAN-PLX.md). Status live: [`STATUS-MAINNET.md`](STATUS-MAINNET.md).
 
 | Role | Expected PLX balance | Notes |
 |---|---:|---|
@@ -87,11 +89,17 @@ The 0.5 TON on the splitter address is **rent/gas for deploying the splitter sma
 
 ## Managing wallets in Tonkeeper
 
+**Jika paste 24 kata di Tonkeeper tapi alamat tidak sama dengan tabel di atas:** bukan mnemonic salah — Tonkeeper sering menampilkan **V4R2**, sedangkan PLX genesis ada di **W5 (v5r1)** Acton. Baca [`TONKEEPER-ALAMAT-TIDAK-COCOK.md`](TONKEEPER-ALAMAT-TIDAK-COCOK.md).
+
+Panduan lengkap: [`TONKEEPER-WALLET-IMPORT.md`](TONKEEPER-WALLET-IMPORT.md). Skrip aman (hanya alamat): `.scripts/ops/list-mainnet-wallets.sh` di server deploy.
+
 | Goal | Action |
 |---|---|
 | View treasury/LP balances | Tonviewer links above, or watch-only address in Tonkeeper |
 | Spend from treasury/LP | Import **that wallet's** 24 words (from backup or server `wallets.toml`) — deployer mnemonic alone is not enough |
 | Add PLX token display | Custom jetton → minter `EQCbaUJqi…` on **mainnet** |
+| Wallet asli + harga PLX | [`WALLET-ASLI-DAN-HARGA-PLX.md`](WALLET-ASLI-DAN-HARGA-PLX.md) |
+| TON Console + TonAPI key | [`TON-CONSOLE-PLX.md`](TON-CONSOLE-PLX.md) |
 
 ## Test suite (pre-deploy)
 
