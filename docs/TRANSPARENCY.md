@@ -88,8 +88,14 @@ Anyone can verify our claims independently:
    `contracts/TeamVesting.tolk` in this repo. Build with `acton build
    TeamVesting` and compare cell hash on-chain.
 
-5. **Track `JettonMinter` admin field** — after the 7-day post-launch
-   stabilization, admin will be set to `addr_none` (zero), making supply
+5. **Track `JettonMinter` admin field** — the admin role is currently
+   held by the deployer wallet for operational flexibility. The admin
+   drop (`drop-admin`) will be executed once ecosystem integration
+   milestones are met (Tonkeeper USD price display, explorer labels,
+   community tooling readiness). Until dropped, the supply is
+   technically mintable but only by the admin wallet — the admin
+   wallet is controlled by Phalanx Foundation and will not mint
+   additional supply. After `drop-admin`, the supply becomes
    permanently fixed.
 
 ## Submitting Address Labels to Explorers
@@ -99,8 +105,8 @@ After mainnet deploy, Phalanx Foundation will submit verified label requests to:
 - [ ] **Tonviewer** — https://tonviewer.com/contact (request "Phalanx Treasury",
       "Phalanx LP Reserve", etc. labels)
 - [ ] **Tonscan** — https://tonscan.org/labels (community-verified labels)
-- [ ] **Tonkeeper jetton list** — PR to https://github.com/tonkeeper/ton-assets
-      with metadata, social links, description
+- [x] **Tonkeeper jetton list** — PR https://github.com/tonkeeper/ton-assets/pull/5540
+      merged 2026-06-15. Metadata, social links, and description verified on-chain.
 
 Once approved, our wallet addresses will display the verified label badge in
 all third-party tools.
@@ -123,4 +129,4 @@ the cost (~$5K-$15K from third-party auditor). Will be funded from treasury.
 
 ---
 
-*Last updated: 2026-06-09 — Phalanx Foundation.*
+*Last updated: 2026-07-05 — Phalanx Foundation (checklist + admin timeline update).*
