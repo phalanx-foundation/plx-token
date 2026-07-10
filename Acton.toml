@@ -62,6 +62,26 @@ display-name = "CustomStakingParams"
 src = "contracts/CustomStakingParams.tolk"
 depends = ["JettonWallet"]
 
+[contracts.TokenStaking]
+display-name = "TokenStaking"
+src = "contracts/TokenStaking.tolk"
+depends = ["JettonWallet"]
+
+[contracts.TokenLockVault]
+display-name = "TokenLockVault"
+src = "contracts/TokenLockVault.tolk"
+depends = ["JettonWallet"]
+
+[contracts.TokenGovernance]
+display-name = "TokenGovernance"
+src = "contracts/TokenGovernance.tolk"
+depends = []
+
+[contracts.LiquidityLocker]
+display-name = "LiquidityLocker"
+src = "contracts/LiquidityLocker.tolk"
+depends = []
+
 [test]
 
 [fmt]
@@ -113,6 +133,8 @@ deploy-anti-whale-emulation = "acton script scripts/deploy-anti-whale.tolk"
 deploy-anti-whale-testnet = "acton script scripts/deploy-anti-whale.tolk --net testnet"
 deploy-custom-staking-emulation = "acton script scripts/deploy-custom-staking.tolk"
 deploy-custom-staking-testnet = "acton script scripts/deploy-custom-staking.tolk --net testnet"
+deploy-jetton-combo-emulation = "acton script scripts/deploy-jetton-combo.tolk"
+deploy-jetton-combo-testnet = "acton script scripts/deploy-jetton-combo.tolk --net testnet"
 
 [import-mappings]
 acton = ".acton"

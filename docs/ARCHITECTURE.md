@@ -184,11 +184,74 @@ Run with `acton test`.
 - **Admin two-step**: prevents accidental loss of admin via typo
 - **No self-transferable code beyond admin**: `UpgradeMinterCode` is admin-only and intended for migrations only — recommend dropping admin after distribution to make this immutable
 
-## Future Extensions
+## Future Extension Contracts (implemented)
 
-Out of scope for v1.0.0 but feasible:
+These contracts augment the core jetton system with advanced DeFi capabilities.
+They are generic — any user-deployed token can use them, not just PLX.
 
-- **Staking contract**: emission pool from treasury, lock PLX for yield
-- **Buyback contract**: takes TON, swaps to PLX via DEX, burns the PLX (currently done manually)
-- **DAO module**: voting on treasury allocations using PLX as voting weight
-- **TON Connect dApp**: frontend for users to mint/transfer/swap PLX
+### `TokenStaking` (generic staking)
+
+APR-accrual staking pool. Token holders transfer jettons to lock for a minimum period;
+rewards accrue per-second. Admin funds the reward pool and sets APR.
+
+| Feature | Detail |
+|---|---|
+| Stake | Transfer jettons with lock duration via `TransferNotification` |
+| Unstake | Withdraw principal + pending rewards after lock expires |
+| Claim | Harvest rewards without unstaking principal |
+| APR | Admin updatable via `UpdateApr` (bps; 500 = 5%) |
+| Min lock | Admin-configurable minimum lock duration |
+
+Storage: `StakingStorage { config, totalStaked, rewardPerTokenStored, lastUpdateTime, rewardPool, stakes map }`
+
+### `TokenLockVault` (generic lock vault)
+
+Multi-tier time-locked escrow. Holders lock tokens for a chosen duration tier;
+higher tiers earn bonus rewards. Bonuses are paid from a reward pool at unlock.
+
+| Feature | Detail |
+|---|---|
+| Tiers | Up to 16 tiers, each with duration + bonus bps |
+| Sovereign locks | Higher-tier locks with elevated minimum amounts |
+| Event end | Campaign deadline — bonus only if unlockAt ≤ eventEndAt |
+| Admin | Update tiers, event end, and minimum amounts |
+
+Storage: `LockVaultStorage { config, nextPositionId, totalLocked, rewardPool, positions map }`
+
+### `TokenGovernance` (DAO voting)
+
+Simple proposal-based governance. Admin creates proposals with target contracts
+and payloads. Token holders vote for/against. Passed proposals execute after
+timelock via direct message send.
+
+| Feature | Detail |
+|---|---|
+| Proposals | Created by admin with target contract + arbitrary payload |
+| Voting | Holders vote For/Against; one vote per address (snapshot-based) |
+| Quorum | Configurable % of snapshot balance required |
+| Timelock | Delay between vote end and execution |
+| Execution | Sends payload to target contract via admin-less `send` |
+
+### `LiquidityLocker` (LP lock)
+
+Locks LP tokens (jetton transfer) for a configurable period. Provides on-chain
+proof that liquidity cannot be withdrawn — preventing rug pulls.
+
+| Feature | Detail |
+|---|---|
+| Lock | Transfer LP tokens with `unlockAt` timestamp via forward payload |
+| Unlock | Owner withdraws LP tokens after unlockAt |
+| Revoke | Admin can force-release a lock (emergency) |
+| Proof | All locks are queryable on-chain via `get_lock` |
+
+### `CustomStakingParams` (parameterized staking)
+
+Extended staking with up to 5 bonus tiers. Same mechanics as basic staking but
+effective APR = base apr + highest matching bonus tier (based on stake amount).
+
+### Deploy pipeline
+
+- **`deploy-jetton-combo.tolk`** — multi-template deploy script supporting
+  standard, antiwhale, fee, staking, and airdrop templates in a single script
+- **`deploy_jetton.py`** (API service) — expanded `SUPPORTED_TEMPLATES` to
+  `frozenset({"standard", "antiwhale", "fee", "mintable", "staking", "airdrop"})`
