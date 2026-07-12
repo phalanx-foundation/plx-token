@@ -33,11 +33,14 @@ from lib.listing_checks import (  # noqa: E402
     check_dexscreener_orders,
     check_dexscreener_pair,
     check_dyor_indexed,
+    check_stonfi_pool_ton,
     check_tonapi_jetton,
+    check_tonapi_rates,
     check_ton_assets_pr,
     eligibility_gates,
     now_iso,
     nudge_ton_assets_pr_if_stale,
+    tonapi_price_gates,
 )
 from lib.listing_notify import send_telegram, telegram_configured  # noqa: E402
 from lib.listing_pack import QUEST_MESSAGE, TOKEN_PAGE  # noqa: E402
@@ -52,11 +55,11 @@ def _enabled() -> bool:
 
 def _load_state() -> dict[str, Any]:
     if not STATE_FILE.exists():
-        return {"runs": [], "last_quest_post": None, "last_pr_nudge": None}
+        return {"runs": [], "last_quest_post": None, "last_pr_nudge": None, "last_summary_sent": None, "last_marketing_run": None}
     try:
         return json.loads(STATE_FILE.read_text())
     except json.JSONDecodeError:
-        return {"runs": [], "last_quest_post": None, "last_pr_nudge": None}
+        return {"runs": [], "last_quest_post": None, "last_pr_nudge": None, "last_summary_sent": None, "last_marketing_run": None}
 
 
 def _save_state(state: dict[str, Any]) -> None:
@@ -139,19 +142,49 @@ def _nudge_pr_if_due(state: dict[str, Any], interval_days: float) -> dict[str, A
 def _build_summary(run: dict[str, Any]) -> str:
     ds = run["checks"]["dexscreener_pair"]
     ton = run["checks"]["tonapi"]
+    rates = run["checks"]["tonapi_rates"]
+    gates = run["checks"]["tonapi_price_gates"]
     pr = run["checks"]["ton_assets_pr"]
-    gates = run["checks"]["eligibility"]
+    elig = run["checks"]["eligibility"]
     lines = [
         "PLX listing automation",
-        f"DexScreener: {'indexed' if ds.get('ok') else 'missing'} · LP ${ds.get('liquidity_usd', 0):.0f}",
+        f"DexScreener: {'indexed' if ds.get('ok') else 'missing'} · LP ${ds.get('liquidity_usd', 0):.0f} · pool ~{gates.get('pool_ton_quote', 0):.1f} TON",
         f"TonAPI: {ton.get('verification') or 'no_key'} · holders {ton.get('holders')}",
+        f"TonAPI rates USD: {rates.get('usd', 0)} · Tonkeeper USD: {'OK' if gates.get('tonapi_price_ready') else 'BLOCKED'}",
+        f"Tonkeeper gates: holders {gates.get('holders')}/{gates.get('min_holders')} · TON {gates.get('pool_ton_quote', 0):.1f}/{gates.get('min_ton_reserve')}",
         f"ton-assets PR: {pr.get('state')}",
-        f"CoinGecko gate: {'ready' if gates.get('coingecko_ready') else 'need $' + str(gates.get('coingecko_min_usd'))}",
+        f"CoinGecko gate: {'ready' if elig.get('coingecko_ready') else 'need $' + str(elig.get('coingecko_min_usd'))}",
         f"DYOR indexed: {run['checks']['dyor'].get('indexed')}",
         f"Quest posted: {run['actions']['quest'].get('posted')}",
+        f"Runbook: docs/TONKEEPER-USD-PRICE-RUNBOOK.md",
         f"Details: {TOKEN_PAGE}",
     ]
     return "\n".join(lines)
+
+
+def _alert_tonkeeper_usd_blocked(run: dict[str, Any]) -> dict[str, Any]:
+    """Telegram alert when whitelist but TonAPI rates still zero."""
+    if os.environ.get("LISTING_TONAPI_RATES_ALERT", "true").lower() != "true":
+        return {"sent": False, "reason": "disabled"}
+    if not telegram_configured():
+        return {"sent": False, "reason": "no_telegram_bot"}
+    ton = run["checks"]["tonapi"]
+    rates = run["checks"]["tonapi_rates"]
+    gates = run["checks"]["tonapi_price_gates"]
+    if ton.get("verification") != "whitelist":
+        return {"sent": False, "reason": "not_whitelist"}
+    if rates.get("price_ready"):
+        return {"sent": False, "reason": "rates_ok"}
+    msg = (
+        "PLX Tonkeeper USD blocked\n\n"
+        f"TonAPI verification: whitelist\n"
+        f"Rates USD: {rates.get('usd', 0)} (need > 0)\n"
+        f"Holders: {gates.get('holders')}/{gates.get('min_holders')}\n"
+        f"Pool TON: {gates.get('pool_ton_quote', 0):.1f}/{gates.get('min_ton_reserve')}\n\n"
+        "Deepen LP (plx-lp) + grow holders — see docs/TONKEEPER-USD-PRICE-RUNBOOK.md"
+    )
+    ok = send_telegram(msg)
+    return {"sent": ok}
 
 
 def main() -> int:
@@ -164,14 +197,28 @@ def main() -> int:
     nudge_days = float(os.environ.get("LISTING_PR_NUDGE_INTERVAL_DAYS", "14"))
 
     ds = check_dexscreener_pair()
+    stonfi = check_stonfi_pool_ton()
+    pool_ton = ds.get("pool_ton_quote")
+    if pool_ton is None and stonfi.get("ton_human") is not None:
+        pool_ton = stonfi.get("ton_human")
     gates = eligibility_gates(float(ds.get("liquidity_usd") or 0))
+    ton = check_tonapi_jetton()
+    rates = check_tonapi_rates()
+    tonapi_gates = tonapi_price_gates(
+        holders=ton.get("holders") if isinstance(ton.get("holders"), int) else None,
+        pool_ton_quote=pool_ton,
+        usd_price=float(rates.get("usd") or 0),
+    )
 
     run: dict[str, Any] = {
         "at": now_iso(),
         "checks": {
             "dexscreener_pair": ds,
+            "stonfi_pool": stonfi,
             "dexscreener_orders": check_dexscreener_orders(),
-            "tonapi": check_tonapi_jetton(),
+            "tonapi": ton,
+            "tonapi_rates": rates,
+            "tonapi_price_gates": tonapi_gates,
             "dyor": check_dyor_indexed(),
             "coingecko": check_coingecko_listed(),
             "ton_assets_pr": check_ton_assets_pr(),
@@ -193,9 +240,21 @@ def main() -> int:
     }
 
     summary = _build_summary(run)
-    run["actions"]["telegram_summary"] = send_telegram(summary)
 
-    if os.environ.get("TELEGRAM_MARKETING_ENABLED", "").lower() == "true":
+    summary_hours = float(os.environ.get("LISTING_SUMMARY_INTERVAL_HOURS", "24"))
+    if _days_since(state.get("last_summary_sent")) >= summary_hours / 24:
+        run["actions"]["telegram_summary"] = send_telegram(summary)
+        if run["actions"]["telegram_summary"]:
+            state["last_summary_sent"] = now_iso()
+    else:
+        run["actions"]["telegram_summary"] = "skipped_summary_interval"
+    run["actions"]["tonkeeper_usd_alert"] = _alert_tonkeeper_usd_blocked(run)
+
+    marketing_days = float(os.environ.get("LISTING_MARKETING_INTERVAL_DAYS", "7"))
+    if (
+        os.environ.get("TELEGRAM_MARKETING_ENABLED", "").lower() == "true"
+        and _days_since(state.get("last_marketing_run")) >= marketing_days
+    ):
         proc = subprocess.run(
             [sys.executable, str(ROOT / "scripts" / "plx-telegram-marketing.py")],
             capture_output=True,
@@ -209,6 +268,11 @@ def main() -> int:
             run["actions"]["telegram_marketing"] = json.loads(proc.stdout or "{}")
         except json.JSONDecodeError:
             run["actions"]["telegram_marketing"] = {"raw": (proc.stdout or proc.stderr)[:500]}
+        state["last_marketing_run"] = now_iso()
+    elif os.environ.get("TELEGRAM_MARKETING_ENABLED", "").lower() == "true":
+        run["actions"]["telegram_marketing"] = "skipped_marketing_interval"
+    else:
+        run["actions"]["telegram_marketing"] = "skipped_disabled"
 
     state["runs"] = (state.get("runs") or [])[-49:] + [run]
     state["last_run"] = run["at"]
