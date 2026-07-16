@@ -23,7 +23,16 @@ export JETTON_MINT_AMOUNT_NANO="$(
 LOG="$(mktemp)"
 trap 'rm -f "$LOG"' EXIT
 
-if ! "$ACTON" script scripts/deploy-client-jetton.tolk --net "$NETWORK" >"$LOG" 2>&1; then
+# Multi-wallet distribution (Distribution/Enterprise tiers) uses a dedicated
+# script that mints per-bucket + deploys vesting; else standard single mint.
+ALLOC_COUNT="${JETTON_ALLOC_COUNT:-0}"
+if [[ "$ALLOC_COUNT" =~ ^[0-9]+$ && "$ALLOC_COUNT" -gt 0 ]]; then
+  DEPLOY_SCRIPT="scripts/deploy-distribution-client.tolk"
+else
+  DEPLOY_SCRIPT="scripts/deploy-client-jetton.tolk"
+fi
+
+if ! "$ACTON" script "$DEPLOY_SCRIPT" --net "$NETWORK" >"$LOG" 2>&1; then
   echo "{\"error\":\"acton deploy failed\",\"log_tail\":\"$(tail -c 500 "$LOG" | tr -d '\"\\')\"}" >&2
   exit 1
 fi
@@ -31,6 +40,8 @@ fi
 MINTER="$(grep -oP 'TOOLKIT MINTER_ADDRESS=\K\S+' "$LOG" | tail -1 || true)"
 TX="$(grep -oE '[A-Fa-f0-9]{64}' "$LOG" | head -1 || true)"
 PENDING="$(grep -oP 'TOOLKIT PENDING_ADMIN_CLAIM=\K\S+' "$LOG" | tail -1 || true)"
+# Collect deployed vesting contract addresses (distribution buckets with lock).
+VESTING_ADDRS="$(grep -oP 'TOOLKIT ALLOC_VESTING=\K\S+' "$LOG" || true)"
 
 if [[ -z "$MINTER" ]]; then
   MINTER="$(grep -oP 'JETTON MINTER_ADDRESS=\K\S+' "$LOG" | tail -1 || true)"
@@ -45,11 +56,13 @@ if [[ -z "$TX" ]]; then
   TX="deploy-${MINTER}"
 fi
 
-python3 - <<PY
-import json
+VESTING_ADDRS="${VESTING_ADDRS}" python3 - <<PY
+import json, os
+vesting = [a for a in os.environ.get("VESTING_ADDRS", "").split() if a.strip()]
 print(json.dumps({
     "minter_address": "${MINTER}",
     "deploy_tx_hash": "${TX}",
     "pending_admin_claim": "${PENDING}" == "true",
+    "vesting_contracts": vesting,
 }))
 PY
