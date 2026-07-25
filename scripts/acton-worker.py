@@ -10,6 +10,7 @@ Endpoints:
   POST /treasury-sweep         - 25/25/25/25 treasury split (treasury-sweep.sh)
   POST /plx-treasury-sweep     - PLX jetton treasury split (plx-treasury-jetton-sweep.sh)
   POST /formation-quest-payout - single PLX jetton reward (formation-quest-payout.sh)
+  POST /scratch-payout         - Scratch Seeker winner payout (scratch-seeker-payout.sh)
   POST /sweep-queue/enqueue    - append to data/sweep-pending.json (dedupe pending)
   GET  /health                 - liveness
 """
@@ -172,6 +173,8 @@ class Handler(BaseHTTPRequestHandler):
             script = "plx-treasury-jetton-sweep.sh"
         elif path == "/formation-quest-payout":
             script = "formation-quest-payout.sh"
+        elif path == "/scratch-payout":
+            script = "scratch-seeker-payout.sh"
         else:
             self._json(404, {"error": "not found"})
             return
