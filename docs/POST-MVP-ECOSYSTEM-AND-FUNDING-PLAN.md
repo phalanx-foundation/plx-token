@@ -28,7 +28,7 @@
 
 - [ ] Auth (Google/GitHub) production-ready — [`docs/OAUTH-SETUP-GUIDE.md`](OAUTH-SETUP-GUIDE.md)
 - [ ] `/build` wizard: draft → pembayaran (TON/PLX/PayPal sesuai katalog) → deploy/emulasi
-- [ ] API Ubuntu + env prod selaras [`toolkit-staging/docs/MAINNET-ENV-CLOUDFLARE.md`](../toolkit-staging/docs/MAINNET-ENV-CLOUDFLARE.md) — deploy via `deploy-api-acton.ps1`
+- [ ] API + env prod selaras — deploy via `npx wrangler deploy` (lihat `toolkit-staging/docs/DEPLOY-WORKERS.md` §3)
 - [ ] Smoke: landing, pricing, `/plx-token`, dashboard user
 - [ ] Satu runbook “happy path” terdokumentasi di `ROUTES.md`
 

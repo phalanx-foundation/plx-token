@@ -82,7 +82,20 @@ Harga muncul di DEX setelah **likuiditas**:
 
 Tanpa langkah ini, PLX **memang** tidak punya harga pasar — itu normal untuk token baru, bukan karena wallet salah.
 
-**SCAM label** tidak menghalangi Anda membuat pool; bisa membuat investor ragu — tetap kejar PR [#5468](https://github.com/tonkeeper/ton-assets/pull/5468).
+**SCAM label** tidak menghalangi Anda membuat pool; PR ton-assets **#5540 sudah merged** (2026-06-15).
+
+### Tonviewer verified ≠ nilai USD di Tonkeeper
+
+| Lapisan | Apa yang Anda lihat | Syarat |
+|---------|---------------------|--------|
+| ton-assets merge | Logo resmi, tanpa SCAM | PR merged |
+| TonAPI `whitelist` | Tonviewer **verified** | A1 |
+| TonAPI `/v2/rates` | **Baris $ di Tonkeeper** | Pool ≥ ~**100 TON** + ≥ **100 holders** |
+| DexScreener | Harga di explorer/DEX UI | Pool live (LP tipis OK) |
+
+Tonkeeper memakai **TonAPI rates** untuk fiat — bukan badge Tonviewer. Jika `USD: 0` di rates, wallet menampilkan saldo PLX **tanpa** nilai dollar. Runbook: [`TONKEEPER-USD-PRICE-RUNBOOK.md`](TONKEEPER-USD-PRICE-RUNBOOK.md).
+
+**Token terkunci** (vesting / lock vault): Tonkeeper **tidak** menghitung kontrak lock sebagai saldo jetton — hanya PLX di jetton wallet Anda. Lock vault mainnet belum deployed; nilai USD posisi terkunci hanya di app Phalanx bila ada UI toolkit.
 
 ### Tahap 4 — Toolkit & situs (alamat publik)
 
@@ -142,7 +155,8 @@ flowchart LR
 |------------|---------|
 | Apakah wallet proyek palsu? | **Tidak** — W5 mainnet live, PLX sudah di alamat itu |
 | Bagaimana “pakai wallet asli”? | Import / kuasai **24 kata** enam dompet; jangan buat wallet baru untuk ganti peran |
-| Kenapa PLX tidak ada harga? | Belum LP — pakai wallet **plx-lp** + TON di Ston.fi |
+| Kenapa PLX tidak ada harga? | LP tipis — TonAPI butuh ~100 TON + 100 holders untuk USD di Tonkeeper; DexScreener bisa punya harga lebih dulu |
 | Custom token di Tonkeeper? | Hanya tampilan; **bukan** pengganti LP atau wallet ops |
+| Verified di Tonviewer tapi tanpa $? | **Normal** — verifikasi metadata ≠ indexer harga TonAPI |
 
 Bantuan langkah demi langkah import: [`TONKEEPER-CARA-CONNECT.md`](TONKEEPER-CARA-CONNECT.md).

@@ -17,6 +17,8 @@ from lib.listing_pack import (
     PLX_MINTER,
     STONFI_POOL,
     STONFI_POOL_URL,
+    TONAPI_MIN_HOLDERS,
+    TONAPI_MIN_TON_RESERVE,
     TON_ASSETS_PR,
     TON_ASSETS_REPO,
 )
@@ -43,9 +45,17 @@ def check_dexscreener_pair() -> dict[str, Any]:
     pairs = data.get("pairs") if data else None
     pair = pairs[0] if isinstance(pairs, list) and pairs else None
     liq = float(pair.get("liquidity", {}).get("usd", 0) or 0) if pair else 0.0
+    liq_obj = pair.get("liquidity") if pair else {}
+    quote_reserve = None
+    if isinstance(liq_obj, dict) and liq_obj.get("quote") is not None:
+        try:
+            quote_reserve = float(liq_obj.get("quote") or 0)
+        except (TypeError, ValueError):
+            quote_reserve = None
     return {
         "ok": pair is not None,
         "liquidity_usd": liq,
+        "pool_ton_quote": quote_reserve,
         "url": DEXSCREENER_PAIR_URL,
         "price_usd": pair.get("priceUsd") if pair else None,
         "txns_24h": pair.get("txns", {}).get("h24") if pair else None,
@@ -167,6 +177,79 @@ def nudge_ton_assets_pr_if_stale(days: int = 14) -> dict[str, Any]:
         "nudged": proc.returncode == 0,
         "stdout": proc.stdout[:200],
         "stderr": proc.stderr[:200],
+    }
+
+
+def check_stonfi_pool_ton() -> dict[str, Any]:
+    """Pool TON side from Ston.fi API (fallback when DexScreener de-indexed)."""
+    data = _http_json(f"https://api.ston.fi/v1/pools/{STONFI_POOL}")
+    pool = data.get("pool") if isinstance(data, dict) else None
+    if not isinstance(pool, dict):
+        return {"ok": False, "ton_human": None}
+    ton_addr = "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c"
+    t0 = pool.get("token0_address") or ""
+    t1 = pool.get("token1_address") or ""
+    r0 = pool.get("token0_reserve") or pool.get("reserve0")
+    r1 = pool.get("token1_reserve") or pool.get("reserve1")
+    ton_human = None
+    try:
+        if t0 == ton_addr and r0:
+            ton_human = int(r0) / 1e9
+        elif t1 == ton_addr and r1:
+            ton_human = int(r1) / 1e9
+    except (TypeError, ValueError):
+        ton_human = None
+    return {
+        "ok": ton_human is not None and ton_human > 0,
+        "ton_human": ton_human,
+        "url": STONFI_POOL_URL,
+    }
+
+
+def check_tonapi_rates() -> dict[str, Any]:
+    """Tonkeeper USD uses TonAPI /v2/rates — not Tonviewer verification."""
+    data = _http_json(
+        f"https://tonapi.io/v2/rates?tokens={PLX_MINTER}&currencies=usd",
+    )
+    rates = data.get("rates") if data else None
+    entry = None
+    if isinstance(rates, dict):
+        entry = rates.get(PLX_MINTER) or next(iter(rates.values()), None)
+    usd_raw = (entry or {}).get("prices", {}).get("USD")
+    try:
+        usd = float(usd_raw) if usd_raw is not None else 0.0
+    except (TypeError, ValueError):
+        usd = 0.0
+    return {
+        "ok": usd > 0,
+        "usd": usd,
+        "price_ready": usd > 0,
+        "diff_24h": (entry or {}).get("diff_24h", {}).get("USD"),
+    }
+
+
+def tonapi_price_gates(
+    *,
+    holders: int | None,
+    pool_ton_quote: float | None,
+    usd_price: float,
+) -> dict[str, Any]:
+    holders_n = int(holders or 0)
+    pool_ton = float(pool_ton_quote or 0)
+    return {
+        "tonapi_price_ready": usd_price > 0,
+        "holders_ready": holders_n >= TONAPI_MIN_HOLDERS,
+        "pool_ton_ready": pool_ton >= TONAPI_MIN_TON_RESERVE,
+        "holders": holders_n,
+        "pool_ton_quote": pool_ton,
+        "usd_price": usd_price,
+        "min_holders": TONAPI_MIN_HOLDERS,
+        "min_ton_reserve": TONAPI_MIN_TON_RESERVE,
+        "tonkeeper_usd_ready": (
+            usd_price > 0
+            and holders_n >= TONAPI_MIN_HOLDERS
+            and pool_ton >= TONAPI_MIN_TON_RESERVE
+        ),
     }
 
 

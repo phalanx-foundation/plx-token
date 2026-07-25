@@ -249,6 +249,19 @@ proof that liquidity cannot be withdrawn — preventing rug pulls.
 Extended staking with up to 5 bonus tiers. Same mechanics as basic staking but
 effective APR = base apr + highest matching bonus tier (based on stake amount).
 
+### Legacy contracts (PLX-specific only)
+
+Two contracts remain PLX-specific and are **not** exposed in the toolkit build wizard:
+
+| Contract | Generic replacement | Notes |
+|---|---|---|
+| `PlxStaking.tolk` | `TokenStaking.tolk` | PLX ecosystem staking only |
+| `PlxLockVault.tolk` | `TokenLockVault.tolk` | PLX ecosystem lock vault only |
+
+Both are marked `LEGACY` in their source files. User-facing features use the
+generic versions (`TokenStaking`, `TokenLockVault`) which accept any TEP-74
+jetton minter address.
+
 ### Deploy pipeline
 
 - **`deploy-jetton-combo.tolk`** — multi-template deploy script supporting

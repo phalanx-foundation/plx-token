@@ -207,7 +207,7 @@ Example: **10 PLX** Standard fee → 5 PLX burned on-chain, then sweep **2 + 1.5
 | `toolkit-staging/api/services/plx_treasury_sweep.py` | Background hook → `POST /plx-treasury-sweep` |
 | `toolkit-staging/acton-worker/main.py` | Worker endpoint `/plx-treasury-sweep` |
 
-Env (Ubuntu API `.env` via deploy-api-acton.ps1):
+Env (CF Containers — `npx wrangler deploy` via `toolkit-staging/docs/DEPLOY-WORKERS.md`):
 
 ```env
 PLX_SPLITTER_JETTON_MAINNET=EQBCSpxj6uWf2ihEfr5a4YQnXQff_Q-qoh7R6WwHrOIR7nQW

@@ -27,9 +27,12 @@ curl -I "https://ipfs.plx.foundation/ipfs/<CID>"
    - `TOKEN_IMAGE_STORAGE=ipfs` (or `dual` for GitHub backup)
 3. Deploy API prod:
 
-```powershell
-powershell -File "D:\DATA TOOLS\PLX-ACTON\toolkit-staging\scripts\deploy-api-acton.ps1"
+```bash
+cd toolkit-staging/web
+npx wrangler deploy
 ```
+
+> Lihat `toolkit-staging/docs/DEPLOY-WORKERS.md` §3 untuk detail CF Containers deploy.
 
 ## 3. Pin PLX native logo (one-time)
 

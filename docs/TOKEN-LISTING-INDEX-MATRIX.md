@@ -14,11 +14,12 @@ Single checklist for **Phalanx (PLX)** discoverability after mainnet LP. Update 
 
 | # | Platform | Submit URL | Gate | Status | Evidence |
 |---|----------|------------|------|--------|----------|
-| A1 | Tonkeeper ton-assets | https://github.com/tonkeeper/ton-assets/pull/5540 | YAML + metadata | **OPEN** — wait merge | PR from `phalanx-foundation` |
-| A2 | TonAPI verification | `curl tonapi.io/v2/jettons/{minter}` | ton-assets merge | **graylist** | After merge → `whitelist` |
+| A1 | Tonkeeper ton-assets | https://github.com/tonkeeper/ton-assets/pull/5540 | YAML + metadata | **MERGED** | PR from `phalanx-foundation` (2026-06-15) |
+| A2 | TonAPI verification | `curl tonapi.io/v2/jettons/{minter}` | ton-assets merge | **whitelist** | `verification: whitelist` (2026-06-22 probe) |
 | A3 | Ston.fi pool | https://app.ston.fi/pools/EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq | LP seeded | **Live** | Tx `9eb42e70…` |
-| A4 | DexScreener pair | https://dexscreener.com/ton/eqam-5hxqpfql8_lqyvax4aeps9lxp6re8afr35hcfrpyztq | Pool live + min TVL | **De-indexed** (2026-06-12) | Re-index auto after deepen + organic swaps |
+| A4 | DexScreener pair | https://dexscreener.com/ton/eqam-5hxqpfql8_lqyvax4aeps9lxp6re8afr35hcfrpyztq | Pool live + min TVL | **Fluctuating** | De-indexed 2026-06-27; re-indexes when LP/volume naik |
 | A5 | DexScreener token profile | https://docs.dexscreener.com/token-listing | Logo + links | **TODO** | Boost optional (paid) |
+| A6 | TonAPI rates (Tonkeeper USD) | `curl tonapi.io/v2/rates?tokens={minter}&currencies=usd` | ≥100 TON pool + ≥100 holders | **USD: 0** (2026-06-23) | Verified ≠ price; lihat [`TONKEEPER-USD-PRICE-RUNBOOK.md`](TONKEEPER-USD-PRICE-RUNBOOK.md) |
 
 ---
 
@@ -69,6 +70,7 @@ Single checklist for **Phalanx (PLX)** discoverability after mainnet LP. Update 
 | Script | Purpose |
 |--------|---------|
 | **`scripts/plx-listing-automation.py`** | **Agent cron — checks + Telegram + PR nudge** ([`LISTING-AUTOMATION.md`](LISTING-AUTOMATION.md)) |
+| `scripts/plx-tonkeeper-price-check.py` | Tonkeeper USD gates probe → `data/tonkeeper-price-probe.json` |
 | `scripts/plx-dex-dashboard.py` | Price + swap snapshot |
 | `scripts/plx-branding-swap.py` | Disclosed micro-MM (post-whitelist) |
 | [`docs/TELEGRAM-PROMO-TARGETS.md`](TELEGRAM-PROMO-TARGETS.md) | Curated TG channels/groups for outreach |
@@ -80,7 +82,8 @@ Single checklist for **Phalanx (PLX)** discoverability after mainnet LP. Update 
 ## Recommended order
 
 1. A1 merge → A2 whitelist  
-2. A4/A5 DexScreener surface + deploy `plx.foundation` price chip  
+2. **A6** deepen LP (≥100 TON) + holders (≥100) → Tonkeeper USD  
+3. A4/A5 DexScreener surface + deploy `plx.foundation` price chip  
 3. B1–B3 Tonscan + DYOR + Tonviewer  
 4. Organic quest [`TELEGRAM-QUEST-SWAPS.md`](TELEGRAM-QUEST-SWAPS.md) + [`PLX-AIRDROP-AND-RETENTION-CAMPAIGN.md`](PLX-AIRDROP-AND-RETENTION-CAMPAIGN.md)  
 5. C1 CoinGecko when LP ≥ ~$5k recommended  
@@ -90,4 +93,37 @@ Single checklist for **Phalanx (PLX)** discoverability after mainnet LP. Update 
 
 ---
 
-*Last updated: 2026-06-09. Sync with [`POST-MVP-ECOSYSTEM-AND-FUNDING-PLAN.md`](POST-MVP-ECOSYSTEM-AND-FUNDING-PLAN.md).*
+*Last updated: 2026-06-23. Sync with [`POST-MVP-ECOSYSTEM-AND-FUNDING-PLAN.md`](POST-MVP-ECOSYSTEM-AND-FUNDING-PLAN.md).*
+
+---
+
+## Quick operator checklist (copy/paste)
+
+Verifikasi metadata Tonkeeper **sudah PASS** jika ✅:
+
+- [x] **A1** ton-assets PR #5540 **merged**
+- [x] **A2** TonAPI `verification: whitelist`
+- [x] **A3** Ston.fi pool live
+- [x] **B2** DYOR.io indexed
+- [x] **A4** DexScreener pair indexed (LP tipis ~$30 — deepen untuk A6)
+- [ ] **A6** TonAPI rates `USD > 0` (gate ~100 TON LP + ~100 holders) → **baris USD di Tonkeeper**
+- [ ] **A5** DexScreener token profile (logo + links)
+- [ ] **B1** Tonscan labels submitted
+- [ ] **B3** Tonviewer contact labels
+- [ ] **C1** CoinGecko (gate LP ≥ ~$5k)
+- [ ] **D2** tApps Center (Mini App demo)
+
+**Smoke (Windows):**
+
+```powershell
+curl.exe -sS "https://tonapi.io/v2/jettons/EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS" | findstr verification
+# Harus: "whitelist"
+
+curl.exe -sS "https://tonapi.io/v2/rates?tokens=EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS&currencies=usd"
+# Tonkeeper USD: harus USD > 0 (bukan 0)
+
+cd "D:\DATA TOOLS\PLX-ACTON"
+python scripts/plx-listing-automation.py  # butuh LISTING_AUTOMATION_ENABLED=true
+```
+
+**Situs:** https://plx.foundation/plx-token → tile **Verification** (mainnet stats).

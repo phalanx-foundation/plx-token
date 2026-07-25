@@ -96,12 +96,12 @@ Satu key TonAPI dipakai di **dua** tempat (nilai **identik**):
 
 | Tempat | Variable | Catatan |
 |--------|----------|---------|
-| Ubuntu API (`~/services/plx-toolkit-api/.env`) | `TONAPI_KEY` | API backend (`api.plx.foundation`) — sync via `deploy-api-acton.ps1` |
+| CF Containers (`wrangler secret put TONAPI_KEY`) | `TONAPI_KEY` | API backend (`api.plx.foundation`) — sync via `npx wrangler deploy` |
 | Cloudflare Pages → web prod | `TONAPI_KEY` atau `NEXT_PUBLIC_TONAPI_KEY` | Jika web panggil TonAPI dari browser |
 
-**Jangan** commit key ke GitHub. Set di `.env` lokal lalu deploy ke Ubuntu API + Cloudflare Pages bila perlu.
+**Jangan** commit key ke GitHub. Set di `.env` lokal lalu sync ke CF Workers via `wrangler secret put`.
 
-Setelah set di server `.env`, jalankan `deploy-api-acton.ps1` atau restart container API.
+Setelah set secrets, jalankan `npx wrangler deploy` atau deploy ulang via CF Workers Builds.
 
 ---
 
@@ -159,7 +159,7 @@ Connect Console + CONSOLE_TOKEN di .env
 |--------|--------|
 | Rate limit tanpa key | Tambahkan `TONAPI_KEY` |
 | Jetton tidak ditemukan | Pastikan query pakai minter **EQCbaUJqi…** mainnet |
-| Key di `.env` tapi toolkit gagal | Deploy ulang ke Ubuntu: `deploy-api-acton.ps1` |
+| Key di `.env` tapi toolkit gagal | Deploy ulang: `npx wrangler deploy` (lihat `toolkit-staging/docs/DEPLOY-WORKERS.md`) |
 | Dua project Console | Pakai **satu** key prod untuk Phalanx; jangan campur testnet |
 
 ---

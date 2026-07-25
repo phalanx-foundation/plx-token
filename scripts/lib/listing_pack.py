@@ -25,6 +25,10 @@ DESCRIPTION = (
 COINGECKO_MIN_LP_USD = int(__import__("os").environ.get("LISTING_COINGECKO_MIN_LP_USD", "5000"))
 CMC_MIN_LP_USD = int(__import__("os").environ.get("LISTING_CMC_MIN_LP_USD", "10000"))
 
+# TonAPI / Tonkeeper USD price gates (opentonapi pkg/rates defaults)
+TONAPI_MIN_HOLDERS = int(__import__("os").environ.get("TONAPI_MIN_HOLDERS", "100"))
+TONAPI_MIN_TON_RESERVE = float(__import__("os").environ.get("TONAPI_MIN_TON_RESERVE", "100"))
+
 QUEST_MESSAGE = (
     "PLX mainnet swap quest (builders)\n\n"
     f"1. Ston.fi pool: {STONFI_POOL_URL}\n\n"

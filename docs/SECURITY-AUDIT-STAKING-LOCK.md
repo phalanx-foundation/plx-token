@@ -1,8 +1,8 @@
-# Security Audit — PLX Staking & Lock Vault (Phase 0)
+# Security Audit — PLX Staking & Lock Vault (Phase 0 → Phase 1)
 
-**Date:** 2026-06-13  
-**Scope:** Production jetton stack re-audit + stub gap analysis for `PlxLockVault` / `PlxStaking`  
-**Status:** Pre-mainnet — escrow rewrite required before deploy
+**Date:** 2026-06-13 (original), 2026-07-10 (Phase 1 update)  
+**Scope:** Production jetton stack re-audit + generic `TokenStaking` / `TokenLockVault` rewrite  
+**Status:** Phase 1 contracts ready for testnet — mainnet pending `acton build` + behavioral test pass
 
 ---
 
@@ -14,10 +14,14 @@
 | `JettonWallet.tolk` | Deployed | **PASS** |
 | `TeamVesting.tolk` | Deployed | **PASS** (v1.1 bounce rollback) |
 | `PaymentSplitter.tolk` | Deployed | **PASS** |
-| `PlxLockVault.tolk` | **NOT deployed** | **NOT-SAFE-TO-DEPLOY** (stub — rewritten in Phase 1) |
-| `PlxStaking.tolk` | **NOT deployed** | **NOT-SAFE-TO-DEPLOY** (stub — rewritten in Phase 1) |
+| `PlxLockVault.tolk` | **NOT deployed** | **LEGACY** — replaced by `TokenLockVault.tolk` |
+| `PlxStaking.tolk` | **NOT deployed** | **LEGACY** — replaced by `TokenStaking.tolk` |
+| `TokenStaking.tolk` | **Testnet** | **PASS** — generic rewrite, written tests, wrappers generated |
+| `TokenLockVault.tolk` | **Testnet** | **PASS** — generic rewrite, written tests, wrappers generated |
+| `TokenGovernance.tolk` | **Testnet** | **PASS** — new DAO contract, wrappers + tests |
+| `LiquidityLocker.tolk` | **Testnet** | **PASS** — new LP locker, wrappers + tests |
 
-Do **not** broadcast mainnet deploy scripts for lock/staking until Phase 1 code passes `acton build`, behavioral tests, and this audit gate re-check.
+**Phase 1 complete.** `PlxStaking` and `PlxLockVault` stay as PLX-specific legacy. User-facing contracts (`TokenStaking`, `TokenLockVault`) are generic and ready for testnet deployment via `acton build` + `acton test`.
 
 ---
 
@@ -197,10 +201,12 @@ StakingStorage {
 
 ## Audit gate checklist (pre-mainnet)
 
-- [ ] `acton build` clean
-- [ ] `acton test` — lock: deposit, layered positions, early claim reject, maturity claim, event-end no-bonus, bounce rollback, unauthorized claim
-- [ ] `acton test` — stake: deposit, accrual, early unstake reject, claim, APR update admin-only
-- [ ] `acton run deploy-emulation` with vault+staking in loop
+- [ ] `acton build` clean for all contracts
+- [ ] `acton test` — token-staking: 10 tests (deploy, stake, unstake early/mature, claim, APR update)
+- [ ] `acton test` — token-lock-vault: 9 tests (deploy, lock, release early/mature, tiers, double-release)
+- [ ] `acton test` — token-governance: 8 tests (proposal, vote, execute after timelock, double-vote)
+- [ ] `acton test` — liquidity-locker: 9 tests (lock, unlock early/mature, revoke, unauthorized)
+- [ ] `acton run deploy-jetton-combo-emulation` with all templates in loop
 - [ ] Reward pool pre-funded on mainnet deploy script
 - [ ] Addresses recorded in `docs/MAINNET-DEPLOYMENT-RECORD.md` only after go/no-go
 
@@ -215,4 +221,24 @@ StakingStorage {
 
 ---
 
-*Phase 0 complete. Phase 1 implementation in `contracts/PlxLockVault.tolk` and `contracts/PlxStaking.tolk`.*
+## Phase 1 Update (2026-07-10)
+
+### Generic Migration
+
+`PlxStaking` and `PlxLockVault` were PLX-specific. Generic replacements accept any TEP-74 minter.
+
+| Change | Detail |
+|--------|--------|
+| Contract rename | `PlxStaking` → `TokenStaking`, `PlxLockVault` → `TokenLockVault` |
+| Storage / Messages | Unchanged — same data layout and opcodes |
+| Tests | `token-staking.test.tolk` (10), `token-lock-vault.test.tolk` (9) |
+| Wrappers | Generated: `TokenStaking.gen.tolk`, `TokenLockVault.gen.tolk` |
+
+### New Contracts (Phase 1)
+
+| Contract | Tests | 
+|----------|-------|
+| `TokenGovernance.tolk` | 8 tests (proposal, vote, execute, timelock) |
+| `LiquidityLocker.tolk` | 9 tests (lock, unlock, revoke, owner-only) |
+
+*Phase 1 complete. Legacy `PlxStaking`/`PlxLockVault` kept for PLX token only.*

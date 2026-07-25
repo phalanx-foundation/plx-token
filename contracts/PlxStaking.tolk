@@ -3,6 +3,8 @@ import "errors"
 import "jetton-utils"
 import "messages"
 
+// LEGACY — PLX-specific only. For user-deployed tokens use contracts/TokenStaking.tolk instead.
+// Kept for PLX ecosystem staking; not exposed in the toolkit build wizard.
 contract PlxStaking {
     author: "Phalanx Foundation"
     version: "2.0.0"

@@ -3,6 +3,8 @@ import "errors"
 import "jetton-utils"
 import "messages"
 
+// LEGACY — PLX-specific only. For user-deployed tokens use contracts/TokenLockVault.tolk instead.
+// Kept for PLX ecosystem lock vault; not exposed in the toolkit build wizard.
 contract PlxLockVault {
     author: "Phalanx Foundation"
     version: "2.0.0"

@@ -10,6 +10,9 @@ LISTING_AUTOMATION_ENABLED=true
 LISTING_QUEST_ENABLED=true          # post swap quest to Telegram
 LISTING_PR_NUDGE_ENABLED=true       # comment on ton-assets PR #5540 if stale
 LISTING_RUN_BRANDING=true           # run plx-branding-swap.py each cycle
+LISTING_TONAPI_RATES_ALERT=true    # Telegram if whitelist but USD rates = 0
+TONAPI_MIN_HOLDERS=100              # Tonkeeper price gate (opentonapi default)
+TONAPI_MIN_TON_RESERVE=100          # pool TON side gate
 TOKEN_TELEGRAM_BOT=...
 TELEGRAM_OPS_CHAT_ID=...
 LISTING_QUEST_CHAT_ID=...           # optional public channel
@@ -32,6 +35,8 @@ Acton worker: `POST /listing-automation` (Bearer `ACTON_WORKER_TOKEN`).
 |--------|-----|
 | DexScreener pair health | API poll liquidity, price, txns |
 | TonAPI `verification` | Poll jetton (needs `TONAPI_KEY`) |
+| TonAPI `/v2/rates` USD | Poll for Tonkeeper fiat gate |
+| Tonkeeper USD alert | Telegram if whitelist but rates = 0 |
 | DYOR index check | `api.dyor.io/v1/jettons` |
 | CoinGecko listed check | Search API |
 | ton-assets PR status | `gh pr view 5540` + optional nudge comment |
