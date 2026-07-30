@@ -45,6 +45,13 @@ elif [[ "$ASSET" == "TON" ]]; then
   export TON_AMOUNT_NANO="$AMOUNT_NANO"
   OUT="$("$ACTON" script scripts/send-ton.tolk --net "$NETWORK" 2>&1)"
   CODE=$?
+elif [[ "$ASSET" == "USDT" ]]; then
+  export JETTON_SENDER="$FROM_WALLET"
+  export JETTON_TRANSFER_RECIPIENT="$RECIPIENT"
+  export JETTON_TRANSFER_AMOUNT="$AMOUNT_HUMAN"
+  export JETTON_MINTER_ADDRESS="${SCRATCH_USDT_MASTER:-${USDT_JETTON_MINTER_MAINNET:-EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs}}"
+  OUT="$("$ACTON" script scripts/transfer.tolk --net "$NETWORK" 2>&1)"
+  CODE=$?
 else
   echo "{\"error\":\"unsupported asset for scratch payout: $ASSET\"}" >&2
   exit 1
