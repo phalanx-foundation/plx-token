@@ -1,4 +1,8 @@
-"""Platform status probes for PLX listing automation."""
+"""Platform status probes for multi-token listing automation.
+
+Every checker accepts an optional `config` (TokenListingConfig) parameter.
+When omitted, defaults to PLX for backward compatibility with existing scripts.
+"""
 
 from __future__ import annotations
 
@@ -13,14 +17,11 @@ from typing import Any
 from lib.listing_pack import (
     COINGECKO_MIN_LP_USD,
     CMC_MIN_LP_USD,
-    DEXSCREENER_PAIR_URL,
-    PLX_MINTER,
-    STONFI_POOL,
-    STONFI_POOL_URL,
     TONAPI_MIN_HOLDERS,
     TONAPI_MIN_TON_RESERVE,
-    TON_ASSETS_PR,
     TON_ASSETS_REPO,
+    TokenListingConfig,
+    plx_config,
 )
 
 
@@ -39,8 +40,15 @@ def _http_json(url: str, *, headers: dict[str, str] | None = None, method: str =
         return None
 
 
-def check_dexscreener_pair() -> dict[str, Any]:
-    url = f"https://api.dexscreener.com/latest/dex/pairs/ton/{STONFI_POOL}"
+def _resolve_config(cfg: TokenListingConfig | None = None) -> TokenListingConfig:
+    return cfg if cfg is not None else plx_config()
+
+
+def check_dexscreener_pair(config: TokenListingConfig | None = None) -> dict[str, Any]:
+    cfg = _resolve_config(config)
+    if not cfg.pool_address:
+        return {"ok": False, "error": "no_pool_address", "url": ""}
+    url = f"https://api.dexscreener.com/latest/dex/pairs/ton/{cfg.pool_address}"
     data = _http_json(url)
     pairs = data.get("pairs") if data else None
     pair = pairs[0] if isinstance(pairs, list) and pairs else None
@@ -56,14 +64,15 @@ def check_dexscreener_pair() -> dict[str, Any]:
         "ok": pair is not None,
         "liquidity_usd": liq,
         "pool_ton_quote": quote_reserve,
-        "url": DEXSCREENER_PAIR_URL,
+        "url": cfg.dexscreener_url,
         "price_usd": pair.get("priceUsd") if pair else None,
         "txns_24h": pair.get("txns", {}).get("h24") if pair else None,
     }
 
 
-def check_dexscreener_orders() -> dict[str, Any]:
-    url = f"https://api.dexscreener.com/orders/v1/ton/{PLX_MINTER}"
+def check_dexscreener_orders(config: TokenListingConfig | None = None) -> dict[str, Any]:
+    cfg = _resolve_config(config)
+    url = f"https://api.dexscreener.com/orders/v1/ton/{cfg.minter_address}"
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "PLX-ListingAutomation/1.0"})
         with urllib.request.urlopen(req, timeout=30) as res:
@@ -74,10 +83,11 @@ def check_dexscreener_orders() -> dict[str, Any]:
         return {"ok": False, "orders": []}
 
 
-def check_tonapi_jetton() -> dict[str, Any]:
+def check_tonapi_jetton(config: TokenListingConfig | None = None) -> dict[str, Any]:
+    cfg = _resolve_config(config)
     key = os.environ.get("TONAPI_KEY", os.environ.get("CONSOLE_TOKEN", "")).strip()
     headers = {"Authorization": f"Bearer {key}"} if key else {}
-    data = _http_json(f"https://tonapi.io/v2/jettons/{PLX_MINTER}", headers=headers)
+    data = _http_json(f"https://tonapi.io/v2/jettons/{cfg.minter_address}", headers=headers)
     if not data:
         return {"ok": False, "error": "tonapi_unreachable_or_no_key"}
     return {
@@ -88,8 +98,9 @@ def check_tonapi_jetton() -> dict[str, Any]:
     }
 
 
-def check_dyor_indexed() -> dict[str, Any]:
-    body = json.dumps({"address": [PLX_MINTER], "limit": 1, "excludeScam": False}).encode()
+def check_dyor_indexed(config: TokenListingConfig | None = None) -> dict[str, Any]:
+    cfg = _resolve_config(config)
+    body = json.dumps({"address": [cfg.minter_address], "limit": 1, "excludeScam": False}).encode()
     data = _http_json(
         "https://api.dyor.io/v1/jettons",
         method="POST",
@@ -101,29 +112,30 @@ def check_dyor_indexed() -> dict[str, Any]:
     return {"ok": found, "indexed": found, "count": len(jettons or [])}
 
 
-def check_coingecko_listed() -> dict[str, Any]:
-    search = _http_json(f"https://api.coingecko.com/api/v3/search?query=PLX%20Phalanx")
+def check_coingecko_listed(config: TokenListingConfig | None = None) -> dict[str, Any]:
+    cfg = _resolve_config(config)
+    query = f"{cfg.symbol}%20{cfg.name}"
+    search = _http_json(f"https://api.coingecko.com/api/v3/search?query={query}")
     coins = (search or {}).get("coins") if search else []
     match = None
+    name_lower = cfg.name.lower()
     if isinstance(coins, list):
         for c in coins:
-            if isinstance(c, dict) and "phalanx" in (c.get("name") or "").lower():
+            if isinstance(c, dict) and name_lower in (c.get("name") or "").lower():
                 match = c
                 break
     return {"ok": match is not None, "coin": match}
 
 
-def check_ton_assets_pr() -> dict[str, Any]:
+def check_ton_assets_pr(config: TokenListingConfig | None = None) -> dict[str, Any]:
+    cfg = _resolve_config(config)
+    if not cfg.ton_assets_pr:
+        return {"ok": False, "error": "no_pr_number"}
     proc = subprocess.run(
         [
-            "gh",
-            "pr",
-            "view",
-            str(TON_ASSETS_PR),
-            "--repo",
-            TON_ASSETS_REPO,
-            "--json",
-            "state,mergedAt,url,comments,updatedAt",
+            "gh", "pr", "view", str(cfg.ton_assets_pr),
+            "--repo", TON_ASSETS_REPO,
+            "--json", "state,mergedAt,url,comments,updatedAt",
         ],
         capture_output=True,
         text=True,
@@ -150,23 +162,23 @@ def check_ton_assets_pr() -> dict[str, Any]:
     }
 
 
-def nudge_ton_assets_pr_if_stale(days: int = 14) -> dict[str, Any]:
-    pr_info = check_ton_assets_pr()
+def nudge_ton_assets_pr_if_stale(
+    config: TokenListingConfig | None = None,
+    days: int = 14,
+) -> dict[str, Any]:
+    cfg = _resolve_config(config)
+    pr_info = check_ton_assets_pr(cfg)
     if not pr_info.get("ok") or pr_info.get("state") != "OPEN":
         return {"nudged": False, "reason": "pr_not_open"}
+    body_text = (
+        f"Phalanx Foundation automation follow-up: {cfg.symbol} mainnet LP live — "
+        f"{cfg.pool_url}. Ready for review — thank you."
+    )
     proc = subprocess.run(
         [
-            "gh",
-            "pr",
-            "comment",
-            str(TON_ASSETS_PR),
-            "--repo",
-            TON_ASSETS_REPO,
-            "--body",
-            (
-                "Phalanx Foundation automation follow-up: PLX mainnet LP live — "
-                f"{STONFI_POOL_URL}. Ready for review — thank you."
-            ),
+            "gh", "pr", "comment", str(cfg.ton_assets_pr),
+            "--repo", TON_ASSETS_REPO,
+            "--body", body_text,
         ],
         capture_output=True,
         text=True,
@@ -180,12 +192,15 @@ def nudge_ton_assets_pr_if_stale(days: int = 14) -> dict[str, Any]:
     }
 
 
-def check_stonfi_pool_ton() -> dict[str, Any]:
+def check_stonfi_pool_ton(config: TokenListingConfig | None = None) -> dict[str, Any]:
     """Pool TON side from Ston.fi API (fallback when DexScreener de-indexed)."""
-    data = _http_json(f"https://api.ston.fi/v1/pools/{STONFI_POOL}")
+    cfg = _resolve_config(config)
+    if not cfg.pool_address:
+        return {"ok": False, "ton_human": None, "url": ""}
+    data = _http_json(f"https://api.ston.fi/v1/pools/{cfg.pool_address}")
     pool = data.get("pool") if isinstance(data, dict) else None
     if not isinstance(pool, dict):
-        return {"ok": False, "ton_human": None}
+        return {"ok": False, "ton_human": None, "url": cfg.pool_url}
     ton_addr = "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c"
     t0 = pool.get("token0_address") or ""
     t1 = pool.get("token1_address") or ""
@@ -202,19 +217,20 @@ def check_stonfi_pool_ton() -> dict[str, Any]:
     return {
         "ok": ton_human is not None and ton_human > 0,
         "ton_human": ton_human,
-        "url": STONFI_POOL_URL,
+        "url": cfg.pool_url,
     }
 
 
-def check_tonapi_rates() -> dict[str, Any]:
+def check_tonapi_rates(config: TokenListingConfig | None = None) -> dict[str, Any]:
     """Tonkeeper USD uses TonAPI /v2/rates — not Tonviewer verification."""
+    cfg = _resolve_config(config)
     data = _http_json(
-        f"https://tonapi.io/v2/rates?tokens={PLX_MINTER}&currencies=usd",
+        f"https://tonapi.io/v2/rates?tokens={cfg.minter_address}&currencies=usd",
     )
     rates = data.get("rates") if data else None
     entry = None
     if isinstance(rates, dict):
-        entry = rates.get(PLX_MINTER) or next(iter(rates.values()), None)
+        entry = rates.get(cfg.minter_address) or next(iter(rates.values()), None)
     usd_raw = (entry or {}).get("prices", {}).get("USD")
     try:
         usd = float(usd_raw) if usd_raw is not None else 0.0
