@@ -24,7 +24,6 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib.stonfi_swap import (  # noqa: E402
     enqueue_swap,
-    load_swap_queue,
     run_node_executor,
     simulate_plx_to_ton,
     simulate_ton_to_plx,

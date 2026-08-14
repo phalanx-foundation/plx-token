@@ -156,7 +156,7 @@ def _build_summary(run: dict[str, Any]) -> str:
         f"CoinGecko gate: {'ready' if elig.get('coingecko_ready') else 'need $' + str(elig.get('coingecko_min_usd'))}",
         f"DYOR indexed: {run['checks']['dyor'].get('indexed')}",
         f"Quest posted: {run['actions']['quest'].get('posted')}",
-        f"Runbook: docs/TONKEEPER-USD-PRICE-RUNBOOK.md",
+        "Runbook: docs/TONKEEPER-USD-PRICE-RUNBOOK.md",
         f"Details: {TOKEN_PAGE}",
     ]
     return "\n".join(lines)

@@ -27,11 +27,11 @@ from sqlalchemy.orm import Session
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.dotenv_load import load_project_dotenv
+from lib.dotenv_load import load_project_dotenv  # noqa: E402
 
 load_project_dotenv()
 
-from lib.listing_checks import (
+from lib.listing_checks import (  # noqa: E402
     check_dexscreener_pair,
     check_stonfi_pool_ton,
     check_tonapi_jetton,
@@ -39,8 +39,8 @@ from lib.listing_checks import (
     check_ton_assets_pr,
     now_iso,
 )
-from lib.listing_notify import send_telegram, telegram_configured
-from lib.listing_pack import TokenListingConfig
+from lib.listing_notify import send_telegram, telegram_configured  # noqa: E402
+from lib.listing_pack import TokenListingConfig  # noqa: E402
 
 LOG_FILE = Path(
     os.environ.get("LISTING_LOG_FILE", ROOT / "data" / "listing-monitor-log.json")
