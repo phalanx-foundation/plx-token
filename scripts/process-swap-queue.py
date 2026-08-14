@@ -15,8 +15,16 @@ from lib.stonfi_swap import load_swap_queue, stonfi_pool_url  # noqa: E402
 
 def main() -> int:
     entries = load_swap_queue()
-    pending = [e for e in entries if e.get("status") in ("simulated", "queued_manual", "broadcast_failed")]
-    print(json.dumps({"pool_url": stonfi_pool_url(), "pending": pending, "count": len(pending)}))
+    pending = [
+        e
+        for e in entries
+        if e.get("status") in ("simulated", "queued_manual", "broadcast_failed")
+    ]
+    print(
+        json.dumps(
+            {"pool_url": stonfi_pool_url(), "pending": pending, "count": len(pending)}
+        )
+    )
     return 0
 
 

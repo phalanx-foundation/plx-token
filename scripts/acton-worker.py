@@ -28,12 +28,15 @@ from typing import Any
 from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
-TOKEN = os.environ.get("ACTON_WORKER_TOKEN", os.environ.get("ACTON_DEPLOY_TOKEN", "")).strip()
+TOKEN = os.environ.get(
+    "ACTON_WORKER_TOKEN", os.environ.get("ACTON_DEPLOY_TOKEN", "")
+).strip()
 PORT = int(os.environ.get("ACTON_WORKER_PORT", "8787"))
 HOST = os.environ.get("ACTON_WORKER_HOST", "127.0.0.1")
 SWEEP_QUEUE_FILE = Path(
     os.environ.get("SWEEP_QUEUE_FILE", str(ROOT / "data" / "sweep-pending.json"))
 )
+
 
 def _run_script(script: str, params: dict[str, Any]) -> tuple[int, str, str]:
     env = os.environ.copy()
@@ -78,7 +81,11 @@ def _append_sweep_queue(entry: dict[str, Any]) -> dict[str, Any]:
             existing.get("deployment_id") == deployment_id
             and existing.get("status") == "pending"
         ):
-            return {"queued": False, "reason": "already_pending", "queue_size": len(entries)}
+            return {
+                "queued": False,
+                "reason": "already_pending",
+                "queue_size": len(entries),
+            }
 
     if not entry.get("queued_at"):
         entry["queued_at"] = datetime.now(tz=UTC).isoformat()
@@ -205,4 +212,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

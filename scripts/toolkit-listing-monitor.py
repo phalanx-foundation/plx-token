@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Lazy multi-token listing monitor — only probes when active listings exist.
 
 Triggered BY the deploy hook (not cron). Optional lightweight cron:
@@ -86,13 +86,20 @@ def _load_active_listings(db: Session) -> list[dict[str, Any]]:
 
     return [
         {
-            "id": r[0], "deployment_id": r[1], "minter_address": r[2],
-            "pool_address": r[3], "listing_status": r[4],
-            "ton_assets_pr_number": r[5], "ton_assets_pr_url": r[6],
-            "tonapi_verification": r[7], "holders_count": r[8],
+            "id": r[0],
+            "deployment_id": r[1],
+            "minter_address": r[2],
+            "pool_address": r[3],
+            "listing_status": r[4],
+            "ton_assets_pr_number": r[5],
+            "ton_assets_pr_url": r[6],
+            "tonapi_verification": r[7],
+            "holders_count": r[8],
             "pool_ton_quote": r[9],
-            "coingecko_submitted": r[10], "coingecko_id": r[11],
-            "cmc_submitted": r[12], "tonapi_rates_usd": r[13],
+            "coingecko_submitted": r[10],
+            "coingecko_id": r[11],
+            "cmc_submitted": r[12],
+            "tonapi_rates_usd": r[13],
         }
         for r in rows
     ]
@@ -116,7 +123,9 @@ def _update_listing(db: Session, listing_id: str, fields: dict[str, Any]) -> Non
 
 def _probe_one(row: dict[str, Any]) -> dict[str, Any]:
     cfg = TokenListingConfig(
-        name="", symbol="", minter_address=row["minter_address"],
+        name="",
+        symbol="",
+        minter_address=row["minter_address"],
         pool_address=row["pool_address"] or "",
         ton_assets_pr=row["ton_assets_pr_number"],
     )
@@ -126,7 +135,9 @@ def _probe_one(row: dict[str, Any]) -> dict[str, Any]:
 
     fields: dict[str, Any] = {
         "tonapi_verification": ton.get("verification"),
-        "holders_count": ton.get("holders") if isinstance(ton.get("holders"), int) else None,
+        "holders_count": ton.get("holders")
+        if isinstance(ton.get("holders"), int)
+        else None,
         "tonapi_rates_usd": rates.get("usd"),
     }
 
@@ -173,7 +184,9 @@ def main() -> int:
         db.close()
 
     if not rows:
-        print(json.dumps({"ok": True, "active_listings": 0, "note": "no active — exit"}))
+        print(
+            json.dumps({"ok": True, "active_listings": 0, "note": "no active — exit"})
+        )
         return 0
 
     run_log = {"at": now_iso(), "active": len(rows), "results": []}
@@ -200,16 +213,22 @@ def main() -> int:
         if fields.get("coingecko_eligible"):
             fields["coingecko_submitted"] = True
             run_log.setdefault("coingecko_notes", []).append(
-                "CG eligible: {} LP=${}".format(row["minter_address"], fields.get("pool_ton_quote", "?"))
+                "CG eligible: {} LP=${}".format(
+                    row["minter_address"], fields.get("pool_ton_quote", "?")
+                )
             )
         if fields.get("cmc_eligible"):
             fields["cmc_submitted"] = True
             run_log.setdefault("cmc_notes", []).append(
-                "CMC eligible: {} LP=${}".format(row["minter_address"], fields.get("pool_ton_quote", "?"))
+                "CMC eligible: {} LP=${}".format(
+                    row["minter_address"], fields.get("pool_ton_quote", "?")
+                )
             )
 
         # Telegram alert if whitelist but USD still 0
-        verification = fields.get("tonapi_verification") or row.get("tonapi_verification")
+        verification = fields.get("tonapi_verification") or row.get(
+            "tonapi_verification"
+        )
         usd = fields.get("tonapi_rates_usd") or row.get("tonapi_rates_usd")
         if (
             telegram_configured()
@@ -225,11 +244,14 @@ def main() -> int:
                 "Deepen LP + grow holders."
             )
 
-        run_log["results"].append({
-            "row_id": row["id"], "minter": row["minter_address"],
-            "status_before": row["listing_status"],
-            "updated": {k: v for k, v in fields.items() if v is not None},
-        })
+        run_log["results"].append(
+            {
+                "row_id": row["id"],
+                "minter": row["minter_address"],
+                "status_before": row["listing_status"],
+                "updated": {k: v for k, v in fields.items() if v is not None},
+            }
+        )
 
     _append_log(run_log)
     print(json.dumps({"ok": True, "run": run_log}))

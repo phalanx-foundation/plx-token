@@ -25,7 +25,13 @@ from lib.listing_pack import (
 )
 
 
-def _http_json(url: str, *, headers: dict[str, str] | None = None, method: str = "GET", body: bytes | None = None) -> dict[str, Any] | None:
+def _http_json(
+    url: str,
+    *,
+    headers: dict[str, str] | None = None,
+    method: str = "GET",
+    body: bytes | None = None,
+) -> dict[str, Any] | None:
     req = urllib.request.Request(
         url,
         data=body,
@@ -70,11 +76,15 @@ def check_dexscreener_pair(config: TokenListingConfig | None = None) -> dict[str
     }
 
 
-def check_dexscreener_orders(config: TokenListingConfig | None = None) -> dict[str, Any]:
+def check_dexscreener_orders(
+    config: TokenListingConfig | None = None,
+) -> dict[str, Any]:
     cfg = _resolve_config(config)
     url = f"https://api.dexscreener.com/orders/v1/ton/{cfg.minter_address}"
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "PLX-ListingAutomation/1.0"})
+        req = urllib.request.Request(
+            url, headers={"User-Agent": "PLX-ListingAutomation/1.0"}
+        )
         with urllib.request.urlopen(req, timeout=30) as res:
             raw = res.read().decode()
             orders = json.loads(raw)
@@ -87,7 +97,9 @@ def check_tonapi_jetton(config: TokenListingConfig | None = None) -> dict[str, A
     cfg = _resolve_config(config)
     key = os.environ.get("TONAPI_KEY", os.environ.get("CONSOLE_TOKEN", "")).strip()
     headers = {"Authorization": f"Bearer {key}"} if key else {}
-    data = _http_json(f"https://tonapi.io/v2/jettons/{cfg.minter_address}", headers=headers)
+    data = _http_json(
+        f"https://tonapi.io/v2/jettons/{cfg.minter_address}", headers=headers
+    )
     if not data:
         return {"ok": False, "error": "tonapi_unreachable_or_no_key"}
     return {
@@ -100,7 +112,9 @@ def check_tonapi_jetton(config: TokenListingConfig | None = None) -> dict[str, A
 
 def check_dyor_indexed(config: TokenListingConfig | None = None) -> dict[str, Any]:
     cfg = _resolve_config(config)
-    body = json.dumps({"address": [cfg.minter_address], "limit": 1, "excludeScam": False}).encode()
+    body = json.dumps(
+        {"address": [cfg.minter_address], "limit": 1, "excludeScam": False}
+    ).encode()
     data = _http_json(
         "https://api.dyor.io/v1/jettons",
         method="POST",
@@ -133,9 +147,14 @@ def check_ton_assets_pr(config: TokenListingConfig | None = None) -> dict[str, A
         return {"ok": False, "error": "no_pr_number"}
     proc = subprocess.run(
         [
-            "gh", "pr", "view", str(cfg.ton_assets_pr),
-            "--repo", TON_ASSETS_REPO,
-            "--json", "state,mergedAt,url,comments,updatedAt",
+            "gh",
+            "pr",
+            "view",
+            str(cfg.ton_assets_pr),
+            "--repo",
+            TON_ASSETS_REPO,
+            "--json",
+            "state,mergedAt,url,comments,updatedAt",
         ],
         capture_output=True,
         text=True,
@@ -150,7 +169,9 @@ def check_ton_assets_pr(config: TokenListingConfig | None = None) -> dict[str, A
         return {"ok": False, "error": "invalid gh json"}
     comments = pr.get("comments") or []
     phalanx_comments = [
-        c for c in comments if "phalanx" in (c.get("author", {}).get("login") or "").lower()
+        c
+        for c in comments
+        if "phalanx" in (c.get("author", {}).get("login") or "").lower()
     ]
     return {
         "ok": True,
@@ -176,9 +197,14 @@ def nudge_ton_assets_pr_if_stale(
     )
     proc = subprocess.run(
         [
-            "gh", "pr", "comment", str(cfg.ton_assets_pr),
-            "--repo", TON_ASSETS_REPO,
-            "--body", body_text,
+            "gh",
+            "pr",
+            "comment",
+            str(cfg.ton_assets_pr),
+            "--repo",
+            TON_ASSETS_REPO,
+            "--body",
+            body_text,
         ],
         capture_output=True,
         text=True,

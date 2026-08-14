@@ -20,7 +20,11 @@ def _bot_token() -> str:
 
 def _chat_ids() -> list[str]:
     ids: list[str] = []
-    for key in ("LISTING_QUEST_CHAT_ID", "TELEGRAM_PUBLIC_CHAT_ID", "TELEGRAM_OPS_CHAT_ID"):
+    for key in (
+        "LISTING_QUEST_CHAT_ID",
+        "TELEGRAM_PUBLIC_CHAT_ID",
+        "TELEGRAM_OPS_CHAT_ID",
+    ):
         val = os.environ.get(key, "").strip()
         if val and val not in ids:
             ids.append(val)

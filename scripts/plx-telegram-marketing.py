@@ -35,7 +35,11 @@ from lib.listing_pack import (  # noqa: E402
 
 load_project_dotenv()
 
-STATE_FILE = Path(os.environ.get("TELEGRAM_MARKETING_STATE", ROOT / "data" / "telegram-marketing-state.json"))
+STATE_FILE = Path(
+    os.environ.get(
+        "TELEGRAM_MARKETING_STATE", ROOT / "data" / "telegram-marketing-state.json"
+    )
+)
 
 LAUNCH_MESSAGE = f"""🛡 Phalanx (PLX) — live on TON mainnet
 
@@ -81,7 +85,9 @@ def _token() -> str:
     ).strip()
 
 
-def _api(method: str, payload: dict[str, Any] | None = None, *, get: bool = False) -> dict[str, Any]:
+def _api(
+    method: str, payload: dict[str, Any] | None = None, *, get: bool = False
+) -> dict[str, Any]:
     token = _token()
     if not token:
         return {"ok": False, "error": "no bot token"}
@@ -143,7 +149,11 @@ def setup_bot_profile() -> dict[str, Any]:
         ),
         "setMyShortDescription": _api(
             "setMyShortDescription",
-            {"short_description": "PLX utility jetton · Phalanx Toolkit on TON mainnet"[:120]},
+            {
+                "short_description": "PLX utility jetton · Phalanx Toolkit on TON mainnet"[
+                    :120
+                ]
+            },
         ),
         "setMyCommands": _api(
             "setMyCommands",
@@ -215,7 +225,10 @@ def post_channel_welcome(chat_id: str, *, force: bool = False) -> dict[str, Any]
 def run_broadcast(force: bool = False) -> dict[str, Any]:
     state = _load_state()
     if state.get("launch_sent") and not force:
-        return {"skipped": "launch_already_sent", "use": "TELEGRAM_MARKETING_FORCE=true"}
+        return {
+            "skipped": "launch_already_sent",
+            "use": "TELEGRAM_MARKETING_FORCE=true",
+        }
 
     results: dict[str, Any] = {
         "targets": {},
@@ -227,7 +240,11 @@ def run_broadcast(force: bool = False) -> dict[str, Any]:
         results["channel_welcome"][chat] = post_channel_welcome(chat, force=force)
         launch = send_message(chat, LAUNCH_MESSAGE)
         quest = send_message(chat, QUEST_MESSAGE)
-        results["targets"][chat] = {"launch": launch.get("ok"), "quest": quest.get("ok"), "errors": []}
+        results["targets"][chat] = {
+            "launch": launch.get("ok"),
+            "quest": quest.get("ok"),
+            "errors": [],
+        }
         if not launch.get("ok"):
             results["targets"][chat]["errors"].append(launch.get("description", launch))
         if not quest.get("ok"):

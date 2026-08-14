@@ -19,7 +19,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-LOG_FILE = Path(os.environ.get("BRANDING_SWAP_LOG", ROOT / "data" / "branding-swap-log.json"))
+LOG_FILE = Path(
+    os.environ.get("BRANDING_SWAP_LOG", ROOT / "data" / "branding-swap-log.json")
+)
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib.stonfi_swap import (  # noqa: E402
@@ -30,7 +32,9 @@ from lib.stonfi_swap import (  # noqa: E402
     stonfi_pool_url,
 )
 
-STATE_FILE = Path(os.environ.get("BRANDING_SWAP_STATE", ROOT / "data" / "branding-swap-state.json"))
+STATE_FILE = Path(
+    os.environ.get("BRANDING_SWAP_STATE", ROOT / "data" / "branding-swap-state.json")
+)
 
 
 def _enabled() -> bool:
@@ -118,7 +122,11 @@ def main() -> int:
     wallet = wallet_buy if side == "buy" else wallet_sell
     network = os.environ.get("network", os.environ.get("NETWORK", "mainnet"))
 
-    sim = simulate_ton_to_plx(swap_ton) if side == "buy" else simulate_plx_to_ton(swap_ton)
+    sim = (
+        simulate_ton_to_plx(swap_ton)
+        if side == "buy"
+        else simulate_plx_to_ton(swap_ton)
+    )
     if not sim:
         print(json.dumps({"ok": False, "error": "simulate_failed"}))
         return 1

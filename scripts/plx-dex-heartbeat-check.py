@@ -31,7 +31,12 @@ from lib.listing_pack import STONFI_POOL_URL  # noqa: E402
 
 def _state_path() -> Path:
     import os  # noqa: PLC0415
-    return Path(os.environ.get("DEX_HEARTBEAT_STATE", ROOT / "data" / "dex-heartbeat-state.json"))
+
+    return Path(
+        os.environ.get(
+            "DEX_HEARTBEAT_STATE", ROOT / "data" / "dex-heartbeat-state.json"
+        )
+    )
 
 
 def main() -> int:
