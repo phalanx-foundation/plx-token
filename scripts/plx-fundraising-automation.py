@@ -20,9 +20,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.dotenv_load import load_project_dotenv  # noqa: E402
-from lib.listing_notify import send_telegram, telegram_configured  # noqa: E402
-from lib.listing_pack import (  # noqa: E402
+from lib.dotenv_load import load_project_dotenv
+from lib.listing_notify import send_telegram, telegram_configured
+from lib.listing_pack import (
     DESCRIPTION,
     GITHUB,
     PLX_MINTER,

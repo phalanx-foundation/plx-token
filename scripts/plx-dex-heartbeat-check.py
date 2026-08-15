@@ -21,16 +21,16 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.dotenv_load import load_project_dotenv  # noqa: E402
+from lib.dotenv_load import load_project_dotenv
 
 load_project_dotenv()
 
-from lib.listing_checks import check_dexscreener_pair  # noqa: E402
-from lib.listing_pack import STONFI_POOL_URL  # noqa: E402
+from lib.listing_checks import check_dexscreener_pair
+from lib.listing_pack import STONFI_POOL_URL
 
 
 def _state_path() -> Path:
-    import os  # noqa: PLC0415
+    import os
 
     return Path(
         os.environ.get(
@@ -40,7 +40,7 @@ def _state_path() -> Path:
 
 
 def main() -> int:
-    import os  # noqa: PLC0415 — after dotenv
+    import os
 
     dex = check_dexscreener_pair()
     now = datetime.now(timezone.utc).isoformat()

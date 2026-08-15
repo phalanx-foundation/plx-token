@@ -19,7 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.stonfi_swap import simulate_ton_to_plx  # noqa: E402
+from lib.stonfi_swap import simulate_ton_to_plx
 
 QUEUE_FILE = Path(
     os.environ.get("BUYBACK_QUEUE_FILE", ROOT / "data" / "buyback-pending.json")

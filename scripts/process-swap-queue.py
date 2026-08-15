@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.stonfi_swap import load_swap_queue, stonfi_pool_url  # noqa: E402
+from lib.stonfi_swap import load_swap_queue, stonfi_pool_url
 
 
 def main() -> int:

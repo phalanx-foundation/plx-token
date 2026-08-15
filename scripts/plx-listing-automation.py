@@ -24,26 +24,26 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.dotenv_load import load_project_dotenv  # noqa: E402
+from lib.dotenv_load import load_project_dotenv
 
 load_project_dotenv()
 
-from lib.listing_checks import (  # noqa: E402
+from lib.listing_checks import (
     check_coingecko_listed,
     check_dexscreener_orders,
     check_dexscreener_pair,
     check_dyor_indexed,
     check_stonfi_pool_ton,
+    check_ton_assets_pr,
     check_tonapi_jetton,
     check_tonapi_rates,
-    check_ton_assets_pr,
     eligibility_gates,
     now_iso,
     nudge_ton_assets_pr_if_stale,
     tonapi_price_gates,
 )
-from lib.listing_notify import send_telegram, telegram_configured  # noqa: E402
-from lib.listing_pack import QUEST_MESSAGE, TOKEN_PAGE  # noqa: E402
+from lib.listing_notify import send_telegram, telegram_configured
+from lib.listing_pack import QUEST_MESSAGE, TOKEN_PAGE
 
 STATE_FILE = Path(
     os.environ.get(

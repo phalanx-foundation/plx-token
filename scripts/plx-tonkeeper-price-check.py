@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.listing_checks import (  # noqa: E402
+from lib.listing_checks import (
     check_dexscreener_pair,
     check_stonfi_pool_ton,
     check_tonapi_jetton,
@@ -22,7 +22,7 @@ from lib.listing_checks import (  # noqa: E402
 OUT = Path(ROOT / "data" / "tonkeeper-price-probe.json")
 
 
-from lib.listing_pack import STONFI_POOL_URL  # noqa: E402
+from lib.listing_pack import STONFI_POOL_URL
 
 LP_WALLET = "EQAiQ41f7R5qzKsoimbujtYdy0bRKW_7Fb0rV5Z4Lw6gr3zH"
 TREASURY_WALLET = "EQBBlAF4yz12NbrbKXYfGA1OsZzWFpkRj-TU6ciuYjBjK1aX"
@@ -30,7 +30,7 @@ COMMUNITY_WALLET = "EQD1XDv0Awjx0GUVv6YQYYnvEmjcKJ9iEBjvtHPM2nWML-q9"
 
 
 def _account_ton_human(address: str) -> float | None:
-    from lib.listing_checks import _http_json  # noqa: PLC0415
+    from lib.listing_checks import _http_json
 
     data = _http_json(f"https://tonapi.io/v2/accounts/{address}")
     if not data or "balance" not in data:

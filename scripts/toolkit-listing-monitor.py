@@ -27,20 +27,20 @@ from sqlalchemy.orm import Session
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.dotenv_load import load_project_dotenv  # noqa: E402
+from lib.dotenv_load import load_project_dotenv
 
 load_project_dotenv()
 
-from lib.listing_checks import (  # noqa: E402
+from lib.listing_checks import (
     check_dexscreener_pair,
     check_stonfi_pool_ton,
+    check_ton_assets_pr,
     check_tonapi_jetton,
     check_tonapi_rates,
-    check_ton_assets_pr,
     now_iso,
 )
-from lib.listing_notify import send_telegram, telegram_configured  # noqa: E402
-from lib.listing_pack import TokenListingConfig  # noqa: E402
+from lib.listing_notify import send_telegram, telegram_configured
+from lib.listing_pack import TokenListingConfig
 
 LOG_FILE = Path(
     os.environ.get("LISTING_LOG_FILE", ROOT / "data" / "listing-monitor-log.json")
@@ -158,7 +158,7 @@ def _probe_one(row: dict[str, Any]) -> dict[str, Any]:
             fields["ton_assets_pr_state"] = "MERGED"
 
     # CoinGecko / CMC eligibility checks
-    from lib.listing_pack import COINGECKO_MIN_LP_USD, CMC_MIN_LP_USD
+    from lib.listing_pack import CMC_MIN_LP_USD, COINGECKO_MIN_LP_USD
 
     rates_usd = fields.get("tonapi_rates_usd") or row.get("tonapi_rates_usd")
     pool_ton = fields.get("pool_ton_quote") or row.get("pool_ton_quote")

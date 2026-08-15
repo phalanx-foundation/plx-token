@@ -15,11 +15,11 @@ from datetime import datetime, timezone
 from typing import Any
 
 from lib.listing_pack import (
-    COINGECKO_MIN_LP_USD,
     CMC_MIN_LP_USD,
+    COINGECKO_MIN_LP_USD,
+    TON_ASSETS_REPO,
     TONAPI_MIN_HOLDERS,
     TONAPI_MIN_TON_RESERVE,
-    TON_ASSETS_REPO,
     TokenListingConfig,
     plx_config,
 )
