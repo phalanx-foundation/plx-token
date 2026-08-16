@@ -120,7 +120,7 @@ def main() -> int:
     wallet_buy = os.environ.get("BRANDING_WALLET_BUY", "plx-marketing").strip()
     wallet_sell = os.environ.get("BRANDING_WALLET_SELL", "plx-toolkit-ops").strip()
     wallet = wallet_buy if side == "buy" else wallet_sell
-    network = os.environ.get("network", os.environ.get("NETWORK", "mainnet"))
+    network = os.environ.get("NETWORK", "mainnet")
 
     sim = (
         simulate_ton_to_plx(swap_ton)

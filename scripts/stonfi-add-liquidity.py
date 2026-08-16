@@ -220,7 +220,7 @@ def add_liquidity(ton_nano: int, network: str) -> dict:
 
 def main() -> int:
     ton_nano = int(os.environ.get("LP_TON_NANO", "0"))
-    network = os.environ.get("network", os.environ.get("NETWORK", "mainnet"))
+    network = os.environ.get("NETWORK", "mainnet")
     if ton_nano <= 0:
         print(json.dumps({"error": "LP_TON_NANO required"}))
         return 1
