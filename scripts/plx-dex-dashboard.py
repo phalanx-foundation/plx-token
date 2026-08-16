@@ -24,8 +24,12 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SNAPSHOT_PATH = Path(os.environ.get("PLX_MARKET_SNAPSHOT", ROOT / "data" / "market-snapshot.json"))
-HTML_PATH = Path(os.environ.get("PLX_MARKET_HTML", ROOT / "docs" / "plx-market-dashboard.html"))
+SNAPSHOT_PATH = Path(
+    os.environ.get("PLX_MARKET_SNAPSHOT", ROOT / "data" / "market-snapshot.json")
+)
+HTML_PATH = Path(
+    os.environ.get("PLX_MARKET_HTML", ROOT / "docs" / "plx-market-dashboard.html")
+)
 STONFI_API = os.environ.get("STONFI_API_BASE", "https://api.ston.fi").rstrip("/")
 DEXSCREENER_API = "https://api.dexscreener.com/latest/dex/pairs/ton"
 UA = {"User-Agent": "PLX-Dashboard/1.0 (phalanx-foundation/plx-token)"}
@@ -189,18 +193,24 @@ def print_summary(snap: dict) -> None:
     print(f"PLX market @ {snap['generated_at']}")
     print(f"  Price: {p.get('ton_per_plx')} TON / ${p.get('usd_per_plx')} USD")
     print(f"  FDV: ${p.get('fdv_usd')} | Liquidity: ${p.get('liquidity_usd')}")
-    print(f"  24h volume: ${vol} | 24h txns: {tx.get('buys', 0)} buys, {tx.get('sells', 0)} sells")
+    print(
+        f"  24h volume: ${vol} | 24h txns: {tx.get('buys', 0)} buys, {tx.get('sells', 0)} sells"
+    )
     print(f"  Pool swaps (24h scan): {snap.get('swap_count_24h', 0)}")
     if snap.get("recent_swaps"):
         s = snap["recent_swaps"][0]
-        print(f"  Latest swap: {s.get('side')} | PLX {s.get('plx_amount')} | TON {s.get('ton_amount')}")
+        print(
+            f"  Latest swap: {s.get('side')} | PLX {s.get('plx_amount')} | TON {s.get('ton_amount')}"
+        )
     print(f"  Dashboard: file://{HTML_PATH}")
 
 
 def write_html(snap: dict) -> None:
     payload = json.dumps(snap, indent=2)
     pool = snap["pool_address"]
-    embed = f"https://dexscreener.com/ton/{pool.lower()}?embed=1&theme=dark&trades=1&info=0"
+    embed = (
+        f"https://dexscreener.com/ton/{pool.lower()}?embed=1&theme=dark&trades=1&info=0"
+    )
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -404,8 +414,12 @@ def serve(port: int) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="PLX DEX market dashboard")
-    parser.add_argument("--write", action="store_true", help="Write JSON snapshot + HTML")
-    parser.add_argument("--serve", action="store_true", help="Serve repo root for local preview")
+    parser.add_argument(
+        "--write", action="store_true", help="Write JSON snapshot + HTML"
+    )
+    parser.add_argument(
+        "--serve", action="store_true", help="Serve repo root for local preview"
+    )
     parser.add_argument("--port", type=int, default=8765)
     args = parser.parse_args()
 

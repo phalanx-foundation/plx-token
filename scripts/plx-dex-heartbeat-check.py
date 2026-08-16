@@ -32,7 +32,11 @@ from lib.listing_pack import STONFI_POOL_URL
 def _state_path() -> Path:
     import os
 
-    return Path(os.environ.get("DEX_HEARTBEAT_STATE", ROOT / "data" / "dex-heartbeat-state.json"))
+    return Path(
+        os.environ.get(
+            "DEX_HEARTBEAT_STATE", ROOT / "data" / "dex-heartbeat-state.json"
+        )
+    )
 
 
 def main() -> int:

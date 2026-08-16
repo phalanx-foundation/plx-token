@@ -39,7 +39,9 @@ def main() -> int:
         res = client.post(PINATA_UPLOAD_URL, headers=headers, files=files, data=data)
 
     if res.status_code not in {200, 201}:
-        print(f"Pinata failed HTTP {res.status_code}: {res.text[:400]}", file=sys.stderr)
+        print(
+            f"Pinata failed HTTP {res.status_code}: {res.text[:400]}", file=sys.stderr
+        )
         return 1
 
     payload = res.json()
@@ -61,7 +63,11 @@ def main() -> int:
     METADATA_PATH.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
 
     print(json.dumps(record, indent=2))
-    print("\nNext: set JETTON_IMAGE=ipfs://" + cid + " and run refresh-metadata / change-metadata")
+    print(
+        "\nNext: set JETTON_IMAGE=ipfs://"
+        + cid
+        + " and run refresh-metadata / change-metadata"
+    )
     return 0
 
 

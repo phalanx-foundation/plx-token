@@ -21,8 +21,12 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib.stonfi_swap import simulate_ton_to_plx
 
-QUEUE_FILE = Path(os.environ.get("BUYBACK_QUEUE_FILE", ROOT / "data" / "buyback-pending.json"))
-MIN_SWAP_NANO = int(os.environ.get("BUYBACK_MIN_SWAP_NANO", str(500_000_000)))  # 0.5 TON
+QUEUE_FILE = Path(
+    os.environ.get("BUYBACK_QUEUE_FILE", ROOT / "data" / "buyback-pending.json")
+)
+MIN_SWAP_NANO = int(
+    os.environ.get("BUYBACK_MIN_SWAP_NANO", str(500_000_000))
+)  # 0.5 TON
 SLIPPAGE_BPS = int(os.environ.get("BUYBACK_SLIPPAGE_BPS", "300"))  # 3%
 
 

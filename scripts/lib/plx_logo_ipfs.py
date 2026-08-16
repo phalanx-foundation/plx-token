@@ -34,7 +34,9 @@ def plx_logo_cid() -> str:
 
 def plx_logo_gateway_host() -> str:
     return (
-        os.environ.get("IPFS_GATEWAY_HOST", "").strip() or _load_record().get("gateway_host") or "ipfs.plx.foundation"
+        os.environ.get("IPFS_GATEWAY_HOST", "").strip()
+        or _load_record().get("gateway_host")
+        or "ipfs.plx.foundation"
     )
 
 

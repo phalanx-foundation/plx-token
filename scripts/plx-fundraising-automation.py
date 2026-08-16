@@ -32,7 +32,11 @@ from lib.listing_pack import (
 
 load_project_dotenv()
 
-STATE_FILE = Path(os.environ.get("FUNDRAISING_STATE_FILE", ROOT / "data" / "fundraising-automation-state.json"))
+STATE_FILE = Path(
+    os.environ.get(
+        "FUNDRAISING_STATE_FILE", ROOT / "data" / "fundraising-automation-state.json"
+    )
+)
 REPO = os.environ.get("FUNDRAISING_GITHUB_REPO", "phalanx-foundation/plx-token")
 
 TRACKS: list[dict[str, Any]] = [
@@ -256,7 +260,9 @@ def _create_issue(track: dict[str, Any]) -> dict[str, Any]:
 
 def main() -> int:
     if not _enabled():
-        print(json.dumps({"ok": True, "skipped": "FUNDRAISING_AUTOMATION_ENABLED false"}))
+        print(
+            json.dumps({"ok": True, "skipped": "FUNDRAISING_AUTOMATION_ENABLED false"})
+        )
         return 0
 
     state = _load_state()

@@ -82,7 +82,9 @@ def check_dexscreener_orders(
     cfg = _resolve_config(config)
     url = f"https://api.dexscreener.com/orders/v1/ton/{cfg.minter_address}"
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "PLX-ListingAutomation/1.0"})
+        req = urllib.request.Request(
+            url, headers={"User-Agent": "PLX-ListingAutomation/1.0"}
+        )
         with urllib.request.urlopen(req, timeout=30) as res:
             raw = res.read().decode()
             orders = json.loads(raw)
@@ -95,7 +97,9 @@ def check_tonapi_jetton(config: TokenListingConfig | None = None) -> dict[str, A
     cfg = _resolve_config(config)
     key = os.environ.get("TONAPI_KEY", os.environ.get("CONSOLE_TOKEN", "")).strip()
     headers = {"Authorization": f"Bearer {key}"} if key else {}
-    data = _http_json(f"https://tonapi.io/v2/jettons/{cfg.minter_address}", headers=headers)
+    data = _http_json(
+        f"https://tonapi.io/v2/jettons/{cfg.minter_address}", headers=headers
+    )
     if not data:
         return {"ok": False, "error": "tonapi_unreachable_or_no_key"}
     return {
@@ -108,7 +112,9 @@ def check_tonapi_jetton(config: TokenListingConfig | None = None) -> dict[str, A
 
 def check_dyor_indexed(config: TokenListingConfig | None = None) -> dict[str, Any]:
     cfg = _resolve_config(config)
-    body = json.dumps({"address": [cfg.minter_address], "limit": 1, "excludeScam": False}).encode()
+    body = json.dumps(
+        {"address": [cfg.minter_address], "limit": 1, "excludeScam": False}
+    ).encode()
     data = _http_json(
         "https://api.dyor.io/v1/jettons",
         method="POST",
@@ -162,7 +168,11 @@ def check_ton_assets_pr(config: TokenListingConfig | None = None) -> dict[str, A
     except json.JSONDecodeError:
         return {"ok": False, "error": "invalid gh json"}
     comments = pr.get("comments") or []
-    phalanx_comments = [c for c in comments if "phalanx" in (c.get("author", {}).get("login") or "").lower()]
+    phalanx_comments = [
+        c
+        for c in comments
+        if "phalanx" in (c.get("author", {}).get("login") or "").lower()
+    ]
     return {
         "ok": True,
         "state": pr.get("state"),
@@ -278,7 +288,9 @@ def tonapi_price_gates(
         "min_holders": TONAPI_MIN_HOLDERS,
         "min_ton_reserve": TONAPI_MIN_TON_RESERVE,
         "tonkeeper_usd_ready": (
-            usd_price > 0 and holders_n >= TONAPI_MIN_HOLDERS and pool_ton >= TONAPI_MIN_TON_RESERVE
+            usd_price > 0
+            and holders_n >= TONAPI_MIN_HOLDERS
+            and pool_ton >= TONAPI_MIN_TON_RESERVE
         ),
     }
 

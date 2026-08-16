@@ -13,7 +13,9 @@ from typing import Any
 STONFI_API = os.environ.get("STONFI_API_BASE", "https://api.ston.fi").rstrip("/")
 TON_NATIVE = "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c"
 ROOT = Path(__file__).resolve().parent.parent.parent
-SWAP_QUEUE = Path(os.environ.get("SWAP_QUEUE_FILE", ROOT / "data" / "swap-pending.json"))
+SWAP_QUEUE = Path(
+    os.environ.get("SWAP_QUEUE_FILE", ROOT / "data" / "swap-pending.json")
+)
 
 
 def _pool() -> str:
@@ -26,7 +28,9 @@ def _pool() -> str:
 def _plx_minter() -> str:
     return os.environ.get(
         "PLX_JETTON_MINTER_MAINNET",
-        os.environ.get("JETTON_MINTER_ADDRESS", "EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS"),
+        os.environ.get(
+            "JETTON_MINTER_ADDRESS", "EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS"
+        ),
     ).strip()
 
 

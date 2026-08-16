@@ -29,7 +29,8 @@ def _treasury_address(network: str) -> str:
     net = (network or "mainnet").strip().lower()
     if net == "mainnet":
         return (
-            os.environ.get("TON_TREASURY_ADDRESS_MAINNET", "") or os.environ.get("TON_TREASURY_ADDRESS", "")
+            os.environ.get("TON_TREASURY_ADDRESS_MAINNET", "")
+            or os.environ.get("TON_TREASURY_ADDRESS", "")
         ).strip()
     return os.environ.get(
         "TON_TREASURY_ADDRESS",
