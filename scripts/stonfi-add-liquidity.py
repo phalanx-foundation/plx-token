@@ -48,16 +48,12 @@ def _lp_wallet(network: str) -> str:
         ).strip()
     return os.environ.get(
         "PLX_LP_ADDRESS",
-        os.environ.get(
-            "PLX_LP_ADDRESS_MAINNET", "EQAiQ41f7R5qzKsoimbujtYdy0bRKW_7Fb0rV5Z4Lw6gr3zH"
-        ),
+        os.environ.get("PLX_LP_ADDRESS_MAINNET", "EQAiQ41f7R5qzKsoimbujtYdy0bRKW_7Fb0rV5Z4Lw6gr3zH"),
     ).strip()
 
 
 def _queue_lp(entry: dict) -> None:
-    queue_path = Path(
-        os.environ.get("LP_QUEUE_FILE", ROOT / "data" / "lp-pending.json")
-    )
+    queue_path = Path(os.environ.get("LP_QUEUE_FILE", ROOT / "data" / "lp-pending.json"))
     queue_path.parent.mkdir(parents=True, exist_ok=True)
     entries: list = []
     if queue_path.exists():
@@ -126,9 +122,7 @@ def _resolve_pool(plx_jetton: str) -> str | None:
     return None
 
 
-def _simulate_balanced(
-    pool: str, plx_jetton: str, ton_nano: int, wallet: str
-) -> dict | None:
+def _simulate_balanced(pool: str, plx_jetton: str, ton_nano: int, wallet: str) -> dict | None:
     body = {
         "provision_type": "Balanced",
         "pool_address": pool,
@@ -185,9 +179,7 @@ def add_liquidity(ton_nano: int, network: str) -> dict:
 
     sim = _simulate_balanced(pool, plx_jetton, ton_nano, lp_address)
     if not sim:
-        return _fallback_transfer(ton_nano, lp_address, network) | {
-            "mode": "fallback_simulate_failed"
-        }
+        return _fallback_transfer(ton_nano, lp_address, network) | {"mode": "fallback_simulate_failed"}
 
     entry = {
         "deployment_id": deployment_id,

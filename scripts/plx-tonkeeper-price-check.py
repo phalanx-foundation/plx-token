@@ -66,17 +66,13 @@ def main() -> int:
             "plx_community": _account_ton_human(COMMUNITY_WALLET),
         },
         "deepen_lp_blockers": {
-            "need_ton_on_lp": max(
-                0.0, gates.get("min_ton_reserve", 100) - float(pool_ton or 0)
-            ),
+            "need_ton_on_lp": max(0.0, gates.get("min_ton_reserve", 100) - float(pool_ton or 0)),
             "lp_wallet_ton": _account_ton_human(LP_WALLET),
             "stonfi_pool_url": STONFI_POOL_URL,
         },
         "holder_growth": {
             "holders": gates.get("holders"),
-            "need_holders": max(
-                0, gates.get("min_holders", 100) - int(gates.get("holders") or 0)
-            ),
+            "need_holders": max(0, gates.get("min_holders", 100) - int(gates.get("holders") or 0)),
             "airdrop_queue": "data/airdrop-season-queue.json",
             "template": "data/holder-growth-queue.template.json",
         },

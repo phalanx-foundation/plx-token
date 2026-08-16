@@ -29,8 +29,7 @@ def _treasury_address(network: str) -> str:
     net = (network or "mainnet").strip().lower()
     if net == "mainnet":
         return (
-            os.environ.get("TON_TREASURY_ADDRESS_MAINNET", "")
-            or os.environ.get("TON_TREASURY_ADDRESS", "")
+            os.environ.get("TON_TREASURY_ADDRESS_MAINNET", "") or os.environ.get("TON_TREASURY_ADDRESS", "")
         ).strip()
     return os.environ.get(
         "TON_TREASURY_ADDRESS",
@@ -164,9 +163,7 @@ def main() -> int:
         hashes = result.get("sweep_tx_hashes") or []
         hash_line = f"\ntx: {', '.join(hashes[:3])}" if hashes else ""
         _send_telegram(
-            f"Treasury sweep completed (queue)\n"
-            f"deployment: {deployment_id}\n"
-            f"amount: {sweep_ton:.4f} TON{hash_line}"
+            f"Treasury sweep completed (queue)\ndeployment: {deployment_id}\namount: {sweep_ton:.4f} TON{hash_line}"
         )
 
     if changed:

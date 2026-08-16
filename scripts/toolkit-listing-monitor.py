@@ -42,9 +42,7 @@ from lib.listing_checks import (
 from lib.listing_notify import send_telegram, telegram_configured
 from lib.listing_pack import TokenListingConfig
 
-LOG_FILE = Path(
-    os.environ.get("LISTING_LOG_FILE", ROOT / "data" / "listing-monitor-log.json")
-)
+LOG_FILE = Path(os.environ.get("LISTING_LOG_FILE", ROOT / "data" / "listing-monitor-log.json"))
 
 ACTIVE_STATES = {"pending", "yaml_generated", "pr_submitted"}
 
@@ -135,9 +133,7 @@ def _probe_one(row: dict[str, Any]) -> dict[str, Any]:
 
     fields: dict[str, Any] = {
         "tonapi_verification": ton.get("verification"),
-        "holders_count": ton.get("holders")
-        if isinstance(ton.get("holders"), int)
-        else None,
+        "holders_count": ton.get("holders") if isinstance(ton.get("holders"), int) else None,
         "tonapi_rates_usd": rates.get("usd"),
     }
 
@@ -184,9 +180,7 @@ def main() -> int:
         db.close()
 
     if not rows:
-        print(
-            json.dumps({"ok": True, "active_listings": 0, "note": "no active — exit"})
-        )
+        print(json.dumps({"ok": True, "active_listings": 0, "note": "no active — exit"}))
         return 0
 
     run_log = {"at": now_iso(), "active": len(rows), "results": []}
@@ -213,28 +207,18 @@ def main() -> int:
         if fields.get("coingecko_eligible"):
             fields["coingecko_submitted"] = True
             run_log.setdefault("coingecko_notes", []).append(
-                "CG eligible: {} LP=${}".format(
-                    row["minter_address"], fields.get("pool_ton_quote", "?")
-                )
+                "CG eligible: {} LP=${}".format(row["minter_address"], fields.get("pool_ton_quote", "?"))
             )
         if fields.get("cmc_eligible"):
             fields["cmc_submitted"] = True
             run_log.setdefault("cmc_notes", []).append(
-                "CMC eligible: {} LP=${}".format(
-                    row["minter_address"], fields.get("pool_ton_quote", "?")
-                )
+                "CMC eligible: {} LP=${}".format(row["minter_address"], fields.get("pool_ton_quote", "?"))
             )
 
         # Telegram alert if whitelist but USD still 0
-        verification = fields.get("tonapi_verification") or row.get(
-            "tonapi_verification"
-        )
+        verification = fields.get("tonapi_verification") or row.get("tonapi_verification")
         usd = fields.get("tonapi_rates_usd") or row.get("tonapi_rates_usd")
-        if (
-            telegram_configured()
-            and verification == "whitelist"
-            and (usd is None or float(usd) <= 0)
-        ):
+        if telegram_configured() and verification == "whitelist" and (usd is None or float(usd) <= 0):
             holders = fields.get("holders_count") or row.get("holders_count") or 0
             pool = fields.get("pool_ton_quote") or row.get("pool_ton_quote") or 0
             send_telegram(

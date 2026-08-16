@@ -45,14 +45,8 @@ from lib.listing_checks import (
 from lib.listing_notify import send_telegram, telegram_configured
 from lib.listing_pack import QUEST_MESSAGE, TOKEN_PAGE
 
-STATE_FILE = Path(
-    os.environ.get(
-        "LISTING_STATE_FILE", ROOT / "data" / "listing-automation-state.json"
-    )
-)
-LOG_FILE = Path(
-    os.environ.get("LISTING_LOG_FILE", ROOT / "data" / "listing-automation-log.json")
-)
+STATE_FILE = Path(os.environ.get("LISTING_STATE_FILE", ROOT / "data" / "listing-automation-state.json"))
+LOG_FILE = Path(os.environ.get("LISTING_LOG_FILE", ROOT / "data" / "listing-automation-log.json"))
 
 
 def _enabled() -> bool:
@@ -256,9 +250,7 @@ def main() -> int:
         "coinmarketcap": "blocked_until_volume_gate"
         if not gates.get("cmc_ready")
         else "ready_for_manual_or_future_form_bot",
-        "coingecko": "blocked_until_lp_gate"
-        if not gates.get("coingecko_ready")
-        else "eligible_not_auto_submitted",
+        "coingecko": "blocked_until_lp_gate" if not gates.get("coingecko_ready") else "eligible_not_auto_submitted",
     }
 
     summary = _build_summary(run)
@@ -289,9 +281,7 @@ def main() -> int:
         try:
             run["actions"]["telegram_marketing"] = json.loads(proc.stdout or "{}")
         except json.JSONDecodeError:
-            run["actions"]["telegram_marketing"] = {
-                "raw": (proc.stdout or proc.stderr)[:500]
-            }
+            run["actions"]["telegram_marketing"] = {"raw": (proc.stdout or proc.stderr)[:500]}
         state["last_marketing_run"] = now_iso()
     elif os.environ.get("TELEGRAM_MARKETING_ENABLED", "").lower() == "true":
         run["actions"]["telegram_marketing"] = "skipped_marketing_interval"

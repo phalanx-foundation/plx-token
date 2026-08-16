@@ -32,11 +32,7 @@ from lib.listing_pack import STONFI_POOL_URL
 def _state_path() -> Path:
     import os
 
-    return Path(
-        os.environ.get(
-            "DEX_HEARTBEAT_STATE", ROOT / "data" / "dex-heartbeat-state.json"
-        )
-    )
+    return Path(os.environ.get("DEX_HEARTBEAT_STATE", ROOT / "data" / "dex-heartbeat-state.json"))
 
 
 def main() -> int:
@@ -72,8 +68,7 @@ def main() -> int:
         out["severity"] = "warn"
     elif tx_total == 0:
         out["action"] = (
-            "Terindeks tapi 0 tx 24j — pertimbangkan 1 micro-swap atau quest komunitas "
-            "agar tidak de-index lagi."
+            "Terindeks tapi 0 tx 24j — pertimbangkan 1 micro-swap atau quest komunitas agar tidak de-index lagi."
         )
         out["severity"] = "info"
     else:

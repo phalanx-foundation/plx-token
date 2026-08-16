@@ -8,15 +8,11 @@ from lib.plx_logo_ipfs import plx_listing_logo_url
 
 TON_ASSETS_REPO = "tonkeeper/ton-assets"
 
-COINGECKO_MIN_LP_USD = int(
-    __import__("os").environ.get("LISTING_COINGECKO_MIN_LP_USD", "5000")
-)
+COINGECKO_MIN_LP_USD = int(__import__("os").environ.get("LISTING_COINGECKO_MIN_LP_USD", "5000"))
 CMC_MIN_LP_USD = int(__import__("os").environ.get("LISTING_CMC_MIN_LP_USD", "10000"))
 
 TONAPI_MIN_HOLDERS = int(__import__("os").environ.get("TONAPI_MIN_HOLDERS", "100"))
-TONAPI_MIN_TON_RESERVE = float(
-    __import__("os").environ.get("TONAPI_MIN_TON_RESERVE", "100")
-)
+TONAPI_MIN_TON_RESERVE = float(__import__("os").environ.get("TONAPI_MIN_TON_RESERVE", "100"))
 
 
 @dataclass
@@ -43,27 +39,15 @@ class TokenListingConfig:
     # derived URLs
     @property
     def pool_url(self) -> str:
-        return (
-            f"https://app.ston.fi/pools/{self.pool_address}"
-            if self.pool_address
-            else ""
-        )
+        return f"https://app.ston.fi/pools/{self.pool_address}" if self.pool_address else ""
 
     @property
     def dexscreener_url(self) -> str:
-        return (
-            f"https://dexscreener.com/ton/{self.pool_address.lower()}"
-            if self.pool_address
-            else ""
-        )
+        return f"https://dexscreener.com/ton/{self.pool_address.lower()}" if self.pool_address else ""
 
     @property
     def tonviewer_url(self) -> str:
-        return (
-            f"https://tonviewer.com/{self.minter_address}"
-            if self.minter_address
-            else ""
-        )
+        return f"https://tonviewer.com/{self.minter_address}" if self.minter_address else ""
 
     def quest_message(self) -> str:
         parts = [
@@ -71,9 +55,7 @@ class TokenListingConfig:
         ]
         if self.pool_url:
             parts.append(f"1. Ston.fi pool: {self.pool_url}\n")
-        parts.append(
-            f"2. Swap >= 0.05 TON -> {self.symbol} (minter: {self.minter_address})\n"
-        )
+        parts.append(f"2. Swap >= 0.05 TON -> {self.symbol} (minter: {self.minter_address})\n")
         parts.append("3. Reply with Tonviewer tx link.\n")
         if self.token_page_url:
             parts.append(f"Site: {self.token_page_url}\n")
@@ -135,10 +117,6 @@ def config_from_kwargs(**kwargs: str | int | list[str] | None) -> TokenListingCo
     else:
         social_links = list(social_raw)
     return TokenListingConfig(
-        **{
-            k: v
-            for k, v in cfg_args.items()
-            if k in TokenListingConfig.__dataclass_fields__
-        },
+        **{k: v for k, v in cfg_args.items() if k in TokenListingConfig.__dataclass_fields__},
         social_links=social_links,
     )

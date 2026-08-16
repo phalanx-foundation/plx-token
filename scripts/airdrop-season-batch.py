@@ -20,9 +20,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-QUEUE = Path(
-    os.environ.get("AIRDROP_QUEUE", ROOT / "data" / "airdrop-season-queue.json")
-)
+QUEUE = Path(os.environ.get("AIRDROP_QUEUE", ROOT / "data" / "airdrop-season-queue.json"))
 NET = os.environ.get("ACTON_NETWORK", "mainnet")
 FROM_WALLET = os.environ.get("AIRDROP_FROM_WALLET", "plx-community")
 MINTER = os.environ.get(
@@ -91,9 +89,7 @@ def main() -> int:
 
     if os.environ.get("DRY_RUN") == "1":
         for item in batch:
-            print(
-                f"  DRY_RUN send {item.get('amount_plx')} PLX -> {item.get('address')}"
-            )
+            print(f"  DRY_RUN send {item.get('amount_plx')} PLX -> {item.get('address')}")
         return 0
 
     sent_ids: set[str] = set()
@@ -117,9 +113,7 @@ def main() -> int:
         )
 
     for q in queue:
-        if q.get("id") in sent_ids or (
-            q.get("address") in sent_ids and q.get("status") == "sent"
-        ):
+        if q.get("id") in sent_ids or (q.get("address") in sent_ids and q.get("status") == "sent"):
             q["status"] = "sent"
 
     _save_queue(queue)

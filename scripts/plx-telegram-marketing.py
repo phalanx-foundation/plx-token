@@ -35,11 +35,7 @@ from lib.listing_pack import (
 
 load_project_dotenv()
 
-STATE_FILE = Path(
-    os.environ.get(
-        "TELEGRAM_MARKETING_STATE", ROOT / "data" / "telegram-marketing-state.json"
-    )
-)
+STATE_FILE = Path(os.environ.get("TELEGRAM_MARKETING_STATE", ROOT / "data" / "telegram-marketing-state.json"))
 
 LAUNCH_MESSAGE = f"""🛡 Phalanx (PLX) — live on TON mainnet
 
@@ -78,16 +74,10 @@ Not investment advice.
 
 
 def _token() -> str:
-    return (
-        os.environ.get("TOKEN_TELEGRAM_BOT")
-        or os.environ.get("TELEGRAM_BOT_TOKEN")
-        or ""
-    ).strip()
+    return (os.environ.get("TOKEN_TELEGRAM_BOT") or os.environ.get("TELEGRAM_BOT_TOKEN") or "").strip()
 
 
-def _api(
-    method: str, payload: dict[str, Any] | None = None, *, get: bool = False
-) -> dict[str, Any]:
+def _api(method: str, payload: dict[str, Any] | None = None, *, get: bool = False) -> dict[str, Any]:
     token = _token()
     if not token:
         return {"ok": False, "error": "no bot token"}
@@ -149,11 +139,7 @@ def setup_bot_profile() -> dict[str, Any]:
         ),
         "setMyShortDescription": _api(
             "setMyShortDescription",
-            {
-                "short_description": "PLX utility jetton · Phalanx Toolkit on TON mainnet"[
-                    :120
-                ]
-            },
+            {"short_description": "PLX utility jetton · Phalanx Toolkit on TON mainnet"[:120]},
         ),
         "setMyCommands": _api(
             "setMyCommands",
