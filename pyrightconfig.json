@@ -1,0 +1,25 @@
+{
+  "include": ["scripts", "tests", "wrappers"],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/.git",
+    "**/.acton",
+    "**/.cursor",
+    "**/.trunk",
+    "**/dist",
+    "**/build",
+    "**/gen",
+    "**/tmp",
+    "**/data",
+    "toolkit-staging",
+    ".backup-railway",
+    "backup-opennext-20260707-101404",
+    ".scripts"
+  ],
+  "ignore": [
+    "toolkit-staging",
+    "**/node_modules",
+    "**/__pycache__"
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@ton/mcp": "^0.1.15-alpha.23"
+  }
+}

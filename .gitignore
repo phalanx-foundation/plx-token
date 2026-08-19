@@ -65,3 +65,10 @@ node_modules/
 
 # Acton related files
 libraries.toml
+
+# === Local Cursor / agent tooling (never publish to public plx-token) ===
+.cursorignore
+.kilo/
+-w
+backup-opennext-*/
+data/tonkeeper-price-probe.json

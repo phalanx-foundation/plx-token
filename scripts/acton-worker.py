@@ -13,6 +13,11 @@ Endpoints:
   POST /scratch-payout         - Scratch Seeker winner payout (scratch-seeker-payout.sh)
   POST /sweep-queue/enqueue    - append to data/sweep-pending.json (dedupe pending)
   GET  /health                 - liveness
+
+MCP alternative for agent operations (additive; Acton CLI remains primary):
+  - ton_get_balance(address)
+  - ton_transfer_jetton(from,to,...)
+  - ton_get_transactions(address)
 """
 
 from __future__ import annotations
@@ -212,3 +217,9 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+# -- Tonkeeper Messages integration -------------------------------------
+# After successful deploy / payout, call:
+#   POST https://api.plx.foundation/api/tonkeeper-messages
+# See web/lib/tonkeeper-messages.ts for semantic helpers.

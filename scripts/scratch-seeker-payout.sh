@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+
+# MCP alternative for agent sessions:
+#   ton_transfer_jetton via MCP can be used as an alternative to
+#   `acton script transfer.tolk` when running from an AI agent session.
+#   Acton CLI remains the primary production path.
 # Scratch Seeker winner payout — PLX jetton or TON from plx-scratch-seeker-payment.
 # Invoked by acton-worker POST /scratch-payout (stdout = JSON only).
 set -euo pipefail
