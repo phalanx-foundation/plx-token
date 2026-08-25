@@ -51,19 +51,6 @@ fun calcDeployedNftItem(
     };
 }
 
-fun calculateNftItemAddress(
-    index: int,
-    nftItemCode: cell,
-): address {
-    // Getter helper: placeholder owner/content (collection address + empty cell).
-    return calcDeployedNftItem(
-        index,
-        contract.getAddress(),
-        beginCell().endCell(),
-        nftItemCode,
-    ).calculateAddress();
-}
-
 fun onInternalMessage(in: InMessage) {
     // Accept deploy / bare top-up with empty body (same pattern as PlxAirdrop et al.)
     if (in.body.remainingBitsCount() == 0 && in.body.remainingRefsCount() == 0) {
@@ -177,11 +164,11 @@ get fun get_collection_data(): NftCollectionDataReply {
     };
 }
 
-get fun get_nft_address_by_index(index: int): address {
+get fun get_nft_address_by_index(index: int, owner: address, individualContent: cell): address {
     val storage = lazy NftCollectionStorage.load();
     assert (index < storage.nextItemIndex) throw 102; // Index out of bounds
 
-    return calculateNftItemAddress(index, storage.nftItemCode);
+    return calcDeployedNftItem(index, owner, individualContent, storage.nftItemCode).calculateAddress();
 }
 
 get fun get_nft_content(index: int, individualContent: cell): cell {

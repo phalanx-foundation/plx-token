@@ -92,18 +92,6 @@ fun calcDeployedNftItem(
     };
 }
 
-fun calculateNftItemAddress(
-    index: int,
-    nftItemCode: cell,
-): address {
-    return calcDeployedNftItem(
-        index,
-        contract.getAddress(),
-        beginCell().endCell(),
-        nftItemCode,
-    ).calculateAddress();
-}
-
 fun onInternalMessage(in: InMessage) {
     if (in.body.remainingBitsCount() == 0 && in.body.remainingRefsCount() == 0) {
         return;
@@ -202,11 +190,11 @@ get fun get_collection_data(): CompressedCollectionDataReply {
     };
 }
 
-get fun get_nft_address_by_index(index: int): address {
+get fun get_nft_address_by_index(index: int, owner: address, individualContent: cell): address {
     val storage = lazy CompressedNftCollectionStorage.load();
     assert (index < storage.maxSupply) throw 102;
 
-    return calculateNftItemAddress(index, storage.nftItemCode);
+    return calcDeployedNftItem(index, owner, individualContent, storage.nftItemCode).calculateAddress();
 }
 
 get fun get_nft_content(index: int, individualContent: cell): cell {

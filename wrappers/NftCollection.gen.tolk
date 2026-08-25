@@ -154,8 +154,8 @@ fun NftCollection.getCollectionData(self): NftCollectionDataReply {
     return net.runGetMethod(self.address, "get_collection_data");
 }
 
-fun NftCollection.getNftAddressByIndex(self, index: int): address {
-    return net.runGetMethod(self.address, "get_nft_address_by_index", [index]);
+fun NftCollection.getNftAddressByIndex(self, index: int, owner: address, individualContent: cell): address {
+    return net.runGetMethod(self.address, "get_nft_address_by_index", [index, owner, individualContent]);
 }
 
 fun NftCollection.getNftContent(self, index: int, individualContent: cell): cell {

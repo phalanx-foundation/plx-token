@@ -160,8 +160,8 @@ fun CompressedNftCollection.getCollectionData(self): CompressedCollectionDataRep
     return net.runGetMethod(self.address, "get_collection_data");
 }
 
-fun CompressedNftCollection.getNftAddressByIndex(self, index: int): address {
-    return net.runGetMethod(self.address, "get_nft_address_by_index", [index]);
+fun CompressedNftCollection.getNftAddressByIndex(self, index: int, owner: address, individualContent: cell): address {
+    return net.runGetMethod(self.address, "get_nft_address_by_index", [index, owner, individualContent]);
 }
 
 fun CompressedNftCollection.getNftContent(self, index: int, individualContent: cell): cell {
