@@ -68,10 +68,10 @@ struct (0x1a4e7c2d) SetMerkleRoot {
     maxSupply: uint64
 }
 
-// === Excess / top-up (same opcodes as jetton messages.tolk) ===
+// === Excess (opcode shared with jetton Excesses; distinct type name) ===
 
 struct (0xd53276db) NftExcesses {
     queryId: uint64
 }
 
-struct (0xd372158c) TopUpTons {}
+// TopUpTons lives in messages.tolk — import that module from collection contracts.

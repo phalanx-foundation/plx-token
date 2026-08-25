@@ -19,6 +19,10 @@ fun assertOwner(senderAddress: address, ownerAddress: address) {
 }
 
 fun onInternalMessage(in: InMessage) {
+    if (in.body.remainingBitsCount() == 0 && in.body.remainingRefsCount() == 0) {
+        return;
+    }
+
     val msg = lazy AllowedNftItemMessage.fromSlice(in.body);
 
     match (msg) {

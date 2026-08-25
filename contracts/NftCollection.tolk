@@ -1,6 +1,7 @@
 import "@stdlib/gas-payments"
 import "errors"
 import "sharding"
+import "messages"
 import "nft-messages"
 import "nft-storage"
 
@@ -64,6 +65,11 @@ fun calculateNftItemAddress(
 }
 
 fun onInternalMessage(in: InMessage) {
+    // Accept deploy / bare top-up with empty body (same pattern as PlxAirdrop et al.)
+    if (in.body.remainingBitsCount() == 0 && in.body.remainingRefsCount() == 0) {
+        return;
+    }
+
     val msg = lazy AllowedCollectionMessage.fromSlice(in.body);
 
     match (msg) {

@@ -6,6 +6,7 @@
 import "@acton/build"
 import "@acton/emulation/network"
 import "@acton/testing/assert"
+import "@contracts/messages"
 import "@contracts/nft-messages"
 import "@contracts/nft-storage"
 

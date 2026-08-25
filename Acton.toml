@@ -153,6 +153,10 @@ deploy-custom-staking-emulation = "acton script scripts/deploy-custom-staking.to
 deploy-custom-staking-testnet = "acton script scripts/deploy-custom-staking.tolk --net testnet"
 deploy-jetton-combo-emulation = "acton script scripts/deploy-jetton-combo.tolk"
 deploy-jetton-combo-testnet = "acton script scripts/deploy-jetton-combo.tolk --net testnet"
+deploy-nft-collection-emulation = "acton script scripts/deploy-nft-collection.tolk"
+deploy-nft-collection-testnet = "acton script scripts/deploy-nft-collection.tolk --net testnet"
+deploy-nft-collection-mainnet = "acton script scripts/deploy-nft-collection.tolk --net mainnet"
+toolkit-deploy-nft-collection = "bash scripts/toolkit-deploy-nft-collection.sh"
 
 [import-mappings]
 acton = ".acton"
