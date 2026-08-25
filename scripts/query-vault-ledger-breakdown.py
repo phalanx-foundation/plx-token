@@ -14,5 +14,5 @@ rows = (
     .all()
 )
 for asset, etype, total in rows:
-    print(f"{asset} {etype}: {int(total or 0)/1e9:.4f}")
+    print(f"{asset} {etype}: {int(total or 0) / 1e9:.4f}")
 db.close()

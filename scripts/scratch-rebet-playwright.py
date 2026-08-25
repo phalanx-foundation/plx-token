@@ -10,6 +10,7 @@ Env (from acton-worker):
 Submit flow: isi form → klik #kirimkan → rekap + native confirm('proses.???') → OK.
 (Playwright must accept the dialog; dismissing = bet never posts.)
 """
+
 from __future__ import annotations
 
 import json
@@ -78,7 +79,9 @@ def _login(page, base: str, user: str, password: str) -> None:
     page.click("#submitlogin")
     page.wait_for_timeout(1500)
     _close_promos(page)
-    if page.locator("#setuju").count() and page.locator("#setuju").first.is_visible(timeout=2000):
+    if page.locator("#setuju").count() and page.locator("#setuju").first.is_visible(
+        timeout=2000
+    ):
         page.click("#setuju")
         page.wait_for_timeout(1200)
         _close_promos(page)
@@ -87,7 +90,9 @@ def _login(page, base: str, user: str, password: str) -> None:
 def _open_game(page, base: str, digits: int) -> str:
     # Lobby first — direct deep-link can bounce depending on session.
     try:
-        page.goto(base.rstrip("/") + "/lobby", wait_until="domcontentloaded", timeout=60000)
+        page.goto(
+            base.rstrip("/") + "/lobby", wait_until="domcontentloaded", timeout=60000
+        )
         page.wait_for_timeout(700)
         _close_promos(page)
     except Exception:
@@ -152,9 +157,13 @@ def _open_game(page, base: str, digits: int) -> str:
                         frame = page.frame_locator("iframe").first
                         if frame.locator("#r11n").count():
                             # switch context via content frame later — store URL
-                            src = page.locator("iframe").first.get_attribute("src") or ""
+                            src = (
+                                page.locator("iframe").first.get_attribute("src") or ""
+                            )
                             if src:
-                                page.goto(src, wait_until="domcontentloaded", timeout=90000)
+                                page.goto(
+                                    src, wait_until="domcontentloaded", timeout=90000
+                                )
                                 page.wait_for_timeout(1500)
                             break
                     loc = page.locator(sel).first
@@ -173,7 +182,9 @@ def _open_game(page, base: str, digits: int) -> str:
     return page.url
 
 
-def _set_input_value(page, selector: str, value: str, *, allow_force: bool = False) -> None:
+def _set_input_value(
+    page, selector: str, value: str, *, allow_force: bool = False
+) -> None:
     """Fill input. Prefer native enabled fill; force-JS only as last resort."""
     loc = page.locator(selector)
     if not loc.count():
@@ -201,7 +212,9 @@ def _set_input_value(page, selector: str, value: str, *, allow_force: bool = Fal
     )
 
 
-def _fill_row(page, row: int, *, digits: int, nomor: str, site_stake: str, bulk: bool) -> None:
+def _fill_row(
+    page, row: int, *, digits: int, nomor: str, site_stake: str, bulk: bool
+) -> None:
     # Rows on site are indexed 11..20
     # Nomor MUST be typed so site keyup protect(event,row) enables stake cols.
     nomor_sel = f"#r{row}n"
@@ -270,7 +283,9 @@ def _fill_row(page, row: int, *, digits: int, nomor: str, site_stake: str, bulk:
             )
 
 
-def _click_visible(page, selectors: list[str], *, timeout_each: int = 2500) -> str | None:
+def _click_visible(
+    page, selectors: list[str], *, timeout_each: int = 2500
+) -> str | None:
     for sel in selectors:
         try:
             locs = page.locator(sel)
@@ -445,7 +460,12 @@ def _submit_dual(page, dry_run: bool) -> dict[str, Any]:
     # Prefer the real wired button from game_4d.min.js
     clicked = _click_visible(
         page,
-        ["#kirimkan", "button#kirimkan", "button.btn-kirim[name='cmdkirim']", *_kirim_selectors()],
+        [
+            "#kirimkan",
+            "button#kirimkan",
+            "button.btn-kirim[name='cmdkirim']",
+            *_kirim_selectors(),
+        ],
         timeout_each=2000,
     )
     if not clicked:
@@ -545,7 +565,11 @@ def _read_balance_idr(page) -> float | None:
 
 def _transaction_row_count(page, base: str) -> int:
     try:
-        page.goto(base.rstrip("/") + "/transaction", wait_until="domcontentloaded", timeout=45000)
+        page.goto(
+            base.rstrip("/") + "/transaction",
+            wait_until="domcontentloaded",
+            timeout=45000,
+        )
         page.wait_for_timeout(1200)
         _close_promos(page)
         tables = page.locator("table")
@@ -597,7 +621,9 @@ def _detect_place_failure(page) -> str | None:
     return None
 
 
-def _parse_rows(digits: int, mode: str, guess: str, stake_idr: int) -> list[dict[str, Any]]:
+def _parse_rows(
+    digits: int, mode: str, guess: str, stake_idr: int
+) -> list[dict[str, Any]]:
     """Build site rows. Optional REBET_ROWS_JSON overrides; max 10 per submit batch."""
     raw = _env("REBET_ROWS_JSON")
     if raw:
@@ -607,7 +633,9 @@ def _parse_rows(digits: int, mode: str, guess: str, stake_idr: int) -> list[dict
         out: list[dict[str, Any]] = []
         for item in rows:
             d = int(item.get("digits") or digits)
-            nomor = str(item.get("nomor") or item.get("guess") or "").strip().zfill(d)[-d:]
+            nomor = (
+                str(item.get("nomor") or item.get("guess") or "").strip().zfill(d)[-d:]
+            )
             sidr = int(item.get("stake_idr") or stake_idr)
             out.append(
                 {
@@ -660,7 +688,11 @@ def run() -> dict[str, Any]:
         try:
             _login(page, base, user, password)
             # Baseline site proof (lobby balance + open tx count)
-            page.goto(base.rstrip("/") + "/lobby", wait_until="domcontentloaded", timeout=60000)
+            page.goto(
+                base.rstrip("/") + "/lobby",
+                wait_until="domcontentloaded",
+                timeout=60000,
+            )
             page.wait_for_timeout(800)
             _close_promos(page)
             bal_before = _read_balance_idr(page)
@@ -708,7 +740,11 @@ def run() -> dict[str, Any]:
                 }
 
             # Post-confirm proof: balance drop and/or new transaction row.
-            page.goto(base.rstrip("/") + "/lobby", wait_until="domcontentloaded", timeout=60000)
+            page.goto(
+                base.rstrip("/") + "/lobby",
+                wait_until="domcontentloaded",
+                timeout=60000,
+            )
             page.wait_for_timeout(900)
             _close_promos(page)
             bal_after = _read_balance_idr(page)

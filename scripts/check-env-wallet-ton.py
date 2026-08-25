@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
-import json, urllib.request, os
+import json
+import urllib.request
+import os
+
 
 def load_env():
     out = {}
-    with open(os.path.expanduser("~/services/plx-toolkit-api/.env"), encoding="utf-8") as f:
+    with open(
+        os.path.expanduser("~/services/plx-toolkit-api/.env"), encoding="utf-8"
+    ) as f:
         for line in f:
             if "=" in line and not line.strip().startswith("#"):
                 k, v = line.strip().split("=", 1)
                 out[k] = v.strip().strip('"')
     return out
+
 
 env = load_env()
 token = env.get("TONAPI_KEY", "")
@@ -24,7 +30,9 @@ for label, addr in addrs.items():
     if not addr:
         print(f"{label}: (empty)")
         continue
-    req = urllib.request.Request(f"https://tonapi.io/v2/accounts/{addr}", headers=headers)
+    req = urllib.request.Request(
+        f"https://tonapi.io/v2/accounts/{addr}", headers=headers
+    )
     with urllib.request.urlopen(req, timeout=20) as r:
         data = json.load(r)
-    print(f"{label}: {int(data.get('balance',0))/1e9:.4f} TON  {addr[:20]}...")
+    print(f"{label}: {int(data.get('balance', 0)) / 1e9:.4f} TON  {addr[:20]}...")

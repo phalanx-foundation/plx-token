@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """List Acton wallet TON balances (uses TONAPI_KEY from env)."""
+
 from __future__ import annotations
 
 import json
@@ -10,6 +11,8 @@ import urllib.request
 
 ACTON = os.environ.get("ACTON", os.path.expanduser("~/.acton/bin/acton"))
 ACTON_CWD = os.environ.get("ACTON_CWD", os.path.expanduser("~/projects/plx-acton"))
+
+
 def _load_tonapi_key() -> str:
     key = os.environ.get("TONAPI_KEY", "").strip()
     if key:

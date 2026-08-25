@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """PLX + TON balances for Acton wallets (reads API .env for TONAPI_KEY + minter)."""
+
 from __future__ import annotations
 
 import json
@@ -40,7 +41,9 @@ for line in out.splitlines():
 for name, addr in wallets:
     time.sleep(1.1)
     headers = {"Authorization": f"Bearer {token}"} if token else {}
-    req = urllib.request.Request(f"https://tonapi.io/v2/accounts/{addr}", headers=headers)
+    req = urllib.request.Request(
+        f"https://tonapi.io/v2/accounts/{addr}", headers=headers
+    )
     with urllib.request.urlopen(req, timeout=20) as r:
         acc = json.load(r)
     ton = int(acc.get("balance", 0)) / 1e9
