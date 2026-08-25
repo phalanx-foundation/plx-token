@@ -32,7 +32,8 @@ fun hashLeaf(itemIndex: int, owner: address): uint256 {
     return beginCell().storeUint(itemIndex, 64).storeAddress(owner).endCell().hash();
 }
 
-// Verify Merkle proof from a cell containing 8 sibling hashes
+// Verify Merkle proof: 8 sibling hashes packed 3-per-cell with ref chain
+// (same packing as PlxAirdrop proofs — a single cell cannot hold 8×256 bits).
 fun verifyMerkleProof(
     leafHash: uint256,
     proofCell: cell,
@@ -45,6 +46,10 @@ fun verifyMerkleProof(
     var depth = 0;
 
     while (depth < _TREE_DEPTH) {
+        while (proofSlice.remainingBitsCount() < 256) {
+            assert (proofSlice.remainingRefsCount() > 0) throw 104;
+            proofSlice = proofSlice.loadRef().beginParse();
+        }
         val sibling = proofSlice.loadUint(256);
         if ((index & 1) == 0) {
             currentHash = hashPair(currentHash, sibling);

@@ -164,6 +164,10 @@ deploy-cnft-collection-emulation = "acton script scripts/deploy-cnft-collection.
 deploy-cnft-collection-testnet = "acton script scripts/deploy-cnft-collection.tolk --net testnet"
 deploy-cnft-collection-mainnet = "acton script scripts/deploy-cnft-collection.tolk --net mainnet"
 toolkit-deploy-cnft-collection = "bash scripts/toolkit-deploy-cnft-collection.sh"
+claim-cnft-item-emulation = "acton script scripts/claim-cnft-item.tolk"
+claim-cnft-item-testnet = "acton script scripts/claim-cnft-item.tolk --net testnet"
+cnft-deploy-claim-emulation = "acton script scripts/cnft-deploy-claim.tolk"
+cnft-emulation-e2e = "bash scripts/cnft-emulation-e2e.sh"
 
 [import-mappings]
 acton = ".acton"
