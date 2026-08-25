@@ -16,7 +16,6 @@ from __future__ import annotations
 import argparse
 import base64
 import json
-import sys
 from typing import Any
 
 
@@ -27,8 +26,7 @@ def _require_pytoniq():
         return Address, begin_cell
     except ImportError as exc:  # pragma: no cover
         raise SystemExit(
-            "cnft_merkle requires pytoniq-core. "
-            "Install: pip install pytoniq-core"
+            "cnft_merkle requires pytoniq-core. Install: pip install pytoniq-core"
         ) from exc
 
 
@@ -49,11 +47,7 @@ def hash_pair(left: bytes, right: bytes, begin_cell) -> bytes:
 
 def hash_leaf(index: int, owner: str, Address, begin_cell) -> bytes:
     return (
-        begin_cell()
-        .store_uint(index, 64)
-        .store_address(Address(owner))
-        .end_cell()
-        .hash
+        begin_cell().store_uint(index, 64).store_address(Address(owner)).end_cell().hash
     )
 
 
@@ -135,7 +129,9 @@ def _owners_from_args(args: argparse.Namespace) -> list[str]:
         owners: list[str] = []
         for i, item in enumerate(raw):
             if isinstance(item, dict):
-                owners.append(str(item.get("owner") or item.get("address") or args.owner))
+                owners.append(
+                    str(item.get("owner") or item.get("address") or args.owner)
+                )
             else:
                 owners.append(str(args.owner))
         if args.owner and not owners:
@@ -149,11 +145,19 @@ def _owners_from_args(args: argparse.Namespace) -> list[str]:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build TVM-compatible cNFT merkle tree")
+    parser = argparse.ArgumentParser(
+        description="Build TVM-compatible cNFT merkle tree"
+    )
     parser.add_argument("--owner", default="", help="Default owner address for leaves")
-    parser.add_argument("--count", type=int, default=0, help="Leaf count when using --owner")
-    parser.add_argument("--items-json", default="", help="JSON array of items with optional owner")
-    parser.add_argument("--out", default="", help="Write JSON to file (also prints to stdout)")
+    parser.add_argument(
+        "--count", type=int, default=0, help="Leaf count when using --owner"
+    )
+    parser.add_argument(
+        "--items-json", default="", help="JSON array of items with optional owner"
+    )
+    parser.add_argument(
+        "--out", default="", help="Write JSON to file (also prints to stdout)"
+    )
     args = parser.parse_args()
 
     Address, begin_cell = _require_pytoniq()

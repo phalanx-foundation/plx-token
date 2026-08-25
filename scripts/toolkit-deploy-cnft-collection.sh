@@ -48,6 +48,17 @@ fi
 
 # Ensure leaves have owners (default: collection owner)
 ITEMS_JSON="${NFT_ITEMS_JSON:-[]}"
+
+# Guard: never silently commit an all-zero (unclaimable) merkle root.
+# That only happens when there are no real items: count 0/unset AND no items.
+# An empty/whitespace NFT_ITEMS_JSON or an explicit "[]" counts as "no items".
+ITEMS_JSON_RAW="${NFT_ITEMS_JSON:-}"
+ITEMS_JSON_TRIMMED="$(printf '%s' "$ITEMS_JSON_RAW" | tr -d '[:space:]')"
+if (( COUNT == 0 )) && { [[ -z "$ITEMS_JSON_TRIMMED" ]] || [[ "$ITEMS_JSON_TRIMMED" == "[]" ]]; }; then
+  echo '{"error":"empty deploy blocked: supply NFT_ITEMS_JSON with real items and a nonzero NFT_ITEM_COUNT (an all-zero merkle root would be unclaimable)"}' >&2
+  exit 1
+fi
+
 MERKLE_TMP="$(mktemp)"
 LOG=""
 cleanup() { rm -f "$MERKLE_TMP"; [[ -n "${LOG}" ]] && rm -f "$LOG"; }
