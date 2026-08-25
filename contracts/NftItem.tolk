@@ -32,9 +32,9 @@ fun onInternalMessage(in: InMessage) {
             val forwardAmount = msg.forwardAmount;
             if (forwardAmount != 0) {
                 val notificationBody = beginCell()
-                    .storeUint(0x41661e1f, 32)    /// ownership_assigned
+                    .storeUint(0x41661e1f, 32)    // ownership_assigned
                     .storeUint(msg.queryId, 64)
-                    .storeUint(0, 64)               /// prev_owner (zero = not provided)
+                    .storeUint(0, 64)               // prev_owner (zero = not provided)
                     .storeRef(beginCell()
                         .storeAddress(storage.collectionAddress)
                         .storeCoins(0)

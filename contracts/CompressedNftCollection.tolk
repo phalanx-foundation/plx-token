@@ -21,7 +21,7 @@ type AllowedCompressedCollectionMessage =
     | GetRoyaltyParams
     | TopUpTons
 
-global _TREE_DEPTH: int = 8;
+const _TREE_DEPTH: int = 8;
 
 fun hashPair(left: uint256, right: uint256): uint256 {
     return sha256(beginCell().storeUint(left, 256).storeUint(right, 256).endCell().hash());
@@ -31,7 +31,7 @@ fun hashLeaf(itemIndex: int, owner: address): uint256 {
     return sha256(beginCell().storeInt(itemIndex, 64).storeAddress(owner).endCell().hash());
 }
 
-/// Verify Merkle proof from a cell containing 8 sibling hashes
+// Verify Merkle proof from a cell containing 8 sibling hashes
 fun verifyMerkleProof(
     leafHash: uint256,
     proofCell: cell,
@@ -89,14 +89,14 @@ fun onInternalMessage(in: InMessage) {
         DeployItemWithProof => {
             var storage = lazy CompressedNftCollectionStorage.load();
 
-            assert (storage.nextItemIndex < storage.maxSupply) throw 103; /// Max supply reached
+            assert (storage.nextItemIndex < storage.maxSupply) throw 103; // Max supply reached
 
             val proofMsg = msg as DeployItemWithProof;
             val leafHash = hashLeaf(proofMsg.itemIndex, proofMsg.claimant);
 
             assert (
                 verifyMerkleProof(leafHash, proofMsg.proofCell, proofMsg.itemIndex, storage.merkleRoot)
-            ) throw 104; /// Invalid Merkle proof
+            ) throw 104; // Invalid Merkle proof
 
             val nftAddress = calculateNftItemAddress(proofMsg.itemIndex, storage.nftItemCode);
 
@@ -173,7 +173,7 @@ fun onInternalMessage(in: InMessage) {
         }
 
         TopUpTons => {
-            /// accept tons
+            // accept tons
         }
 
         else => throw 0xFFFF,

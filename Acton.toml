@@ -82,6 +82,21 @@ display-name = "LiquidityLocker"
 src = "contracts/LiquidityLocker.tolk"
 depends = []
 
+[contracts.NftItem]
+display-name = "NftItem"
+src = "contracts/NftItem.tolk"
+depends = []
+
+[contracts.NftCollection]
+display-name = "NftCollection"
+src = "contracts/NftCollection.tolk"
+depends = ["NftItem"]
+
+[contracts.CompressedNftCollection]
+display-name = "CompressedNftCollection"
+src = "contracts/CompressedNftCollection.tolk"
+depends = ["NftItem"]
+
 [test]
 
 [fmt]

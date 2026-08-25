@@ -1,4 +1,4 @@
-/// === NftItem Storage ===
+// === NftItem Storage ===
 
 struct NftItemStorage {
     init: int
@@ -16,7 +16,7 @@ fun NftItemStorage.save(self) {
     contract.setData(self.toCell());
 }
 
-/// === NftCollection Storage ===
+// === NftCollection Storage ===
 
 struct NftCollectionStorage {
     ownerAddress: address
@@ -36,7 +36,7 @@ fun NftCollectionStorage.save(self) {
     contract.setData(self.toCell());
 }
 
-/// === Compressed Nft Collection Storage ===
+// === Compressed Nft Collection Storage ===
 
 struct CompressedNftCollectionStorage {
     ownerAddress: address
@@ -58,7 +58,7 @@ fun CompressedNftCollectionStorage.save(self) {
     contract.setData(self.toCell());
 }
 
-/// === Get-Method Reply Types ===
+// === Get-Method Reply Types ===
 
 struct NftCollectionDataReply {
     nextItemIndex: int

@@ -29,19 +29,19 @@ fun calculateNftItemAddress(
     nftItemCode: cell,
 ): address {
     val stateInit = beginCell()
-        .storeUint(0, 2)                   /// split_depth: absent
-        .storeUint(0, 1)                   /// special: absent
-        .storeUint(1, 1)                   /// code: present
+        .storeUint(0, 2)                   // split_depth: absent
+        .storeUint(0, 1)                   // special: absent
+        .storeUint(1, 1)                   // code: present
         .storeRef(nftItemCode)
-        .storeUint(1, 1)                   /// data: present
+        .storeUint(1, 1)                   // data: present
         .storeRef(beginCell()
-            .storeInt(1, 1)                /// init = true
+            .storeInt(1, 1)                // init = true
             .storeInt(index, 64)
             .storeAddress(contract.getAddress())
-            .storeAddress(contract.getAddress())       /// owner = collection initially
-            .storeRef(beginCell().endCell())            /// empty individual content
+            .storeAddress(contract.getAddress())       // owner = collection initially
+            .storeRef(beginCell().endCell())            // empty individual content
             .endCell())
-        .storeUint(0, 1)                   /// library: absent
+        .storeUint(0, 1)                   // library: absent
         .endCell();
 
     return contractAddress(0, stateInit);
@@ -54,13 +54,13 @@ fun onInternalMessage(in: InMessage) {
         DeployNftItem => {
             var storage = lazy NftCollectionStorage.load();
             assertSenderIsOwner(in.senderAddress, storage.ownerAddress);
-            assert (msg.index == storage.nextItemIndex) throw 101; /// Wrong index
+            assert (msg.index == storage.nextItemIndex) throw 101; // Wrong index
             assert (msg.owner.getWorkchain() == MY_WORKCHAIN) throw 333;
 
             val nftAddress = calculateNftItemAddress(msg.index, storage.nftItemCode);
 
             val nftInitData = beginCell()
-                .storeInt(1, 1)               /// init = true
+                .storeInt(1, 1)               // init = true
                 .storeInt(msg.index, 64)
                 .storeAddress(contract.getAddress())
                 .storeAddress(msg.owner)
@@ -68,20 +68,20 @@ fun onInternalMessage(in: InMessage) {
                 .endCell();
 
             val stateInit = beginCell()
-                .storeUint(0, 2)              /// split_depth: absent
-                .storeUint(0, 1)              /// special: absent
-                .storeUint(1, 1)              /// code: present
+                .storeUint(0, 2)              // split_depth: absent
+                .storeUint(0, 1)              // special: absent
+                .storeUint(1, 1)              // code: present
                 .storeRef(storage.nftItemCode)
-                .storeUint(1, 1)              /// data: present
+                .storeUint(1, 1)              // data: present
                 .storeRef(nftInitData)
-                .storeUint(0, 1)              /// library: absent
+                .storeUint(0, 1)              // library: absent
                 .endCell();
 
             val deployMsg = createMessage({
                 bounce: BounceMode.Only256BitsOfBody,
                 dest: nftAddress,
                 value: ton("0.05"),
-                body: beginCell().endCell().asSlice(), /// init contract (send empty body)
+                body: beginCell().endCell().asSlice(), // init contract (send empty body)
                 stateInit: stateInit,
             });
             deployMsg.send(SEND_MODE_PAY_FEES_SEPARATELY | SEND_MODE_BOUNCE_ON_ACTION_FAIL);
@@ -94,7 +94,7 @@ fun onInternalMessage(in: InMessage) {
             var storage = lazy NftCollectionStorage.load();
             assertSenderIsOwner(in.senderAddress, storage.ownerAddress);
 
-            /// parse batch items — each is DeployNftItem
+            // parse batch items â€” each is DeployNftItem
             val itemsCell = msg.items;
             var itemsSlice = itemsCell.beginParse();
             val count = itemsSlice.loadRef();
@@ -169,7 +169,7 @@ fun onInternalMessage(in: InMessage) {
         }
 
         TopUpTons => {
-            /// accept tons
+            // accept tons
         }
 
         else => throw 0xFFFF,
@@ -188,7 +188,7 @@ get fun get_collection_data(): NftCollectionDataReply {
 
 get fun get_nft_address_by_index(index: int): address {
     val storage = lazy NftCollectionStorage.load();
-    assert (index < storage.nextItemIndex) throw 102; /// Index out of bounds
+    assert (index < storage.nextItemIndex) throw 102; // Index out of bounds
 
     return calculateNftItemAddress(index, storage.nftItemCode);
 }
