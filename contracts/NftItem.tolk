@@ -31,6 +31,7 @@ fun onInternalMessage(in: InMessage) {
 
             val forwardAmount = msg.forwardAmount;
             if (forwardAmount != 0) {
+                // OwnershipAssigned notification body as slice (Acton 1.1: builder.toSlice)
                 val notificationBody = beginCell()
                     .storeUint(0x41661e1f, 32)    // ownership_assigned
                     .storeUint(msg.queryId, 64)
@@ -40,13 +41,13 @@ fun onInternalMessage(in: InMessage) {
                         .storeCoins(0)
                         .storeRef(storage.individualContent)
                         .endCell())
-                    .endCell();
+                    .toSlice();
 
                 val notifyMsg = createMessage({
                     bounce: BounceMode.NoBounce,
                     dest: msg.newOwner,
                     value: forwardAmount,
-                    body: notificationBody.asSlice(),
+                    body: notificationBody,
                 });
                 notifyMsg.send(SEND_MODE_PAY_FEES_SEPARATELY | SEND_MODE_IGNORE_ERRORS);
             }

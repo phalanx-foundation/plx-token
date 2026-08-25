@@ -1,8 +1,10 @@
 // === NftItem Storage ===
+// Widths match on-chain layout used by NftCollection/CompressedNftCollection deploy:
+// init:1 bit, index:64 bits, then addresses + content ref.
 
 struct NftItemStorage {
-    init: int
-    index: int
+    init: bool
+    index: uint64
     collectionAddress: address
     ownerAddress: address
     individualContent: cell
@@ -20,7 +22,7 @@ fun NftItemStorage.save(self) {
 
 struct NftCollectionStorage {
     ownerAddress: address
-    nextItemIndex: int
+    nextItemIndex: uint64
     collectionContent: cell
     nftItemCode: cell
     royaltyFactor: uint16
@@ -40,14 +42,14 @@ fun NftCollectionStorage.save(self) {
 
 struct CompressedNftCollectionStorage {
     ownerAddress: address
-    nextItemIndex: int
+    nextItemIndex: uint64
     collectionContent: cell
     nftItemCode: cell
     royaltyFactor: uint16
     royaltyBase: uint16
     royaltyAddress: address
     merkleRoot: uint256
-    maxSupply: int
+    maxSupply: uint64
 }
 
 fun CompressedNftCollectionStorage.load(): CompressedNftCollectionStorage {
@@ -61,14 +63,14 @@ fun CompressedNftCollectionStorage.save(self) {
 // === Get-Method Reply Types ===
 
 struct NftCollectionDataReply {
-    nextItemIndex: int
+    nextItemIndex: uint64
     collectionContent: cell
     ownerAddress: address
 }
 
 struct NftDataReply {
-    init: int
-    index: int
+    init: bool
+    index: uint64
     collectionAddress: address
     ownerAddress: address
     individualContent: cell
@@ -81,9 +83,9 @@ struct RoyaltyParamsReply {
 }
 
 struct CompressedCollectionDataReply {
-    nextItemIndex: int
+    nextItemIndex: uint64
     collectionContent: cell
     ownerAddress: address
     merkleRoot: uint256
-    maxSupply: int
+    maxSupply: uint64
 }

@@ -26,7 +26,9 @@ cd "$PLX_ACTON_ROOT"
 
 # Step 1: Build
 echo "[nft-deploy] Building contracts..." >&2
-acton build NftCollection NftItem 2>&1
+# Acton 1.1 accepts a single CONTRACT_NAME (or all if omitted)
+acton build NftItem 2>&1
+acton build NftCollection 2>&1
 
 # Step 2: Query NftItem code hash and code cell
 echo "[nft-deploy] Reading NftItem code..." >&2

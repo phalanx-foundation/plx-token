@@ -1,7 +1,6 @@
 import "@stdlib/gas-payments"
-import "@stdlib/address"
-import "@stdlib/hash"
 import "errors"
+import "sharding"
 import "nft-messages"
 import "nft-storage"
 
@@ -24,11 +23,12 @@ type AllowedCompressedCollectionMessage =
 const _TREE_DEPTH: int = 8;
 
 fun hashPair(left: uint256, right: uint256): uint256 {
-    return sha256(beginCell().storeUint(left, 256).storeUint(right, 256).endCell().hash());
+    // Same idiom as PlxAirdrop: cell.hash() (no @stdlib/hash)
+    return beginCell().storeUint(left, 256).storeUint(right, 256).endCell().hash();
 }
 
 fun hashLeaf(itemIndex: int, owner: address): uint256 {
-    return sha256(beginCell().storeInt(itemIndex, 64).storeAddress(owner).endCell().hash());
+    return beginCell().storeUint(itemIndex, 64).storeAddress(owner).endCell().hash();
 }
 
 // Verify Merkle proof from a cell containing 8 sibling hashes
@@ -41,15 +41,17 @@ fun verifyMerkleProof(
     var currentHash = leafHash;
     var index = itemIndex;
     var proofSlice = proofCell.beginParse();
+    var depth = 0;
 
-    for (depth in range(0, _TREE_DEPTH)) {
+    while (depth < _TREE_DEPTH) {
         val sibling = proofSlice.loadUint(256);
-        if (index & 1 == 0) {
+        if ((index & 1) == 0) {
             currentHash = hashPair(currentHash, sibling);
         } else {
             currentHash = hashPair(sibling, currentHash);
         }
         index >>= 1;
+        depth += 1;
     }
 
     return currentHash == root;
@@ -59,27 +61,41 @@ fun assertSenderIsOwner(senderAddress: address, ownerAddress: address) {
     assert (senderAddress == ownerAddress) throw 73;
 }
 
+fun emptyBodySlice(): slice {
+    return beginCell().toSlice();
+}
+
+// Acton 1.1: createMessage embeds StateInit when dest is AutoDeployAddress
+fun calcDeployedNftItem(
+    index: int,
+    owner: address,
+    individualContent: cell,
+    nftItemCode: cell,
+): AutoDeployAddress {
+    val nftInitData = beginCell()
+        .storeBool(true)
+        .storeUint(index, 64)
+        .storeAddress(contract.getAddress())
+        .storeAddress(owner)
+        .storeRef(individualContent)
+        .endCell();
+
+    return {
+        workchain: MY_WORKCHAIN,
+        stateInit: { code: nftItemCode, data: nftInitData },
+    };
+}
+
 fun calculateNftItemAddress(
     index: int,
     nftItemCode: cell,
 ): address {
-    val stateInit = beginCell()
-        .storeUint(0, 2)
-        .storeUint(0, 1)
-        .storeUint(1, 1)
-        .storeRef(nftItemCode)
-        .storeUint(1, 1)
-        .storeRef(beginCell()
-            .storeInt(1, 1)
-            .storeInt(index, 64)
-            .storeAddress(contract.getAddress())
-            .storeAddress(contract.getAddress())
-            .storeRef(beginCell().endCell())
-            .endCell())
-        .storeUint(0, 1)
-        .endCell();
-
-    return contractAddress(0, stateInit);
+    return calcDeployedNftItem(
+        index,
+        contract.getAddress(),
+        beginCell().endCell(),
+        nftItemCode,
+    ).calculateAddress();
 }
 
 fun onInternalMessage(in: InMessage) {
@@ -98,32 +114,16 @@ fun onInternalMessage(in: InMessage) {
                 verifyMerkleProof(leafHash, proofMsg.proofCell, proofMsg.itemIndex, storage.merkleRoot)
             ) throw 104; // Invalid Merkle proof
 
-            val nftAddress = calculateNftItemAddress(proofMsg.itemIndex, storage.nftItemCode);
-
-            val nftInitData = beginCell()
-                .storeInt(1, 1)
-                .storeInt(proofMsg.itemIndex, 64)
-                .storeAddress(contract.getAddress())
-                .storeAddress(proofMsg.claimant)
-                .storeRef(proofMsg.individualContent)
-                .endCell();
-
-            val stateInit = beginCell()
-                .storeUint(0, 2)
-                .storeUint(0, 1)
-                .storeUint(1, 1)
-                .storeRef(storage.nftItemCode)
-                .storeUint(1, 1)
-                .storeRef(nftInitData)
-                .storeUint(0, 1)
-                .endCell();
-
             val deployMsg = createMessage({
                 bounce: BounceMode.Only256BitsOfBody,
-                dest: nftAddress,
+                dest: calcDeployedNftItem(
+                    proofMsg.itemIndex,
+                    proofMsg.claimant,
+                    proofMsg.individualContent,
+                    storage.nftItemCode,
+                ),
                 value: ton("0.05"),
-                body: beginCell().endCell().asSlice(),
-                stateInit: stateInit,
+                body: emptyBodySlice(),
             });
             deployMsg.send(SEND_MODE_PAY_FEES_SEPARATELY | SEND_MODE_BOUNCE_ON_ACTION_FAIL);
 

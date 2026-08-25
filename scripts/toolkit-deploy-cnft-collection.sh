@@ -23,7 +23,9 @@ cd "$PLX_ACTON_ROOT"
 
 # Step 1: Build contracts
 echo "[cnft-deploy] Building contracts..." >&2
-acton build CompressedNftCollection NftItem 2>&1
+# Acton 1.1 accepts a single CONTRACT_NAME (or all if omitted)
+acton build NftItem 2>&1
+acton build CompressedNftCollection 2>&1
 
 # Step 2: Read NftItem code
 NFT_ITEM_CODE_CELL=$(cat build/NftItem.compiled.json 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('code',''))" 2>/dev/null || echo "")
