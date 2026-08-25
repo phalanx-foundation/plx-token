@@ -7,19 +7,19 @@ import "@acton/emulation/scripts"
 import "@contracts/storage"
 import "@contracts/nft-storage"
 import "@gen/NftItem.code"
-import "@wrappers/NftCollection.gen"
+import "@wrappers/CompressedNftCollection.gen"
 import "utils/common"
 
 /**
- * Non-interactive NFT collection deploy for Phalanx Toolkit.
+ * Non-interactive Compressed NFT collection deploy (TEP #126).
  *
- * Env (required):
- *   JETTON_DEPLOYER / NFT_DEPLOYER — Acton wallet name (pays gas)
- *   NFT_OWNER_ADDRESS              — final collection owner (royalty destination)
+ * Env:
+ *   JETTON_DEPLOYER / NFT_DEPLOYER
+ *   NFT_OWNER_ADDRESS
  *   COLLECTION_NAME, COLLECTION_DESCRIPTION, COLLECTION_IMAGE_URL
- *   ROYALTY_FACTOR, ROYALTY_BASE    — TEP-66 (shell derives from ROYALTY_PERCENT)
- *   NFT_ITEM_COUNT                 — if > 0, deploy with deployer as owner (escrow)
- *                                    so toolkit can mint, then shell transfers ownership
+ *   ROYALTY_FACTOR, ROYALTY_BASE
+ *   CNFT_MERKLE_ROOT — decimal uint256 (0 = placeholder until SetMerkleRoot)
+ *   CNFT_MAX_SUPPLY  — uint64 (default 256)
  */
 fun buildCollectionContentCell(): cell {
     val name = promptJettonString("COLLECTION_NAME", "Collection name", "Unnamed Collection");
@@ -59,33 +59,33 @@ fun main() {
         deployer = promptJettonWallet("JETTON_DEPLOYER", "Toolkit deployer wallet");
     }
 
-    val clientOwner = promptJettonAddressRequired("NFT_OWNER_ADDRESS", "NFT collection owner");
-    val itemCount = parseInt(promptJettonString("NFT_ITEM_COUNT", "Items to mint after deploy", "0"));
-    // Escrow: deployer must own collection to send DeployNftItem
-    var storageOwner = clientOwner;
-    if (itemCount > 0) {
-        storageOwner = deployer.address;
-    }
-
+    val owner = promptJettonAddressRequired("NFT_OWNER_ADDRESS", "cNFT collection owner");
     val royaltyFactor = promptRoyaltyFactor();
     val royaltyBase = promptRoyaltyBase();
 
-    val storage: NftCollectionStorage = {
-        ownerAddress: storageOwner,
+    val merkleRootRaw: int = env<int>("CNFT_MERKLE_ROOT") ?? 0;
+    val merkleRoot: uint256 = merkleRootRaw as uint256;
+    val maxSupplyRaw = promptJettonString("CNFT_MAX_SUPPLY", "Max supply", "256");
+    val maxSupply = parseInt(maxSupplyRaw) as uint64;
+
+    val storage: CompressedNftCollectionStorage = {
+        ownerAddress: owner,
         nextItemIndex: 0,
         collectionContent: buildCollectionContentCell(),
         nftItemCode: nftItemCompiledCode(),
         royaltyFactor: royaltyFactor,
         royaltyBase: royaltyBase,
-        royaltyAddress: clientOwner,
+        royaltyAddress: owner,
+        merkleRoot: merkleRoot,
+        maxSupply: maxSupply,
     };
 
-    val collection = NftCollection.fromStorage(storage);
+    val collection = CompressedNftCollection.fromStorage(storage);
     val deployRes = collection.deploy(deployer.address, { value: ton("0.15") });
     deployRes.waitForFirstTransaction();
 
     println("TOOLKIT COLLECTION_ADDRESS={}", collection.address);
-    println("TOOLKIT COLLECTION_ESCROW={}", itemCount > 0);
-    println("TOOLKIT FINAL_OWNER_ADDRESS={}", clientOwner);
+    println("TOOLKIT MERKLE_ROOT={}", merkleRoot);
+    println("TOOLKIT MAX_SUPPLY={}", maxSupply);
     println("TOOLKIT DEPLOY_TRACE={}", deployRes.waitForTrace());
 }
