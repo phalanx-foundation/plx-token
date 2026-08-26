@@ -15,7 +15,7 @@
 | What is “PLX Minter” watch-only? | **Jetton master contract** — target of tx, not signer |
 | What is “Team Minter” watch-only? | **TeamVesting contract** — rename label to “Team Vesting” |
 | Is supply fully distributed? | **Yes** — 1B PLX minted; LP wallet ~96.5k PLX seeded to Ston.fi DEX |
-| Safe to drop admin today? | **No** — CI red on repo, ton-assets PR not merged, metadata/ecosystem narrative gap, Fase 1 toolkit gates open |
+| Safe to drop admin today? | **No** — tunggu konfirmasi backup PLX Deployer + GO eksplisit. CI template sudah diperbaiki lokal (130 tests). ton-assets PR masih closed tanpa merge (soft). |
 
 ---
 
@@ -83,20 +83,22 @@ All three user addresses decode to the **same raw account** as canonical EQ docs
 | NFT getter fix (`NftCollection`, `CompressedNftCollection`) | **Separate contracts** — deploy new collections; no PLX minter upgrade |
 | cNFT merkle / claim changes | **Separate contracts** + API — no PLX minter upgrade |
 
-### Repo CI (`contracts.yml`) — **FAIL** (2026-08-25)
+### Repo CI (`contracts.yml`) — **PASS locally 2026-08-26** (push pending GPG)
 
-Build errors in **toolkit templates**, not PLX genesis minter:
+Previously FAIL (2026-08-25) on toolkit templates:
 
-- `LiquidityLocker.tolk` — undefined `jettonEmptyForwardPayload`
-- `TokenGovernance.tolk` — invalid `self` parameter position
+- `LiquidityLocker.tolk` — missing `jetton-utils` + wrong unlock body → **fixed** (`AskToTransfer` to own LP jetton wallet)
+- `TokenGovernance.tolk` — invalid method / map / `Cell` types → **fixed**
+
+Verified on Ubuntu (`acton build` + `acton test`): **130 passed in 19 files**.
 
 | Contract family | Blocks drop admin? | Reason |
 |-----------------|-------------------|--------|
-| `JettonMinter` / `JettonWallet` (PLX live) | **No** — if no on-chain bug found | Already deployed & unchanged |
-| `LiquidityLocker`, `TokenGovernance` | **No** for drop — **Yes** for toolkit template quality | Not deployed as PLX genesis |
+| `JettonMinter` / `JettonWallet` (PLX live) | **No** | Already deployed & unchanged |
+| `LiquidityLocker`, `TokenGovernance` | **No** for drop — templates now compile | Not deployed as PLX genesis |
 | Future toolkit features (airdrop, staking, NFT, games) | **No** | New deploy per customer / off-chain API |
 
-**Conclusion:** No evidence that PLX genesis minter **requires** `UpgradeMinterCode` before drop. CI failure is a **process gate** (C1 in [`MAINNET-GO-NO-GO.md`](MAINNET-GO-NO-GO.md)) — fix templates + green tests before calling ops “final”.
+**Conclusion:** No need for `UpgradeMinterCode` on PLX genesis before drop. Gate C1 (green tests) is **satisfied locally**; commit/push when GPG signing is available so GitHub Actions mirrors this.
 
 ---
 
@@ -161,8 +163,8 @@ Not mentioned on-chain today: Scratch Seeker, Midas Hand / launchpad, NFT/cNFT/S
 |---|-------|--------|
 | B1 | TonAPI verification `whitelist` | **PASS** |
 | B2 | Tonkeeper device — no SCAM label | **NOT VERIFIED** (requires physical device) |
-| B3 | ton-assets PR [#5468](https://github.com/tonkeeper/ton-assets/pull/5468) | **FAIL** — `CLOSED`, **not merged** |
-| B4 | Deployer mnemonic backup | **ASSUMED** — operator must confirm vault offline |
+| B3 | ton-assets PR [#5468](https://github.com/tonkeeper/ton-assets/pull/5468) | **CLOSED tanpa merge** — reviewer Tonkeeper (2026-06-05): *“no Scam label right now… develop your token… return if you will develop it in the future.”* Artinya PR ditolak/ditutup, **bukan** masuk ke daftar resmi ton-assets. Buka PR baru nanti setelah produk lebih mature. Soft gate untuk drop (TonAPI sudah `whitelist`). |
+| B4 | Deployer mnemonic backup | **Perlu konfirmasi Anda** — lihat penjelasan “backup PLX Deployer” di bawah |
 
 ---
 
@@ -178,25 +180,51 @@ Not mentioned on-chain today: Scratch Seeker, Midas Hand / launchpad, NFT/cNFT/S
 | B2 Tonkeeper SCAM | **UNKNOWN** | Soft — whitelist may suffice |
 | B3 ton-assets merged | **FAIL** | Soft for drop — hard for announce |
 | B4 Wallet backup | **UNCONFIRMED** | Hard for drop execution |
-| C1 `acton test` green | **FAIL** | Process / quality gate |
+| C1 `acton test` green | **PASS lokal** (130 tests; push GPG pending) | Soft until GitHub green |
 | C2 Deploy log on server | **NOT CHECKED** (no SSH this audit) | — |
-| C3 Drop admin decision | **NO-GO documented** | — |
+| C3 Drop admin decision | **NO-GO documented** (await operator backup + explicit GO) | — |
 | Prod API `/health/db` | **PASS** | — |
 | Toolkit Fase 1 E2E | **OPEN** | Recommended before irreversible step |
 | Metadata final | **ACCEPTED short** or update before drop | Optional |
 
-### **Final decision: NO-GO**
+### **Final decision: NO-GO untuk drop hari ini**
 
-Drop admin **deferred**. Irreversible step should run only after:
+Drop admin **masih ditunda** sampai:
 
-1. Operator confirms **B4** (deployer mnemonic / `wallets.toml` recovery).
-2. **C1** — green CI or written waiver that PLX genesis contracts are isolated from failing templates.
-3. Explicit choice on **metadata** (update now vs accept current).
-4. User **explicit approval** after reading this report.
+1. Anda konfirmasi **B4** (backup mnemonic PLX Deployer / `plx-deployer-v2`).
+2. Commit+push perbaikan CI terlihat hijau di GitHub Actions (opsional tapi disarankan).
+3. Persetujuan eksplisit setelah baca laporan ini.
 
 ---
 
-## 8. Drop execution guide (when GO)
+## 8. Apa arti “CLOSED, not merged”?
+
+Di GitHub, sebuah Pull Request punya dua jalur akhir:
+
+| Status | Arti |
+|--------|------|
+| **Merged** | Perubahan **diterima** dan masuk ke branch utama repo target |
+| **Closed (tanpa merged)** | PR **ditutup ditolak / dibatalkan** — kode **tidak** masuk |
+
+PR [#5468](https://github.com/tonkeeper/ton-assets/pull/5468) ke `tonkeeper/ton-assets` = **closed tanpa merge**. Tim Tonkeeper menutupnya dengan komentar: label SCAM sudah tidak ada saat itu, dan mereka minta proyek “dikembangkan dulu” sebelum verifikasi resmi. Itu **bukan** kegagalan teknis kontrak PLX; itu penundaan listing di registry Tonkeeper. Re-submit PR baru nanti. Sementara TonAPI sudah `whitelist`.
+
+---
+
+## 9. Apa itu “backup PLX Deployer”?
+
+**PLX Deployer** (`EQBfYLpq…` / Tonkeeper `UQBfYLpq…anhSm`) adalah wallet yang:
+
+- punya **seed phrase / mnemonic 24 kata** (disimpan di server sebagai `plx-deployer-v2` di `wallets.toml`)
+- adalah **admin** minter PLX saat ini
+- satu-satunya yang bisa sign `DropMinterAdmin`, `ChangeMinterMetadata`, atau `UpgradeMinterCode`
+
+**Backup** berarti: Anda (operator) punya salinan mnemonic itu di tempat aman **offline** (paper / hardware wallet / encrypted vault), **terpisah** dari laptop yang bisa rusak, dan Anda sudah pernah **uji restore** (bisa buka wallet yang sama di Tonkeeper dari seed). Tanpa backup, jika server `wallets.toml` hilang sebelum/saat drop, Anda bisa kehilangan kontrol admin **sebelum** drop selesai — atau tidak bisa menyelesaikan transaksi darurat.
+
+Ini **bukan** backup alamat watch-only “PLX Minter” (itu kontrak, tidak punya seed).
+
+---
+
+## 10. Drop execution guide (when GO)
 
 **Signer:** PLX Deployer — **not** PLX Minter watch-only.
 
@@ -213,10 +241,10 @@ Drop admin **deferred**. Irreversible step should run only after:
 
 ---
 
-## 9. What drop admin does NOT block
+## 11. What drop admin does NOT block
 
 Toolkit continues to deploy **new** contracts (jetton, NFT, airdrop, staking templates), operate Scratch (`/game/scratch/*`), PaymentSplitter rail, analytics API, and custom client deploys. Only **PLX genesis minter** admin powers are removed permanently.
 
 ---
 
-*Generated by holistic drop-admin audit plan. Do not edit [`plx_drop_admin_audit_db651ceb.plan.md`](../../.cursor/plans/) — update this file for subsequent audit runs.*
+*Updated 2026-08-26 after CI template fixes (LiquidityLocker / TokenGovernance / tests). Drop still NO-GO pending B4 + explicit operator GO.*
