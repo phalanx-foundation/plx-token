@@ -52,7 +52,7 @@ fun TokenGovernance.sendCreateProposal(
     queryId: uint64,
     descriptionHash: bits256,
     targetContract: address,
-    payload: Cell,
+    payload: cell,
     config: SendParams = {},
 ): SendResultList {
     val genericMsg = createMessage({

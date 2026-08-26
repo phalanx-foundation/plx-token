@@ -29,7 +29,7 @@ struct Proposal {
     proposer: address
     descriptionHash: bits256
     targetContract: address
-    payload: Cell
+    payload: cell
     snapshotBalance: coins
     voteFor: coins
     voteAgainst: coins
@@ -50,7 +50,7 @@ struct (0x474f5601) CreateProposal {
     queryId: uint64
     descriptionHash: bits256
     targetContract: address
-    payload: Cell
+    payload: cell
 }
 
 struct (0x474f5602) CastVote {
@@ -90,7 +90,7 @@ fun GovernanceStorage.save(self) {
     contract.setData(self.toCell());
 }
 
-fun isAdmin(self: GovernanceStorage, sender: address): bool {
+fun GovernanceStorage.isAdmin(self, sender: address): bool {
     val config = self.config.load();
     return sender == config.admin;
 }
@@ -160,7 +160,10 @@ fun onInternalMessage(in: InMessage) {
             assert (blockchain.now() < proposal.votingEndsAt) throw Errors.NothingToClaim;
 
             val voteMapEntry = storage.votes.get(msg.proposalId);
-            var voteMap = voteMapEntry.loadValueOrDefault();
+            var voteMap: map<address, bool> = [];
+            if (voteMapEntry.isFound) {
+                voteMap = voteMapEntry.loadValue();
+            }
 
             assert (!voteMap.exists(in.senderAddress)) throw Errors.InvalidOp;
 

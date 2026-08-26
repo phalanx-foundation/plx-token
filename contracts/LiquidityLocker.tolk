@@ -1,4 +1,6 @@
+import "@gen/JettonWallet.code"
 import "errors"
+import "jetton-utils"
 import "messages"
 
 contract LiquidityLocker {
@@ -71,6 +73,11 @@ fun LockerStorage.save(self) {
     contract.setData(self.toCell());
 }
 
+fun ownLpJettonWallet(lpTokenMinter: address): address {
+    val jettonWalletCode = jettonWalletCompiledCode();
+    return calcAddressOfJettonWallet(contract.getAddress(), lpTokenMinter, jettonWalletCode);
+}
+
 fun parseLockPayload(payload: ForwardPayloadRemainder): (uint32, bool) {
     var s = payload;
     if (s.remainingBitsCount() == 0 && s.remainingRefsCount() == 0) {
@@ -95,6 +102,8 @@ fun onInternalMessage(in: InMessage) {
         TransferNotificationForRecipient => {
             var storage = lazy LockerStorage.load();
             val config = storage.config.load();
+            val ourWallet = ownLpJettonWallet(config.lpTokenMinter);
+            assert (in.senderAddress == ourWallet) throw Errors.NotValidWallet;
 
             val incomingAmount = msg.jettonAmount;
             if (incomingAmount == 0) {
@@ -124,6 +133,7 @@ fun onInternalMessage(in: InMessage) {
 
         UnlockLiquidity => {
             var storage = lazy LockerStorage.load();
+            val config = storage.config.load();
 
             val lockEntry = storage.locks.get(msg.lockId);
             assert (lockEntry.isFound) throw Errors.InvalidOp;
@@ -141,12 +151,15 @@ fun onInternalMessage(in: InMessage) {
 
             val transferMsg = createMessage({
                 bounce: BounceMode.Only256BitsOfBody,
-                dest: in.senderAddress,
+                dest: ownLpJettonWallet(config.lpTokenMinter),
                 value: LP_TRANSFER_VALUE,
-                body: JettonTransferNotification {
+                body: AskToTransfer {
                     queryId: msg.queryId,
                     jettonAmount: record.lpAmount,
-                    sender: contract.getAddress(),
+                    transferRecipient: record.owner,
+                    sendExcessesTo: in.senderAddress,
+                    customPayload: null,
+                    forwardTonAmount: 0,
                     forwardPayload: jettonEmptyForwardPayload(),
                 },
             });

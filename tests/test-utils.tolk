@@ -237,3 +237,34 @@ fun mintTo(minter: JettonMinter, admin: Treasury, recipient: address, amount: co
     expect(minter.getTotalSupply()).toEqual(supplyBefore + amount);
     return wallet;
 }
+
+/// Mint tokens to an address (alias used by locker/staking/vault tests).
+fun mintTokensTo(
+    admin: Treasury,
+    minter: JettonMinter,
+    recipient: address,
+    amount: coins,
+): JettonWallet {
+    return mintTo(minter, admin, recipient, amount);
+}
+
+/// Transfer jettons from `from` to `recipient` with a forward payload (deposit / lock / reward-pool ops).
+fun transferTokensTo(
+    minter: JettonMinter,
+    from: Treasury,
+    recipient: address,
+    amount: coins,
+    forwardPayload: slice,
+): SendResultList {
+    val wallet = userWallet(minter, from.address);
+    val body = AskToTransfer {
+        queryId: 0,
+        jettonAmount: amount,
+        transferRecipient: recipient,
+        sendExcessesTo: from.address,
+        customPayload: null,
+        forwardTonAmount: 100000000,
+        forwardPayload,
+    };
+    return sendRawTransferPayload(from.address, wallet.address, body.toCell(), 400000000);
+}
