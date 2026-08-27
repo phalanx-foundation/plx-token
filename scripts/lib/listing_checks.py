@@ -156,14 +156,19 @@ def check_cryptorank_listed(config: TokenListingConfig | None = None) -> dict[st
         rows = (data or {}).get("data") if data else None
         if isinstance(rows, list):
             for row in rows:
-                if isinstance(row, dict) and str(row.get("symbol") or "").upper() == symbol.upper():
+                if (
+                    isinstance(row, dict)
+                    and str(row.get("symbol") or "").upper() == symbol.upper()
+                ):
                     slug_found = str(row.get("slug") or row.get("key") or slug or "")
                     return {
                         "ok": True,
                         "listed": True,
                         "cryptorank_id": str(row.get("id") or "") or None,
                         "cryptorank_slug": slug_found or None,
-                        "url": f"https://cryptorank.io/price/{slug_found}" if slug_found else None,
+                        "url": f"https://cryptorank.io/price/{slug_found}"
+                        if slug_found
+                        else None,
                     }
 
     if slug:

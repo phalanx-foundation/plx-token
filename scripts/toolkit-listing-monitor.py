@@ -179,8 +179,10 @@ def _probe_one(row: dict[str, Any]) -> dict[str, Any]:
             pass
 
     # CryptoRank: if submitted (or always best-effort), probe for live listing id/slug
-    if row.get("cryptorank_submitted") and not row.get("cryptorank_id") and not row.get(
-        "cryptorank_slug"
+    if (
+        row.get("cryptorank_submitted")
+        and not row.get("cryptorank_id")
+        and not row.get("cryptorank_slug")
     ):
         cr = check_cryptorank_listed(cfg)
         if cr.get("listed"):
