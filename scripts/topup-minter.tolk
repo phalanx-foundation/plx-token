@@ -10,9 +10,12 @@ fun main() {
     val from = scripts.wallet(fromName);
     val minterAddr = env<address>("JETTON_MINTER_ADDRESS")!;
     val minter = JettonMinter.fromAddress(minterAddr);
-    val amount = env<coins>("TON_AMOUNT_NANO") ?? env<coins>("TON_AMOUNT") ?? ton("0.01");
+    val amount = ton("0.05");
 
     println("[topup-minter] {} -> {} amount {}", from.address, minter.address, amount);
-    val res = minter.sendTopUpTons(from.address, { bounce: false, value: amount });
+    val res = minter.sendTopUpTons(
+        from.address,
+        { bounce: false, value: amount },
+    );
     println(res.waitForTrace());
 }
