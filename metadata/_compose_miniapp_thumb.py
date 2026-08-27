@@ -55,7 +55,9 @@ def hex_grid(w: int, h: int, spacing: int = 64) -> Image.Image:
     return layer.filter(ImageFilter.GaussianBlur(0.3))
 
 
-def scale_cover(im: Image.Image, tw: int, th: int, bias_x: float = 0.62, bias_y: float = 0.38) -> Image.Image:
+def scale_cover(
+    im: Image.Image, tw: int, th: int, bias_x: float = 0.62, bias_y: float = 0.38
+) -> Image.Image:
     iw, ih = im.size
     scale = max(tw / iw, th / ih)
     nw, nh = int(iw * scale), int(ih * scale)
@@ -67,8 +69,10 @@ def scale_cover(im: Image.Image, tw: int, th: int, bias_x: float = 0.62, bias_y:
     return im.crop((left, top, left + tw, top + th))
 
 
-def horizontal_fade(im: Image.Image, start: float, end: float, max_a: int) -> Image.Image:
-    w, h = im.size
+def horizontal_fade(
+    im: Image.Image, start: float, end: float, max_a: int
+) -> Image.Image:
+    w, _h = im.size
     im = im.convert("RGBA")
     arr = np.array(im, dtype=np.float32)
     t = np.linspace(0, 1, w, dtype=np.float32)
@@ -115,14 +119,18 @@ def circular_logo(src: Image.Image, size: int) -> Image.Image:
     return Image.alpha_composite(out, ring)
 
 
-def glow_layer(sprite: Image.Image, radius: int, color: tuple[int, int, int], strength: float) -> Image.Image:
+def glow_layer(
+    sprite: Image.Image, radius: int, color: tuple[int, int, int], strength: float
+) -> Image.Image:
     alpha = sprite.split()[-1].filter(ImageFilter.GaussianBlur(radius))
     glow = Image.new("RGBA", sprite.size, color + (0,))
     glow.putalpha(ImageEnhance.Brightness(alpha).enhance(strength))
     return glow
 
 
-def text_size(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont) -> tuple[int, int]:
+def text_size(
+    draw: ImageDraw.ImageDraw, text: str, font: ImageFont.FreeTypeFont
+) -> tuple[int, int]:
     box = draw.textbbox((0, 0), text, font=font)
     return box[2] - box[0], box[3] - box[1]
 
@@ -158,7 +166,12 @@ def compose() -> None:
     font_micro = ImageFont.truetype(FONT_R, 20)
 
     tx, ty = 420, 268
-    draw.text((tx, ty), "TON MINI APP   ·   AUDITED JETTON", font=font_eye, fill=(125, 211, 252, 230))
+    draw.text(
+        (tx, ty),
+        "TON MINI APP   ·   AUDITED JETTON",
+        font=font_eye,
+        fill=(125, 211, 252, 230),
+    )
 
     title = "Phalanx Toolkit"
     ty2 = ty + 48
@@ -166,8 +179,18 @@ def compose() -> None:
     draw.text((tx, ty2), title, font=font_title, fill=(248, 250, 252, 255))
 
     ty3 = ty2 + 98
-    draw.text((tx, ty3), "Deploy your token on TON.", font=font_hook, fill=(226, 232, 240, 250))
-    draw.text((tx, ty3 + 50), "No code.  No CLI.  One tap in Telegram.", font=font_sub, fill=(147, 197, 253, 230))
+    draw.text(
+        (tx, ty3),
+        "Deploy your token on TON.",
+        font=font_hook,
+        fill=(226, 232, 240, 250),
+    )
+    draw.text(
+        (tx, ty3 + 50),
+        "No code.  No CLI.  One tap in Telegram.",
+        font=font_sub,
+        fill=(147, 197, 253, 230),
+    )
 
     line_y = ty3 + 102
     draw.line((tx, line_y, tx + 240, line_y), fill=(56, 189, 248, 200), width=2)
@@ -175,14 +198,34 @@ def compose() -> None:
     bw, bh = 248, 58
     bx, by = tx, line_y + 32
     glow_btn = Image.new("RGBA", (bw + 36, bh + 36), (0, 0, 0, 0))
-    ImageDraw.Draw(glow_btn).rounded_rectangle((6, 6, bw + 30, bh + 30), 16, fill=(14, 165, 233, 80))
-    canvas.alpha_composite(glow_btn.filter(ImageFilter.GaussianBlur(9)), (bx - 18, by - 18))
+    ImageDraw.Draw(glow_btn).rounded_rectangle(
+        (6, 6, bw + 30, bh + 30), 16, fill=(14, 165, 233, 80)
+    )
+    canvas.alpha_composite(
+        glow_btn.filter(ImageFilter.GaussianBlur(9)), (bx - 18, by - 18)
+    )
     draw = ImageDraw.Draw(canvas)
-    draw.rounded_rectangle((bx, by, bx + bw, by + bh), 13, fill=(14, 165, 233, 240), outline=(186, 230, 253, 170), width=1)
+    draw.rounded_rectangle(
+        (bx, by, bx + bw, by + bh),
+        13,
+        fill=(14, 165, 233, 240),
+        outline=(186, 230, 253, 170),
+        width=1,
+    )
     cta = "Deploy now   →"
     cw, ch = text_size(draw, cta, font_cta)
-    draw.text((bx + (bw - cw) / 2, by + (bh - ch) / 2 - 2), cta, font=font_cta, fill=(4, 16, 32, 255))
-    draw.text((tx, by + bh + 22), "app.plx.foundation", font=font_micro, fill=(148, 163, 184, 200))
+    draw.text(
+        (bx + (bw - cw) / 2, by + (bh - ch) / 2 - 2),
+        cta,
+        font=font_cta,
+        fill=(4, 16, 32, 255),
+    )
+    draw.text(
+        (tx, by + bh + 22),
+        "app.plx.foundation",
+        font=font_micro,
+        fill=(148, 163, 184, 200),
+    )
 
     draw.rectangle((0, 0, W, 2), fill=(56, 189, 248, 80))
     draw.rectangle((0, H - 2, W, H), fill=(56, 189, 248, 60))
