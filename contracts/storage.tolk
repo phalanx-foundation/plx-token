@@ -39,7 +39,8 @@ struct JettonWalletDataReply {
 struct JettonDataReply {
     totalSupply: int
     mintable: bool
-    adminAddress: address?
+    /// Always MsgAddressInt for TEP-74 indexers (burn address when revoked; never none).
+    adminAddress: address
     jettonContent: Cell<OnchainMetadataReply>
     jettonWalletCode: cell
 }

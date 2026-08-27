@@ -52,7 +52,7 @@ fun JettonMinter.getTotalSupply(self): int {
     return self.getJettonData().totalSupply;
 }
 
-fun JettonMinter.getAdminAddress(self): address? {
+fun JettonMinter.getAdminAddress(self): address {
     return self.getJettonData().adminAddress;
 }
 

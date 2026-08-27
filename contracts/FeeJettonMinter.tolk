@@ -2,6 +2,7 @@ import "@gen/FeeJettonWallet.code"
 import "errors"
 import "fee-types"
 import "fees-management"
+import "jetton-utils"
 import "messages"
 import "sharding"
 import "storage"
@@ -161,9 +162,10 @@ fun onInternalMessage(in: InMessage) {
         }
 
         DropMinterAdmin => {
+            // Official revoke: burn MsgAddressInt (docs.ton.org), not null/addr_none.
             var storage = lazy FeeMinterStorage.load();
             assertSenderIsFeeMinterAdmin(in.senderAddress, storage.adminAddress);
-            storage.adminAddress = null;
+            storage.adminAddress = BURN_ADMIN_ADDRESS;
             storage.nextAdminAddress = null;
             storage.save();
         }
@@ -205,8 +207,8 @@ get fun get_jetton_data(): JettonDataReply {
     val storage = lazy FeeMinterStorage.load();
     return {
         totalSupply: storage.totalSupply,
-        mintable: storage.adminAddress != null,
-        adminAddress: storage.adminAddress,
+        mintable: isActiveMinterAdmin(storage.adminAddress),
+        adminAddress: jettonDataAdminAddress(storage.adminAddress),
         jettonContent: storage.metadata as Cell<OnchainMetadataReply>,
         jettonWalletCode: feeWalletCode(),
     };

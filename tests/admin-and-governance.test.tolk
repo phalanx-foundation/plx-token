@@ -166,7 +166,9 @@ get fun `test admin: admin can drop admin access`() {
         from: deployer.address,
         to: minter.address,
     });
-    expect(minter.getAdminAddress()).toEqual(null);
+    // Official revoke stores burn MsgAddressInt (not null) for TEP-74 indexers.
+    expect(minter.getAdminAddress()).toEqual(address.fromWorkchainAndHash(0, 0));
+    expect(minter.getJettonData().mintable).toEqual(false);
 }
 
 get fun `test admin: admin can change metadata uri`() {

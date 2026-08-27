@@ -1,6 +1,20 @@
 import "sharding"
 import "storage"
 
+/// Official TON burn / revoked-admin address (workchain 0 + zero hash).
+/// docs.ton.org: revoke by transferring admin here — NOT addr_none/null.
+/// Friendly: UQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJKZ
+const BURN_ADMIN_ADDRESS: address = address.fromWorkchainAndHash(0, 0)
+
+fun isActiveMinterAdmin(adminAddress: address?): bool {
+    return adminAddress != null && adminAddress != BURN_ADMIN_ADDRESS;
+}
+
+/// TEP-74 get_jetton_data admin slot must be MsgAddressInt (never empty/none).
+fun jettonDataAdminAddress(adminAddress: address?): address {
+    return adminAddress != null ? adminAddress! : BURN_ADMIN_ADDRESS;
+}
+
 fun calcDeployedJettonWallet(
     ownerAddress: address,
     minterAddress: address,

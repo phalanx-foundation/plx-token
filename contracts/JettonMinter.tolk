@@ -150,9 +150,11 @@ fun onInternalMessage(in: InMessage) {
         }
 
         DropMinterAdmin => {
+            // Official revoke: set admin to burn MsgAddressInt (docs.ton.org),
+            // NOT null/addr_none — empty admin breaks TonAPI jetton catalog indexing.
             var storage = lazy MinterStorage.load();
             assertSenderIsAdmin(in.senderAddress, storage.adminAddress);
-            storage.adminAddress = null;
+            storage.adminAddress = BURN_ADMIN_ADDRESS;
             storage.nextAdminAddress = null;
             storage.save();
         }
@@ -185,8 +187,8 @@ get fun get_jetton_data(): JettonDataReply {
 
     return {
         totalSupply: storage.totalSupply,
-        mintable: storage.adminAddress != null,
-        adminAddress: storage.adminAddress,
+        mintable: isActiveMinterAdmin(storage.adminAddress),
+        adminAddress: jettonDataAdminAddress(storage.adminAddress),
         jettonContent: storage.metadata as Cell<OnchainMetadataReply>,
         jettonWalletCode,
     };
