@@ -63,10 +63,10 @@ xychart-beta
 
 ## Token Mechanics
 
-### Mintable
-- Admin can mint new tokens (no hard cap on the contract; **soft cap is 1B per tokenomics**)
-- After full distribution, admin will **drop admin** (`DropMinterAdmin` opcode `0x7431f221`) → minting permanently disabled
-- Trust signal: post-renounce, supply is fully fixed
+### Mintable (genesis) → **revoked**
+- At launch the admin could mint (soft cap 1B per tokenomics)
+- Admin **dropped** via `DropMinterAdmin` (`0x7431f221`) — minting permanently disabled
+- Trust signal: post-renounce, supply is fully fixed (`mintable: false`, admin null on TonAPI)
 
 ### Burnable
 - Any holder can burn their own PLX (decreases `totalSupply` permanently)

@@ -21,7 +21,7 @@ Six operational wallets (`acton wallet new --version v5r1`) — each has its **o
 
 | Role | Wallet name (Acton server) | UQ (Tonkeeper — verified) | EQ (explorer/CLI) |
 |---|---|---|---|
-| Deployer / minter admin | `plx-deployer-v2` | `UQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anhSm` | `EQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anklj` |
+| Deployer (former minter admin — **revoked**) | `plx-deployer-v2` | `UQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anhSm` | `EQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anklj` |
 | Treasury (250M PLX) | `plx-treasury` | `UQBB…KwtS` | `EQBBlAF4yz12NbrbKXYfGA1OsZzWFpkRj-TU6ciuYjBjK1aX` |
 | LP (400M PLX) | `plx-lp` | `UQAi…eyEC` | `EQAiQ41f7R5qzKsoimbujtYdy0bRKW_7Fb0rV5Z4Lw6gr3zH` |
 | Community (200M PLX) | `plx-community` | `UQD1…L7d4` | `EQD1XDv0Awjx0GUVv6YQYYnvEmjcKJ9iEBjvtHPM2nWML-q9` |
@@ -55,7 +55,7 @@ Genesis mint created **five jetton wallets with PLX balance**:
 
 **Not counted as holders** (balance 0 PLX):
 
-- **Deployer** — minter admin only, received no PLX mint
+- **Deployer** — was minter admin (now **revoked**); received no PLX mint
 - **Vesting beneficiary** — personal wallet; team tokens sit in the **vesting contract’s** jetton wallet until `claim-vesting`
 - **PaymentSplitter** — no genesis PLX; only receives PLX when Toolkit users pay
 
@@ -85,7 +85,7 @@ The 0.5 TON on the splitter address is **rent/gas for deploying the splitter sma
 
 - Distribution completed after a vesting-step retry via `scripts/finish-vesting.tolk` (PowerShell `date` issue on first run).
 - Deploy log (private): `~/projects/plx-acton/.deploy-mainnet.log` on `dev@100.100.168.168`.
-- **Minter admin not yet dropped** — supply still technically mintable until `scripts/drop-admin.tolk` with `PLX_CONFIRM_DROP_ADMIN=1`.
+- **Minter admin dropped / revoked** — supply is **fixed** (`mintable: false`, admin null). Verified via TonAPI / dashboard `/api/plx-stats` (2026-08). Historical drop path: `scripts/drop-admin.tolk` with `PLX_CONFIRM_DROP_ADMIN=1`.
 
 ## Managing wallets in Tonkeeper
 

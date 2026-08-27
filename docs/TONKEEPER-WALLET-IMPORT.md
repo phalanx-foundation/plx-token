@@ -22,7 +22,7 @@ Banyak operator mengira “wallet deploy salah” karena saldo PLX **0** setelah
 
 | Wallet Acton (nama di server) | PLX | Kapan import ke Tonkeeper |
 |--------------|----:|---------------------------|
-| `plx-deployer-v2` | **0** | Hanya untuk transaksi admin (drop-admin, metadata) |
+| `plx-deployer-v2` | **0** | Former minter admin (**revoked**); still used for other ops if needed |
 | `plx-lp` | 400M | Kelola likuiditas / harga di Ston.fi |
 | `plx-treasury` | 250M | Ops / buyback |
 | `plx-community` | 200M | Rewards |

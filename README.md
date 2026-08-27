@@ -6,7 +6,7 @@
 
 > Utility token for the **Phalanx Foundation** ecosystem on the TON blockchain.
 
-Phalanx (PLX) is a TEP-74 standard Jetton with **mintable**, **burnable**, and **transferable owner** capabilities, plus an on-chain **linear vesting contract** for team allocation. Built with [Acton](https://ton-blockchain.github.io/acton/) and [Tolk](https://docs.ton.org/develop/tolk).
+Phalanx (PLX) is a TEP-74 standard Jetton with **fixed supply** (minter admin **revoked**), **burnable**, and historical owner-transfer tooling, plus an on-chain **linear vesting contract** for team allocation. Built with [Acton](https://ton-blockchain.github.io/acton/) and [Tolk](https://docs.ton.org/develop/tolk).
 
 <p align="center">
   <img src="metadata/logo.png" alt="Phalanx PLX" width="200" />
@@ -49,7 +49,7 @@ Beyond the launchpad, our roadmap covers a governance module that lets PLX holde
 | 10% | 100M PLX | Team (vested 6 months linear, on-chain) |
 | 5% | 50M PLX | Marketing & Partnerships |
 
-After the initial distribution and a 24–48 hour observation window, the **minter admin will be permanently dropped** via an irreversible on-chain transaction, locking total supply at 1B PLX forever — no party (including Phalanx Foundation itself) will be able to mint additional PLX.
+After initial distribution, the **minter admin was permanently dropped** (`DropMinterAdmin`) via an irreversible on-chain transaction. Total supply is locked at **1B PLX forever** — no party (including Phalanx Foundation itself) can mint additional PLX. Verify: Tonviewer / TonAPI `mintable: false`, admin absent.
 
 See [docs/TOKENOMICS.md](docs/TOKENOMICS.md) for full details. **Mainnet is live** — see [docs/MAINNET-DEPLOYMENT-RECORD.md](docs/MAINNET-DEPLOYMENT-RECORD.md).
 
@@ -89,7 +89,7 @@ The 40% Liquidity Provision allocation (400,000,000 PLX) seeds initial pools on 
 
 The 10% Team allocation (100,000,000 PLX) is locked in the on-chain `TeamVesting` contract for 180 days from mainnet launch, releasing linearly. The team cannot sell during the first six months of trading regardless of any party's intent.
 
-Beyond these locks, three deflationary forces (described in [Tokenomics](#tokenomics--deflationary-pressure)) actively reduce circulating supply over time, and the minter admin will be permanently dropped 24–48 hours after distribution completes — locking total supply at 1B PLX forever.
+Beyond these locks, three deflationary forces (described in [Tokenomics](#tokenomics--deflationary-pressure)) actively reduce circulating supply over time. The minter admin has already been **permanently revoked** — total supply is fixed at 1B PLX forever.
 
 ---
 
@@ -128,7 +128,7 @@ Each milestone is a public commitment. If a milestone slips, the slip will be tr
 | **Jetton Minter** | `EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS` |
 | **Team Vesting** | `EQCs-Y2wb83zqjCpRUMiZoKLUqhI3qd6tWWm4ycZBp6lsD5l` |
 | **PaymentSplitter** | `EQBC3QoFri_IENOzVfMpHzs2Yr5_dJpzNsRNqT-XB173jSlv` |
-| **Deployer / minter admin (temporary)** | `EQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anklj` (`UQBfYLpq…anhSm` in Tonkeeper) |
+| **Deployer (former minter admin — revoked)** | `EQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anklj` (`UQBfYLpq…anhSm` in Tonkeeper) — admin **dropped**; cannot mint |
 
 Verify on [Tonviewer mainnet](https://tonviewer.com/EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS). Full registry: [docs/MAINNET-DEPLOYMENT-RECORD.md](docs/MAINNET-DEPLOYMENT-RECORD.md).
 

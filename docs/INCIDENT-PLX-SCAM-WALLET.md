@@ -61,7 +61,7 @@ acton script scripts/print-addrs.tolk --net mainnet
 2. Eskalasi PR #5468 + email support@tonkeeper.com — minta penjelasan `blacklist` dan merge `jettons/PLX.yaml`.
 3. Operator export mnemonic per wallet dari server (`list-mainnet-wallets.sh` + `acton wallet export-mnemonic`) — simpan offline.
 4. **No-Go** investor pitch sampai `MAINNET-GO-NO-GO.md` checklist PASS.
-5. Drop admin minter setelah yakin tidak perlu mint lagi (`drop-admin.tolk`).
+5. Drop admin minter **sudah dijalankan** — supply PLX genesis fixed (`mintable: false`).
 6. Web/toolkit & LP — setelah 1–4 stabil.
 
 ## Bukti cepat untuk diri sendiri

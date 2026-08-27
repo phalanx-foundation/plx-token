@@ -1,6 +1,6 @@
 # Status mainnet PLX (live snapshot)
 
-**Terakhir diperbarui:** 2026-06-03  
+**Terakhir diperbarui:** 2026-08-27  
 **Untuk:** operator & investor — satu halaman kebenaran.
 
 ## Sudah live (tanpa uang user lagi)
@@ -12,6 +12,7 @@
 | Genesis distribusi | LP 400M, Treasury 250M, Community 200M, Vesting 100M, Marketing 50M |
 | Wallet W5 user (Tonkeeper) | **Cocok** dengan deploy (6 wallet `UQ…` terverifikasi screenshot) |
 | Metadata + logo | `https://plx.foundation/plx-logo.png` on-chain |
+| Minter admin | **Dropped / revoked** (`mintable: false`, admin null) |
 | Deploy ulang 5 TON | **Tidak perlu** |
 
 ## Blocker utama (gratis, tunggu pihak ketiga)

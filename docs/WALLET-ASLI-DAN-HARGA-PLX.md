@@ -145,7 +145,7 @@ flowchart LR
 - [ ] Transaksi penting (LP, transfer besar) dari Tonkeeper **plx-lp** / **plx-treasury**
 - [ ] Pool Ston.fi dibuat → PLX punya harga referensi
 - [ ] PR ton-assets merge → label SCAM hilang (bukan syarat LP, tapi untuk kepercayaan)
-- [ ] Opsional: `drop-admin` dari deployer → supply tidak bisa di-mint lagi
+- [x] `drop-admin` dari deployer → supply **fixed** (admin **revoked**, tidak bisa mint lagi)
 
 ---
 

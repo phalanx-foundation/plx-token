@@ -1,9 +1,10 @@
 # PLX Drop Admin Readiness Report
 
 > **Audit date:** 2026-08-26 (UTC+7)  
+> **Completion update:** 2026-08-27 (UTC+7)  
 > **Auditor:** Cursor Agent (holistic plan execution)  
 > **Minter (EQ):** `EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS`  
-> **Decision:** **NO-GO** — do not drop admin until gates below are resolved or explicitly waived in writing.
+> **Decision:** **DONE — admin DROPPED / REVOKED** — supply fixed forever (`mintable: false`, admin null).
 
 ---
 
@@ -11,13 +12,30 @@
 
 | Question | Answer |
 |----------|--------|
-| Which wallet signs drop admin? | **PLX Deployer (W5)** `EQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anklj` |
+| Which wallet signed drop admin? | **PLX Deployer (W5)** `EQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anklj` |
 | What is “PLX Minter” watch-only? | **Jetton master contract** — target of tx, not signer |
 | What is “Team Minter” watch-only? | **TeamVesting contract** — rename label to “Team Vesting” |
-| Is supply fully distributed? | **Yes** — 1B PLX minted; LP wallet ~96.5k PLX seeded to Ston.fi DEX |
-| Safe to drop admin today? | **No** — tunggu konfirmasi backup PLX Deployer + GO eksplisit. CI template sudah diperbaiki lokal (130 tests). ton-assets PR masih closed tanpa merge (soft). |
+| Is supply fully distributed? | **Yes** — 1B PLX minted; LP wallet seeded to Ston.fi DEX |
+| Admin status (live)? | **Dropped / revoked** — TonAPI & `/api/plx-stats`: `mintable: false`, `adminAddress: null` |
 
 ---
+
+## Live verification (post-drop)
+
+| Check | Expected | Result |
+|-------|----------|--------|
+| `mintable` | `false` | **PASS** |
+| Admin address | null / absent | **PASS** |
+| Total supply | 1B PLX | **PASS** |
+| Dashboard Mint / Drop Admin panels | Hidden | **PASS** |
+
+Verify:
+```bash
+curl -s "https://tonapi.io/v2/jettons/EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS"
+curl -s "https://plx.foundation/api/plx-stats?minter=EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS&network=mainnet"
+```
+
+> Sections below retain the **pre-drop audit trail** from 2026-08-26 for history. Status lines that said NO-GO / mintable true are superseded by this completion update.
 
 ## 1. Tonkeeper address verification (Fase 0)
 
@@ -40,7 +58,7 @@ All three user addresses decode to the **same raw account** as canonical EQ docs
 | Field | Live value | Gate | Result |
 |-------|------------|------|--------|
 | `total_supply` | 1,000,000,000 PLX (9 decimals) | A1 | **PASS** |
-| `mintable` | `true` | — | Admin not dropped yet |
+| `mintable` | `true` (pre-drop audit) → **`false` (live)** | — | **Admin dropped** |
 | `admin` | PLX Deployer | — | Expected |
 | TonAPI `verification` | `whitelist` | B1 | **PASS** |
 | Metadata `image` | `https://plx.foundation/plx-logo.png` | A4 (HTTP 200) | **PASS** |
@@ -182,18 +200,14 @@ Not mentioned on-chain today: Scratch Seeker, Midas Hand / launchpad, NFT/cNFT/S
 | B4 Wallet backup | **UNCONFIRMED** | Hard for drop execution |
 | C1 `acton test` green | **PASS lokal** (130 tests; push GPG pending) | Soft until GitHub green |
 | C2 Deploy log on server | **NOT CHECKED** (no SSH this audit) | — |
-| C3 Drop admin decision | **NO-GO documented** (await operator backup + explicit GO) | — |
+| C3 Drop admin decision | **DONE — admin dropped / revoked** | — |
 | Prod API `/health/db` | **PASS** | — |
 | Toolkit Fase 1 E2E | **OPEN** | Recommended before irreversible step |
 | Metadata final | **ACCEPTED short** or update before drop | Optional |
 
-### **Final decision: NO-GO untuk drop hari ini**
+### **Final decision: DONE — admin DROPPED / REVOKED**
 
-Drop admin **masih ditunda** sampai:
-
-1. Anda konfirmasi **B4** (backup mnemonic PLX Deployer / `plx-deployer-v2`).
-2. Commit+push perbaikan CI terlihat hijau di GitHub Actions (opsional tapi disarankan).
-3. Persetujuan eksplisit setelah baca laporan ini.
+Drop admin **sudah dieksekusi** (2026-08). Live checks: `mintable: false`, admin null. Mint + Drop Admin panels di dashboard PLX disembunyikan.
 
 ---
 
@@ -215,8 +229,8 @@ PR [#5468](https://github.com/tonkeeper/ton-assets/pull/5468) ke `tonkeeper/ton-
 **PLX Deployer** (`EQBfYLpq…` / Tonkeeper `UQBfYLpq…anhSm`) adalah wallet yang:
 
 - punya **seed phrase / mnemonic 24 kata** (disimpan di server sebagai `plx-deployer-v2` di `wallets.toml`)
-- adalah **admin** minter PLX saat ini
-- satu-satunya yang bisa sign `DropMinterAdmin`, `ChangeMinterMetadata`, atau `UpgradeMinterCode`
+- **sebelum drop** adalah admin minter PLX; **setelah drop** tidak lagi punya mint authority
+- historis: satu-satunya yang bisa sign `DropMinterAdmin`, `ChangeMinterMetadata`, atau `UpgradeMinterCode` (mint/admin ops sudah tidak tersedia setelah drop)
 
 **Backup** berarti: Anda (operator) punya salinan mnemonic itu di tempat aman **offline** (paper / hardware wallet / encrypted vault), **terpisah** dari laptop yang bisa rusak, dan Anda sudah pernah **uji restore** (bisa buka wallet yang sama di Tonkeeper dari seed). Tanpa backup, jika server `wallets.toml` hilang sebelum/saat drop, Anda bisa kehilangan kontrol admin **sebelum** drop selesai — atau tidak bisa menyelesaikan transaksi darurat.
 
@@ -247,4 +261,4 @@ Toolkit continues to deploy **new** contracts (jetton, NFT, airdrop, staking tem
 
 ---
 
-*Updated 2026-08-26 after CI template fixes (LiquidityLocker / TokenGovernance / tests). Drop still NO-GO pending B4 + explicit operator GO.*
+*Updated 2026-08-27: admin drop **completed** (`mintable: false`, admin revoked). Pre-drop NO-GO narrative kept above for audit history only.*

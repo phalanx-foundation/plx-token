@@ -37,7 +37,7 @@
 **Risks / mitigations**
 | Vector | Severity | Mitigation |
 |--------|----------|------------|
-| Centralized admin can mint arbitrarily | High (by design) | Admin held by foundation; `drop-admin` path documented for renounce |
+| Centralized admin can mint arbitrarily | Mitigated | Admin **dropped / revoked** on PLX genesis minter (`mintable: false`) |
 | Metadata upgrade | Medium | `ChangeMinterMetadata` admin-only; monitor on-chain |
 | Supply accounting drift on bounce miss | Low | Bounce handler present; test coverage in `wallet-behavior.test.tolk` |
 

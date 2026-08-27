@@ -31,7 +31,7 @@
 | **Phalanx — Community Treasury** | `EQD1XDv0Awjx0GUVv6YQYYnvEmjcKJ9iEBjvtHPM2nWML-q9` | 200M PLX | Airdrops, contests |
 | **Phalanx — Team Vesting (6mo)** | `EQCs-Y2wb83zqjCpRUMiZoKLUqhI3qd6tWWm4ycZBp6lsD5l` | 100M PLX | On-chain linear vesting |
 | **Phalanx — Marketing** | `EQDB9yVhkPvEhMFo90fqHWzqYj2mESAlwObMbA6LX7fETtN6` | 50M PLX | Listings, campaigns |
-| **Phalanx — Deployer (admin, temporary)** | `EQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anklj` | 0 PLX | Minter admin until drop-admin |
+| **Phalanx — Deployer (former admin — revoked)** | `EQBfYLpqRNp4jVvffYb6uckcGVM2S5F1J8pq-pnFsN0anklj` | 0 PLX | Was minter admin; **dropped** — cannot mint |
 | **Phalanx — Jetton Minter** | `EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS` | — | PLX contract |
 | **Phalanx — PaymentSplitter** | `EQBC3QoFri_IENOzVfMpHzs2Yr5_dJpzNsRNqT-XB173jSlv` | 0 PLX genesis | Toolkit PLX fee rail (50% burn / 50% treasury) — **not** a distribution wallet |
 
@@ -88,15 +88,11 @@ Anyone can verify our claims independently:
    `contracts/TeamVesting.tolk` in this repo. Build with `acton build
    TeamVesting` and compare cell hash on-chain.
 
-5. **Track `JettonMinter` admin field** — the admin role is currently
-   held by the deployer wallet for operational flexibility. The admin
-   drop (`drop-admin`) will be executed once ecosystem integration
-   milestones are met (Tonkeeper USD price display, explorer labels,
-   community tooling readiness). Until dropped, the supply is
-   technically mintable but only by the admin wallet — the admin
-   wallet is controlled by Phalanx Foundation and will not mint
-   additional supply. After `drop-admin`, the supply becomes
-   permanently fixed.
+5. **Track `JettonMinter` admin field** — minter admin has been
+   **permanently dropped / revoked** (`DropMinterAdmin`). On-chain
+   status: `mintable: false`, admin address **null / absent**. Total
+   supply is fixed at 1B PLX forever; no wallet can mint additional
+   PLX. Verify on Tonviewer or `GET https://tonapi.io/v2/jettons/EQCba…`.
 
 ## Submitting Address Labels to Explorers
 

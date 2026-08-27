@@ -34,7 +34,8 @@ Use this as the single source of truth before pushing PLX to TON mainnet. Tick e
 
 - [x] Tonviewer minter exists
 - [x] Total supply = `1000000000000000000` (1B × 10^9)
-- [x] `MINTABLE = true` (admin not yet dropped)
+- [x] `MINTABLE = true` at deploy (admin not yet dropped)
+- [x] **Admin dropped / revoked** — `mintable: false`, admin null (2026-08)
 - [x] Distribution balances: LP 400M, Treasury 250M, Community 200M, Marketing 50M, Vesting 100M
 - [x] Metadata + logo URL on-chain (`https://plx.foundation/plx-logo.png`)
 
@@ -53,13 +54,10 @@ Use this as the single source of truth before pushing PLX to TON mainnet. Tick e
 - [x] [`docs/TRANSPARENCY.md`](TRANSPARENCY.md) mainnet registry
 - [ ] Commit & push docs update (when ready)
 
-## Optional but recommended hardening
+## Hardening (completed)
 
-- [ ] After 24–48 hours monitoring, run drop-admin:
-  ```bash
-  PLX_CONFIRM_DROP_ADMIN=1 acton script scripts/drop-admin.tolk --net mainnet
-  ```
-  > **Irreversible.** Only when distribution is final.
+- [x] Drop-admin executed — minter admin **revoked**; supply fixed at 1B PLX forever.
+  > Historical command (do not re-run): `PLX_CONFIRM_DROP_ADMIN=1 acton script scripts/drop-admin.tolk --net mainnet`
 
 ## Product & ecosystem (after web services stable)
 
