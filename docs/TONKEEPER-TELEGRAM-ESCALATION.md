@@ -1,6 +1,7 @@
-# Eskalasi Tonkeeper / TonAPI lewat Telegram (resmi)
+# Eskalasi Tonkeeper lewat Telegram (resmi) — SCAM / ton-assets SAJA
 
-> Telegram = jalur **cepat** (sudah terbukti saat hapus blacklist). GitHub tetap dilampirkan sebagai bukti.
+> Untuk **katalog TonAPI 404 / reindex jetton** → pakai **[@tonapi_bot](https://t.me/tonapi_bot)** — lihat [`TONAPI-TELEGRAM-ESCALATION.md`](TONAPI-TELEGRAM-ESCALATION.md).  
+> File ini hanya untuk jalur SCAM / ton-assets (bukan email).
 
 ---
 
