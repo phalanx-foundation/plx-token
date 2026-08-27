@@ -165,7 +165,7 @@ fun onInternalMessage(in: InMessage) {
             // Official revoke: burn MsgAddressInt (docs.ton.org), not null/addr_none.
             var storage = lazy FeeMinterStorage.load();
             assertSenderIsFeeMinterAdmin(in.senderAddress, storage.adminAddress);
-            storage.adminAddress = BURN_ADMIN_ADDRESS;
+            storage.adminAddress = burnAdminAddress();
             storage.nextAdminAddress = null;
             storage.save();
         }

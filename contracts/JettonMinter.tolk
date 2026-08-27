@@ -154,7 +154,7 @@ fun onInternalMessage(in: InMessage) {
             // NOT null/addr_none — empty admin breaks TonAPI jetton catalog indexing.
             var storage = lazy MinterStorage.load();
             assertSenderIsAdmin(in.senderAddress, storage.adminAddress);
-            storage.adminAddress = BURN_ADMIN_ADDRESS;
+            storage.adminAddress = burnAdminAddress();
             storage.nextAdminAddress = null;
             storage.save();
         }
