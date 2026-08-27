@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json
-import urllib.request
 import os
+import urllib.request
 
 
 def load_env():

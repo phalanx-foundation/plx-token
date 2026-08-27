@@ -1,6 +1,6 @@
 from database import SessionLocal
 from models import ScratchLedger
-from sqlalchemy import cast, BigInteger, func
+from sqlalchemy import BigInteger, cast, func
 
 db = SessionLocal()
 rows = (

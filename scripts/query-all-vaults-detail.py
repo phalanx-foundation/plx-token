@@ -1,6 +1,6 @@
 from database import SessionLocal
-from models import ScratchVaultBalance, ScratchLedger
-from sqlalchemy import cast, BigInteger, func
+from models import ScratchLedger, ScratchVaultBalance
+from sqlalchemy import BigInteger, cast, func
 
 db = SessionLocal()
 print("=== Vault balances ===")

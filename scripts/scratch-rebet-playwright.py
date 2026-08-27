@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """Scratch Seeker → Saudaratoto re-bet via Playwright (stdout JSON only).
 
 Env (from acton-worker):
@@ -546,7 +545,7 @@ def _read_balance_idr(page) -> float | None:
         body = page.locator("body").inner_text(timeout=4000)
     except Exception:
         body = ""
-    m = re.search(r"IDR\s*([0-9][0-9.,]*)", body, re.I)
+    m = re.search(r"IDR\s*([0-9][0-9.,]*)", body, re.IGNORECASE)
     if m:
         raw = m.group(1).replace(",", "")
         try:
@@ -806,7 +805,7 @@ def main() -> int:
         result = run()
         print(json.dumps(result))
         return 0
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         print(json.dumps({"ok": False, "error": str(exc)[:500]}))
         return 1
 
