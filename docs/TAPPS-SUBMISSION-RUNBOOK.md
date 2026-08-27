@@ -1,13 +1,16 @@
 # tApps Center + TON app platform submission runbook
 
-Phalanx listing targets: **tApps Center**, **tonscan.org/apps**, optional **TON Builders** analytics.
+Phalanx listing targets: **tApps Center**, **ton.app**, **tonscan.org/apps**, **TGA Analytics** via DataChief.
 
 | Platform | URL | Bot / form |
 |----------|-----|------------|
 | tApps Center | https://tapps.center/ | [@app_moderation_bot](https://t.me/app_moderation_bot) |
 | tonscan apps | https://tonscan.org/apps | [@SubmitAppBot](https://t.me/SubmitAppBot) |
-| Analytics token | https://builders.ton.org | Analytics tab → SDK token |
+| ton.app catalog | https://ton.app/profile/new | Connect Telegram first, then Add Your Project |
+| TGA Analytics token | [@DataChief_bot](https://t.me/DataChief_bot) | SDK token + analytics identifier ([docs.ton.org](https://docs.ton.org/ecosystem/tma/analytics/analytics)) |
 | Support | — | [@tapps_center_moderation](https://t.me/tapps_center_moderation) |
+
+> **Deprecated:** `https://builders.ton.org` is the old portal. Do not use it for new submissions. Toolkit dashboard deep-links to DataChief + ton.app instead. See also [`toolkit-staging/docs/APP-CATALOG-LISTING.md`](../toolkit-staging/docs/APP-CATALOG-LISTING.md).
 
 ---
 
@@ -23,9 +26,11 @@ What is registered with **tApps Center** = **bot + PLX App URL** (`app.plx.found
 
 ---
 
-## Register on builders.ton.org (Analytics token)
+## Register TGA Analytics token (via @DataChief_bot)
 
-Use the **product** name, not only the token ticker:
+Use the **product** name, not only the token ticker. Open [@DataChief_bot](https://t.me/DataChief_bot) and follow the bot flow for token + analytics identifier.
+
+Recommended field values when asked:
 
 | Field | Recommended value |
 |-------|-------------------|
@@ -34,6 +39,8 @@ Use the **product** name, not only the token ticker:
 | **Link to app** | `https://app.plx.foundation/` |
 | **Telegram channel** | `https://t.me/phalanxfoundation` |
 | **GitHub** | `https://github.com/phalanx-foundation/plx-token` |
+
+Also list the app on **ton.app** after Connect Telegram: https://ton.app/profile/new
 
 Notes:
 

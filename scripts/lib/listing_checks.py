@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import urllib.error
 import urllib.request
@@ -139,6 +140,51 @@ def check_coingecko_listed(config: TokenListingConfig | None = None) -> dict[str
                 match = c
                 break
     return {"ok": match is not None, "coin": match}
+
+
+def check_cryptorank_listed(config: TokenListingConfig | None = None) -> dict[str, Any]:
+    """Probe CryptoRank API (optional key) or public price page by slug hint."""
+    cfg = _resolve_config(config)
+    api_key = os.environ.get("CRYPTORANK_API_KEY", "").strip()
+    symbol = (cfg.symbol or "").strip()
+    slug = re.sub(r"[^a-z0-9-]+", "-", (cfg.name or "").lower()).strip("-")
+
+    if api_key and symbol:
+        data = _http_json(
+            f"https://api.cryptorank.io/v1/currencies?api_key={api_key}&symbols={symbol}&limit=20"
+        )
+        rows = (data or {}).get("data") if data else None
+        if isinstance(rows, list):
+            for row in rows:
+                if isinstance(row, dict) and str(row.get("symbol") or "").upper() == symbol.upper():
+                    slug_found = str(row.get("slug") or row.get("key") or slug or "")
+                    return {
+                        "ok": True,
+                        "listed": True,
+                        "cryptorank_id": str(row.get("id") or "") or None,
+                        "cryptorank_slug": slug_found or None,
+                        "url": f"https://cryptorank.io/price/{slug_found}" if slug_found else None,
+                    }
+
+    if slug:
+        try:
+            req = urllib.request.Request(
+                f"https://cryptorank.io/price/{slug}",
+                headers={"User-Agent": "PLX-ListingAutomation/1.0"},
+            )
+            with urllib.request.urlopen(req, timeout=30) as res:
+                body = res.read().decode(errors="ignore").lower()
+                if res.status == 200 and (symbol.lower() in body or slug in body):
+                    return {
+                        "ok": True,
+                        "listed": True,
+                        "cryptorank_slug": slug,
+                        "url": f"https://cryptorank.io/price/{slug}",
+                    }
+        except (urllib.error.URLError, TimeoutError):
+            pass
+
+    return {"ok": False, "listed": False, "cryptorank_slug": slug or None}
 
 
 def check_ton_assets_pr(config: TokenListingConfig | None = None) -> dict[str, Any]:

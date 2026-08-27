@@ -31,7 +31,8 @@ For **marketing discoverability** after **PLX App** is listed.
 - [x] `X-Robots-Tag: noindex, nofollow` on app subdomain
 - [x] Bottom tab bar navigation (native app feel)
 - [ ] BotFather **Main Mini App URL** = `https://app.plx.foundation/` (manual step)
-- [ ] Analytics token from https://builders.ton.org
+- [ ] Analytics token from [@DataChief_bot](https://t.me/DataChief_bot) (not builders.ton.org)
+- [ ] List on [ton.app/profile/new](https://ton.app/profile/new) after Connect Telegram
 - [ ] Demo video (script in runbook)
 - [ ] Submit @app_moderation_bot
 - [ ] Tonkeeper whitelist (ton-assets PR — wallet UX, not tApps gate)

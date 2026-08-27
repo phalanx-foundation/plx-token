@@ -32,6 +32,7 @@ from lib.dotenv_load import load_project_dotenv
 load_project_dotenv()
 
 from lib.listing_checks import (
+    check_cryptorank_listed,
     check_dexscreener_pair,
     check_stonfi_pool_ton,
     check_ton_assets_pr,
@@ -78,7 +79,8 @@ def _load_active_listings(db: Session) -> list[dict[str, Any]]:
             "SELECT id, deployment_id, minter_address, pool_address, "
             "listing_status, ton_assets_pr_number, ton_assets_pr_url, "
             "tonapi_verification, holders_count, pool_ton_quote, "
-            "coingecko_submitted, coingecko_id, cmc_submitted, tonapi_rates_usd "
+            "coingecko_submitted, coingecko_id, cmc_submitted, tonapi_rates_usd, "
+            "cryptorank_submitted, cryptorank_id, cryptorank_slug "
             "FROM token_listings WHERE listing_status = ANY(:states)"
         ),
         {"states": list(ACTIVE_STATES)},
@@ -100,6 +102,9 @@ def _load_active_listings(db: Session) -> list[dict[str, Any]]:
             "coingecko_id": r[11],
             "cmc_submitted": r[12],
             "tonapi_rates_usd": r[13],
+            "cryptorank_submitted": r[14],
+            "cryptorank_id": r[15],
+            "cryptorank_slug": r[16],
         }
         for r in rows
     ]
@@ -172,6 +177,17 @@ def _probe_one(row: dict[str, Any]) -> dict[str, Any]:
                 fields["cmc_eligible"] = True
         except (TypeError, ValueError):
             pass
+
+    # CryptoRank: if submitted (or always best-effort), probe for live listing id/slug
+    if row.get("cryptorank_submitted") and not row.get("cryptorank_id") and not row.get(
+        "cryptorank_slug"
+    ):
+        cr = check_cryptorank_listed(cfg)
+        if cr.get("listed"):
+            fields["cryptorank_id"] = cr.get("cryptorank_id")
+            fields["cryptorank_slug"] = cr.get("cryptorank_slug")
+            if cr.get("url"):
+                fields["cryptorank_url"] = cr.get("url")
 
     return fields
 
