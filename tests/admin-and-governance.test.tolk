@@ -167,8 +167,23 @@ get fun `test admin: admin can drop admin access`() {
         to: minter.address,
     });
     // Official revoke stores burn MsgAddressInt (not null) for TEP-74 indexers.
-    expect(minter.getAdminAddress()).toEqual(address.fromWorkchainAndHash(0, 0));
+    val burn = address.fromWorkchainAndHash(0, 0);
+    expect(minter.getAdminAddress()).toEqual(burn);
+    expect(minter.getJettonData().adminAddress).toEqual(burn);
     expect(minter.getJettonData().mintable).toEqual(false);
+    // Mint must fail after revoke-to-burn
+    val mintAfter = minter.sendMint(
+        deployer.address,
+        deployer.address,
+        ton("1"),
+        ton("0.05"),
+        ton("0.5"),
+    );
+    expect(mintAfter).toHaveFailedTx({
+        from: deployer.address,
+        to: minter.address,
+        exitCode: Errors.NotOwner,
+    });
 }
 
 get fun `test admin: admin can change metadata uri`() {

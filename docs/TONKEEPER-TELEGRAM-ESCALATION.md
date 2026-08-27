@@ -1,95 +1,68 @@
-# Eskalasi Tonkeeper lewat Telegram (resmi)
+# Eskalasi Tonkeeper / TonAPI lewat Telegram (resmi)
 
-> Ekosistem TON memang dominan di Telegram. Untuk **verifikasi jetton / hapus SCAM**, jalur **utama tetap PR GitHub** [#5468](https://github.com/tonkeeper/ton-assets/pull/5468) — Tonkeeper menulis: *"All communication regarding the Pull Request … will take place on the request page."*  
-> Telegram = **saluran pendukung** ke support resmi, bukan pengganti PR.
+> Telegram = jalur **cepat** (sudah terbukti saat hapus blacklist). GitHub tetap dilampirkan sebagai bukti.
 
 ---
 
 ## Hanya akun resmi (anti penipuan)
 
-| Resmi | Bukan support verifikasi |
-|-------|---------------------------|
-| Bot **[@tonkeeper](https://t.me/tonkeeper)** | DM random yang klaim "admin Tonkeeper" |
-| Email support@tonkeeper.com | Orang yang minta bayar "fast verify" |
-| Berita [@tonkeeper_news](https://t.me/tonkeeper_news) | Channel tidak baca PR per token |
+| Resmi | Bukan support |
+|-------|----------------|
+| Bot **[@tonkeeper](https://t.me/tonkeeper)** | DM random "admin Tonkeeper" |
+| Email support@tonkeeper.com | Orang yang minta bayar "fast fix" |
+| [@tonkeeper_news](https://t.me/tonkeeper_news) | Channel promo |
 
-**Tonkeeper tidak pernah** chat Anda duluan atau minta 24 kata. Hanya **Anda** yang buka bot dan kirim pesan.
-
----
-
-## Langkah (2 menit, dari HP)
-
-1. Buka **https://t.me/tonkeeper**
-2. Tap **Start** / **Mulai**
-3. **Salin-tempel** pesan di bawah (English — tim support biasa pakai ini)
-4. Jika diminta, lampirkan link PR — jangan kirim mnemonic
+**Jangan** kirim mnemonic.
 
 ---
 
-## Pesan siap kirim (copy-paste)
+## Sekarang — visibility PLX hilang di katalog (2026-08-28)
+
+### Buka cepat
+
+1. https://t.me/tonkeeper — Start, tempel pesan di bawah  
+2. Atau share prefill: lihat `tmp/tonkeeper-telegram-links.txt` (SHARE_PREFILL)
+
+### Pesan siap kirim (copy-paste)
 
 ```
-Hello Tonkeeper support,
+Hello Tonkeeper / TonAPI support,
 
-Phalanx Foundation (PLX) mainnet jetton shows SCAM / TonAPI blacklist on a legitimate deploy.
+Phalanx Foundation — urgent indexer request.
 
-Minter: EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS
-GitHub PR (verification): https://github.com/tonkeeper/ton-assets/pull/5468
-Issue: https://github.com/tonkeeper/ton-assets/issues/5475
+Mainnet jetton PLX minter:
+EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS
 
-Deploy TX: https://tonscan.org/tx/9b15fddc37e4babda95e2814e7335f9c9fa44b2d5c323a545b4756c103c45e8f
-Contracts: https://github.com/phalanx-foundation/plx-token
+GET https://tonapi.io/v2/jettons/EQCba… returns entity not found (404) after admin revoke.
+Account is still active; holders + on-chain metadata OK; toncenter get_jetton_data works (mintable=0).
+
+GitHub issue: https://github.com/tonkeeper/opentonapi/issues/963
 Website: https://plx.foundation/plx-token
 
-PR replaces legacy jettons/PLX.yaml (Planet X) with our Phalanx metadata.
-admin.is_scam = false. Genesis 1B PLX documented.
-
-Please escalate review/merge of PR #5468 or tell us what is missing.
+Please force-reindex this jetton master so catalog/metadata visibility returns.
 
 Thank you — Phalanx Foundation
 ```
 
----
-
-## Versi pendek (jika bot batasi panjang)
-
-```
-PLX mainnet false SCAM label. PR https://github.com/tonkeeper/ton-assets/pull/5468
-Minter EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS
-Please escalate merge. Open-source: phalanx-foundation/plx-token
-```
-
----
-
-## Setelah kirim
-
-| Yang terjadi | Yang tidak |
-|--------------|------------|
-| Support mungkin arahkan ke tim assets / percepat antrian | Merge instan di chat |
-| Tetap pantau komentar di **PR #5468** | Bayar siapa pun untuk "un-scam" |
-
-Cek selesai:
+### Cek sukses
 
 ```powershell
-curl.exe -sS "https://tonapi.io/v2/jettons/EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS" | findstr verification
+curl.exe -sS "https://tonapi.io/v2/jettons/EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS"
 ```
 
-`whitelist` = SCAM/FAKE hilang (refresh Tonkeeper ~15–60 menit).
+HTTP 200 + symbol PLX = visibility pulih.
 
 ---
 
-## Phalanx di Telegram (proyek Anda)
+## Legacy — hapus SCAM / blacklist (referensi)
 
-| Akun | Peran |
-|------|--------|
-| [@phalanxfoundationbot](https://t.me/phalanxfoundationbot) | Bot resmi Phalanx (di metadata jetton) |
-| Bukan channel Tonkeeper | Jangan spam @tonkeeper_news dengan promo token |
+Pesan lama + PR #5468 tetap di git history bila perlu. Saat ini fokus **katalog 404**, bukan SCAM.
 
 ---
 
-## Agent vs Anda
+## Agent
 
-- **Agent:** lanjut komentar di PR #5468 / issue #5475 (GitHub).
-- **Anda (opsional, sekali):** kirim pesan di atas ke **@tonkeeper** — ini yang paling cocok permintaan "pakai Telegram".
+- Pantau issue #963 + poll `/v2/jettons` sampai 200.
+- Buka @tonkeeper / share link; jika Telegram Web butuh login user → operator tap Start + tempel pesan dari `tmp/tonkeeper-telegram-message.txt`.
 
-*Terakhir diperbarui: 2026-06-03*
+*Terakhir diperbarui: 2026-08-28*
