@@ -6,11 +6,12 @@ import "@wrappers/JettonMinter.gen"
 import "@wrappers/utils"
 
 fun main() {
-    val fromName = env<string>("FROM_WALLET") ?? "plx-deployer-v2";
+    val fromName = env<string>("FROM_WALLET") ?? "plx-marketing";
     val from = scripts.wallet(fromName);
     val minterAddr = env<address>("JETTON_MINTER_ADDRESS")!;
     val minter = JettonMinter.fromAddress(minterAddr);
-    val amount = ton("0.05");
+    // Keep small: ops wallets are low on gas; empty body fails (0xFFFF) — must use TopUpTons.
+    val amount = env<coins>("TON_AMOUNT_NANO") ?? ton("0.005");
 
     println("[topup-minter] {} -> {} amount {}", from.address, minter.address, amount);
     val res = minter.sendTopUpTons(
