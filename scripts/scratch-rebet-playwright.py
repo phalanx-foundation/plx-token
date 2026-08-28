@@ -19,6 +19,10 @@ import time
 from typing import Any
 
 
+def _log(msg: str) -> None:
+    print(msg, file=sys.stderr, flush=True)
+
+
 def _env(name: str, default: str = "") -> str:
     return (os.environ.get(name) or default).strip()
 
@@ -62,7 +66,8 @@ def _close_promos(page) -> list[str]:
                         acts.append(sel)
                         page.wait_for_timeout(350)
                         clicked = True
-            except Exception:
+            except Exception as exc:
+                _log(f"rebet: sweep locator {sel} failed: {exc}")
                 continue
         if not clicked:
             break
@@ -131,7 +136,8 @@ def _open_game(page, base: str, digits: int) -> str:
                     loc.click(timeout=2000)
                     page.wait_for_timeout(900)
                     break
-            except Exception:
+            except Exception as exc:
+                _log(f"rebet: menu label '{label}' not clickable: {exc}")
                 continue
     _close_promos(page)
 
@@ -171,7 +177,8 @@ def _open_game(page, base: str, digits: int) -> str:
                             loc.click(timeout=2000)
                         page.wait_for_timeout(1500)
                         break
-                except Exception:
+                except Exception as exc:
+                    _log(f"rebet: game entry {sel} navigation failed: {exc}")
                     continue
 
     try:
@@ -298,7 +305,8 @@ def _click_visible(
                 if loc.is_visible(timeout=timeout_each):
                     loc.click(timeout=4000)
                     return sel
-        except Exception:
+        except Exception as exc:
+            _log(f"rebet: control {sel} click failed: {exc}")
             continue
     # JS fallback for stubborn/offscreen controls
     for sel in selectors:
@@ -320,7 +328,8 @@ def _click_visible(
             )
             if ok:
                 return f"js:{sel}"
-        except Exception:
+        except Exception as exc:
+            _log(f"rebet: JS fallback {sel} failed: {exc}")
             continue
     return None
 
@@ -397,7 +406,8 @@ def _click_last_visible_kirim(page) -> str | None:
                     loc.scroll_into_view_if_needed(timeout=1500)
                     loc.click(timeout=4000)
                     return f"locator-last:{sel}[{i}]"
-        except Exception:
+        except Exception as exc:
+            _log(f"rebet: kirim locator {sel} failed: {exc}")
             continue
     return None
 
