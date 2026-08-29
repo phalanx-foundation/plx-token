@@ -1,4 +1,5 @@
 """Save Cursor browser CDP captureScreenshot JSON to PNG and optionally resize."""
+
 from __future__ import annotations
 
 import base64

@@ -1,4 +1,5 @@
 """Compose demo MP4 + preview GIF from REAL captured screenshots only."""
+
 from __future__ import annotations
 
 import shutil
@@ -43,13 +44,24 @@ def title_card(title: str, sub: str) -> Image.Image:
         font_l = font_s = ImageFont.load_default()
     logo = OUT / "icon-512.png"
     if logo.exists():
-        mark = Image.open(logo).convert("RGBA").resize((140, 140), Image.Resampling.LANCZOS)
+        mark = (
+            Image.open(logo)
+            .convert("RGBA")
+            .resize((140, 140), Image.Resampling.LANCZOS)
+        )
         canvas.paste(mark, ((W - 140) // 2, 460), mark)
     bbox = draw.textbbox((0, 0), title, font=font_l)
-    draw.text(((W - (bbox[2] - bbox[0])) // 2, 640), title, fill=(248, 250, 252), font=font_l)
+    draw.text(
+        ((W - (bbox[2] - bbox[0])) // 2, 640), title, fill=(248, 250, 252), font=font_l
+    )
     if sub:
         bbox2 = draw.textbbox((0, 0), sub, font=font_s)
-        draw.text(((W - (bbox2[2] - bbox2[0])) // 2, 720), sub, fill=(148, 163, 184), font=font_s)
+        draw.text(
+            ((W - (bbox2[2] - bbox2[0])) // 2, 720),
+            sub,
+            fill=(148, 163, 184),
+            font=font_s,
+        )
     return canvas
 
 
@@ -64,7 +76,9 @@ def crop_gif_frame(im: Image.Image) -> Image.Image:
         nw = int(nh * target_ratio)
         left = (im.width - nw) // 2
         top = int(im.height * 0.08)
-        crop = im.crop((left, top, left + nw, min(top + int(nw / target_ratio), im.height)))
+        crop = im.crop(
+            (left, top, left + nw, min(top + int(nw / target_ratio), im.height))
+        )
     else:
         nw = im.width
         nh = int(nw / target_ratio)
@@ -80,10 +94,14 @@ def main() -> None:
 
     tmp = Path(tempfile.mkdtemp(prefix="plx-real-demo-"))
     try:
-        seq: list[Image.Image] = [title_card("Phalanx Toolkit", "No-code audited Jettons on TON")]
+        seq: list[Image.Image] = [
+            title_card("Phalanx Toolkit", "No-code audited Jettons on TON")
+        ]
         for p in frames:
             seq.append(contain(Image.open(p), W, H))
-        seq.append(title_card("plx.foundation", "Open in Telegram · @phalanxfoundationbot"))
+        seq.append(
+            title_card("plx.foundation", "Open in Telegram · @phalanxfoundationbot")
+        )
 
         idx = 0
         for im in seq:

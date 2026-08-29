@@ -1,4 +1,5 @@
 """Capture REAL submission screenshots from live PLX App / toolkit (900x1600)."""
+
 from __future__ import annotations
 
 from pathlib import Path

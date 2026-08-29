@@ -1,4 +1,5 @@
 """Capture homepage build hero as screenshot-03."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -28,7 +29,9 @@ def main() -> None:
             "sessionStorage.setItem('plx_event_popup_dismissed','1');"
             "localStorage.setItem('plx_event_popup_dismissed_at', String(Date.now()));"
         )
-        page.goto("https://plx.foundation/", wait_until="domcontentloaded", timeout=60000)
+        page.goto(
+            "https://plx.foundation/", wait_until="domcontentloaded", timeout=60000
+        )
         page.wait_for_timeout(3500)
         path = OUT / "screenshot-03-deploy.png"
         page.screenshot(path=str(path), full_page=False)
