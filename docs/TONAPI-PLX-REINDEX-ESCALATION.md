@@ -73,6 +73,15 @@ Masih **belum** pulih (gate terpisah, bukan bug indexer):
 | `/v2/rates` USD | `0` | LP ≥ ~100 TON + holders ≥ 100 |
 | DexScreener | `pairs: null` | butuh aktivitas swap pada pool |
 
+## Indexer lain masih basi (2026-08-29)
+
+TonAPI sudah benar, tetapi **toncenter v3** dan **Tonscan/DYOR** masih melaporkan admin lama
+(`plx-deployer-v2`) dengan `mintable: true`. Audit lengkap + bukti `last_transaction_lt` beku:
+[`INDEXER-ADMIN-STATE-AUDIT.md`](INDEXER-ADMIN-STATE-AUDIT.md).
+
+Konsekuensinya, kolom **Mutable: Yes** di Tonscan **bukan** indikator metadata dan **tidak boleh**
+dipakai untuk menilai status revoke.
+
 ## History
 
 - Issue publik `tonkeeper/opentonapi#963` — jangan revive dari akun pribadi; eskalasi lewat `@tonapi_bot`.
