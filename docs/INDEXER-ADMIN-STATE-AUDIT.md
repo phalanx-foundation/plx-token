@@ -65,6 +65,25 @@ record membeku. Ini menguatkan keputusan toolkit memakai burn address untuk depl
 Dua jetton dengan admin `null` sama-sama **berhenti diperbarui** di titik transisi, sedangkan
 token dengan admin aktif tetap segar. Ini kelas bug yang sama seperti yang sudah TonAPI perbaiki.
 
+## Bukti terkuat: dua tabel toncenter tidak sinkron
+
+Dalam **satu API yang sama**, state akun segar tetapi baris jetton master beku:
+
+| Endpoint toncenter v3 | `last_transaction_lt` | Kondisi |
+|-----------------------|----------------------|---------|
+| `/accountStates` | `99603236000013` | **segar** — sudah mencakup revoke 27 Aug |
+| `/jetton/masters` | `81006661000012` | **basi** — berhenti sebelum revoke |
+
+Ini menutup kemungkinan "node belum sinkron". Yang gagal spesifik jalur parsing
+**jetton master** pada admin `null`.
+
+## Verifikasi source: sudah ada, salah alamat
+
+TonAPI `/inspect` mengembalikan **seluruh source Tolk PLX**, jadi kontrak memang terverifikasi
+dan Tonviewer menampilkannya. Label "Unverified contract" di Tonscan berasal dari registry
+**DYOR** (`verification: JVS_NONE`), bukan dari TON source verifier — jadi submit ulang ke
+verifier tidak menyelesaikan apa pun.
+
 ## Dampak
 
 - Tonscan menampilkan PLX **seolah masih bisa di-mint oleh deployer** — menyesatkan calon holder
@@ -91,8 +110,10 @@ Tonkeeper, karena wallet itu terikat `TonAPI /v2/rates` (gate LP ≥ ~100 TON + 
 |---|------|---------|
 | 1 | Laporkan record basi ke toncenter / TON Index | manusia |
 | 2 | Minta DYOR refresh admin + `mintable` PLX | manusia |
-| 3 | Verifikasi source PLX di Tonscan (`verification tool`) — Tonviewer sudah verified | manusia |
+| 3 | ~~Verifikasi source di Tonscan~~ — **tidak perlu**, source sudah terverifikasi; label berasal dari DYOR | — |
 | 4 | Jangan pakai Tonscan `Mutable` sebagai bukti revoke | agent + docs |
+
+Draft pesan siap kirim: [`INDEXER-REFRESH-REQUESTS.md`](INDEXER-REFRESH-REQUESTS.md).
 
 ## Cara benar memastikan revoke (UI)
 
