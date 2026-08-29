@@ -30,14 +30,25 @@ if ($BotHealthUrl) {
 }
 
 $envFile = "D:\DATA TOOLS\PLX-ACTON\.env"
+Test-Url "TonConnect manifest" "https://app.plx.foundation/tonconnect-manifest.json"
+Test-Url "Ton Console tc-verify" "https://app.plx.foundation/tc-verify.json"
+
 if (Test-Path $envFile) {
   $content = Get-Content $envFile -Raw
-  foreach ($key in @("TOKEN_TELEGRAM_BOT", "TELEGRAM_BOT_TOKEN", "NEXT_PUBLIC_TG_ANALYTICS_TOKEN", "NEXT_PUBLIC_TG_ANALYTICS_APP_NAME")) {
-    $has = $content -match "(?m)^$key=.+"
+
+  # Each entry is a set of interchangeable names — one set = one requirement.
+  $envGroups = @(
+    @{ Label = "Bot token"; Keys = @("TOKEN_TELEGRAM_BOT", "TELEGRAM_BOT_TOKEN") },
+    @{ Label = "Analytics token"; Keys = @("NEXT_PUBLIC_TG_ANALYTICS_TOKEN", "TG_ANALYTICS_TOKEN") },
+    @{ Label = "Analytics app name"; Keys = @("NEXT_PUBLIC_TG_ANALYTICS_APP_NAME", "TG_ANALYTICS_APP_NAME") }
+  )
+
+  foreach ($group in $envGroups) {
+    $found = @($group.Keys | Where-Object { $content -match "(?m)^$_=.+" })
     $results += [pscustomobject]@{
-      Check = "Env $key"
-      Status = if ($has) { "OK" } else { "MISSING" }
-      Detail = if ($has) { "set in .env" } else { "add before tApps submit" }
+      Check = "Env $($group.Label)"
+      Status = if ($found.Count -gt 0) { "OK" } else { "MISSING" }
+      Detail = if ($found.Count -gt 0) { "$($found[0]) set in .env" } else { "one of: $($group.Keys -join ' / ')" }
     }
   }
 } else {

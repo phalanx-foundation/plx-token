@@ -59,30 +59,28 @@ def _enabled() -> bool:
     return os.environ.get("LISTING_AUTOMATION_ENABLED", "").lower() == "true"
 
 
+def _empty_state() -> dict[str, Any]:
+    return {
+        "runs": [],
+        "last_quest_post": None,
+        "last_pr_nudge": None,
+        "last_summary_sent": None,
+        "last_marketing_run": None,
+    }
+
+
 def _load_state() -> dict[str, Any]:
     if not STATE_FILE.exists():
-        return {
-            "runs": [],
-            "last_quest_post": None,
-            "last_pr_nudge": None,
-            "last_summary_sent": None,
-            "last_marketing_run": None,
-        }
+        return _empty_state()
     try:
-        return json.loads(STATE_FILE.read_text())
-    except json.JSONDecodeError:
-        return {
-            "runs": [],
-            "last_quest_post": None,
-            "last_pr_nudge": None,
-            "last_summary_sent": None,
-            "last_marketing_run": None,
-        }
+        return json.loads(STATE_FILE.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return _empty_state()
 
 
 def _save_state(state: dict[str, Any]) -> None:
     STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    STATE_FILE.write_text(json.dumps(state, indent=2) + "\n")
+    STATE_FILE.write_text(json.dumps(state, indent=2) + "\n", encoding="utf-8")
 
 
 def _append_log(entry: dict[str, Any]) -> None:
@@ -180,8 +178,29 @@ def _build_summary(run: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def _alert_tonkeeper_usd_blocked(run: dict[str, Any]) -> dict[str, Any]:
-    """Telegram alert when whitelist but TonAPI rates still zero."""
+TAPPS_DEMO_MEDIA = (
+    ROOT / "metadata" / "app-submission" / "demo-plx-app-900x1600.mp4",
+    ROOT / "metadata" / "app-submission" / "screenshot-01-plx-app.png",
+    ROOT / "metadata" / "app-submission" / "icon-512.png",
+)
+
+
+def _tapps_center_note() -> str:
+    """tApps has no submit API — report whether the human-gated pack is ready."""
+    missing = [p.name for p in TAPPS_DEMO_MEDIA if not p.exists()]
+    if missing:
+        return f"blocked_until_mini_app_demo — missing: {', '.join(missing)}"
+    return "media_ready — submit manually via @app_moderation_bot (no API)"
+
+
+def _alert_tonkeeper_usd_blocked(
+    run: dict[str, Any], state: dict[str, Any], interval_days: float
+) -> dict[str, Any]:
+    """Telegram alert when whitelist but TonAPI rates still zero.
+
+    Throttled: the gate only clears once LP and holders grow, so a per-run alert
+    would fire on every cron tick (4x/day) for the same unchanged condition.
+    """
     if os.environ.get("LISTING_TONAPI_RATES_ALERT", "true").lower() != "true":
         return {"sent": False, "reason": "disabled"}
     if not telegram_configured():
@@ -192,7 +211,10 @@ def _alert_tonkeeper_usd_blocked(run: dict[str, Any]) -> dict[str, Any]:
     if ton.get("verification") != "whitelist":
         return {"sent": False, "reason": "not_whitelist"}
     if rates.get("price_ready"):
+        state.pop("last_usd_alert", None)
         return {"sent": False, "reason": "rates_ok"}
+    if _days_since(state.get("last_usd_alert")) < interval_days:
+        return {"sent": False, "reason": "interval"}
     msg = (
         "PLX Tonkeeper USD blocked\n\n"
         f"TonAPI verification: whitelist\n"
@@ -202,6 +224,8 @@ def _alert_tonkeeper_usd_blocked(run: dict[str, Any]) -> dict[str, Any]:
         "Deepen LP (plx-lp) + grow holders — see docs/TONKEEPER-USD-PRICE-RUNBOOK.md"
     )
     ok = send_telegram(msg)
+    if ok:
+        state["last_usd_alert"] = now_iso()
     return {"sent": ok}
 
 
@@ -252,7 +276,7 @@ def main() -> int:
     run["platform_notes"] = {
         "tonscan_labels": "no_api — automation monitors only",
         "tonviewer_labels": "no_api — automation monitors only",
-        "tapps_center": "blocked_until_mini_app_demo",
+        "tapps_center": _tapps_center_note(),
         "coinmarketcap": "blocked_until_volume_gate"
         if not gates.get("cmc_ready")
         else "ready_for_manual_or_future_form_bot",
@@ -270,7 +294,10 @@ def main() -> int:
             state["last_summary_sent"] = now_iso()
     else:
         run["actions"]["telegram_summary"] = "skipped_summary_interval"
-    run["actions"]["tonkeeper_usd_alert"] = _alert_tonkeeper_usd_blocked(run)
+    usd_alert_days = float(os.environ.get("LISTING_USD_ALERT_INTERVAL_DAYS", "3"))
+    run["actions"]["tonkeeper_usd_alert"] = _alert_tonkeeper_usd_blocked(
+        run, state, usd_alert_days
+    )
 
     marketing_days = float(os.environ.get("LISTING_MARKETING_INTERVAL_DAYS", "7"))
     if (

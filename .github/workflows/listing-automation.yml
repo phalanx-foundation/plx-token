@@ -6,8 +6,13 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
+
+# Overlapping runs would race on the state commit-back below.
+concurrency:
+  group: listing-automation
+  cancel-in-progress: false
 
 jobs:
   run:
@@ -15,8 +20,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install gh
-        run: type gh || sudo apt-get update && sudo apt-get install -y gh
+      # gh ships with ubuntu-latest; only install if that ever changes.
+      - name: Ensure gh
+        run: |
+          if ! command -v gh >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y gh
+          fi
+          gh --version
 
       - name: Run listing automation
         env:
@@ -30,3 +40,22 @@ jobs:
           TONAPI_KEY: ${{ secrets.TONAPI_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 scripts/plx-listing-automation.py
+
+      # The checkout is ephemeral, so interval throttling (quest, PR nudge,
+      # summary, USD alert) only holds if state is committed back. Otherwise the
+      # committed timestamps never advance and every run re-notifies.
+      - name: Persist automation state
+        if: always()
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- data/; then
+            echo "No state change to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/
+          git commit -m "chore(listing): persist automation state [skip ci]"
+          # Schedules can overlap with human pushes; rebase instead of failing.
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
