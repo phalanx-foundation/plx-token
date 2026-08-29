@@ -28,14 +28,26 @@ Kontrak **tidak** bermasalah. Admin kosong permanen; tidak ada yang bisa mint la
 
 ## Kenapa Tonscan menulis "Mutable: Yes"
 
-Bukan soal jenis metadata. Rantainya:
+Bukan soal jenis metadata, dan **bukan** soal ada/tidaknya alamat admin. Kolom itu memetakan
+**flag `mintable`** dari `toncenter v3 /jetton/masters`.
 
-1. `JettonInfo.vue` merender `Mutable` dari prop `is_mutable`
-2. Prop itu berasal dari record jetton yang di-fetch `getJettonInfo()`
-3. Sumber datanya `jetton-index.tonscan.org` (DYOR) + `toncenter v3`
-4. Keduanya **masih menyimpan admin lama**, sehingga jetton dianggap mutable
+Bukti pemetaan — Tonscan menulis **Yes** untuk ketiganya, dan ketiganya `toncenter_v3 = true`:
 
-Jadi "Mutable: Yes" adalah **konsekuensi data indexer yang basi**, bukan indikator metadata.
+| Token | flag on-chain (`stack[1]`) | TonAPI decoded | toncenter v3 | Tonscan |
+|-------|---------------------------|----------------|--------------|---------|
+| **PLX** | `0x0` (false) | `false` | **`true`** ← basi | Yes |
+| **NOT** | `-0x1` (true) | `true` | `true` | Yes |
+| **USDT** | `-0x1` (true) | `true` | `true` | Yes |
+
+Dua sebab berbeda menghasilkan tampilan yang sama:
+
+- **NOT** → **akurat**. Kontrak Notcoin memang tetap mengembalikan `mintable = -1` meski
+  admin sudah di-set ke burn (`0:0000…0000`). Itu kekhasan kontrak mereka, bukan bug indexer.
+- **PLX** → **salah**. Flag on-chain `0x0`, tetapi record toncenter masih `true` karena beku
+  sebelum revoke.
+
+Karena satu nilai "Yes" bisa berarti akurat **atau** basi, kolom ini **tidak dapat dipakai**
+untuk menyimpulkan status revoke token mana pun.
 
 ## Bukti record basi
 
@@ -44,7 +56,11 @@ Jadi "Mutable: Yes" adalah **konsekuensi data indexer yang basi**, bukan indikat
 | **PLX** (admin null) | deployer (basi) | `81006661000012` | beku sebelum revoke 27 Aug |
 | `EQBwLccX…UOQqW` (admin null) | `0:18AA75E0…` (basi) | `82520593000008` | pola identik |
 | USDT (admin aktif) | admin benar | `99991183000015` | segar |
-| NOT | kosong | `99816265000012` | segar; kontraknya memang balikkan `mintable=-1` |
+| NOT (admin burn) | kosong di toncenter; `0:0000…0000` di DYOR | `99816265000012` | segar |
+
+Pembeda utamanya bukan "admin kosong", melainkan **transisi admin → null**. NOT memakai
+**burn address** (bukan null) sehingga indexer tetap memprosesnya; PLX memakai null sehingga
+record membeku. Ini menguatkan keputusan toolkit memakai burn address untuk deploy baru.
 
 Dua jetton dengan admin `null` sama-sama **berhenti diperbarui** di titik transisi, sedangkan
 token dengan admin aktif tetap segar. Ini kelas bug yang sama seperti yang sudah TonAPI perbaiki.
