@@ -72,23 +72,43 @@ akun yang sama.
 Tonscan mengambil data jetton dari `jetton-index.tonscan.org/public-dyor/...`, jadi
 perbaikan harus lewat DYOR.
 
-Record DYOR saat ini juga basi: `admin` = deployer, `mintable: true`,
-`verification: JVS_NONE`, `trustScore: 0`.
+**Kanal:** [@dyorsupportbot](https://t.me/dyorsupportbot) (support) · [@dyorapi](https://t.me/dyorapi) (dev/API)
+**Kirim dari akun Telegram user** — agent tidak bisa mengirim Telegram.
+
+### Ini data DYOR sendiri, bukan cache Tonscan
+
+`https://api.dyor.io/v1/jettons/{minter}` (API resmi, bukan proxy) mengembalikan hal yang sama:
+
+| Field | Nilai DYOR | Seharusnya |
+|-------|-----------|-----------|
+| `admin.address` | `0:5f60ba6a…dd1a9e` (deployer) | kosong |
+| `mintable` | `true` | `false` |
+| `verification` | `JVS_NONE` | minimal `JVS_APPROVED` |
+| `trustScore` | `0` | — |
+
+DYOR **menangani burn address dengan benar** — record NOT menunjukkan
+`admin: 0:0000…0000` dan `mintable: false`. Yang gagal khusus admin `null`, sama seperti
+toncenter dan TonAPI sebelum diperbaiki.
+
+### Pesan
 
 > Hi! Requesting a data refresh for PLX `EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS`.
 >
-> The admin was revoked on 2026-08-27 (drop-admin, opcode `0x7431f221`). On-chain
-> `get_jetton_data` returns `mintable = 0` with an empty admin slot, and TonAPI already
-> reflects this (`mintable: false`, `verification: whitelist`).
+> The admin was revoked on 2026-08-27 (drop-admin, opcode `0x7431f221`), so on-chain
+> `get_jetton_data` returns `mintable = 0` with an empty admin slot. TonAPI already reflects
+> this (`mintable: false`, `verification: whitelist`).
 >
-> Your record still shows the pre-revoke admin
-> (`0:5f60ba6a44da788d5bdf7d86fab9c91c1953364b917527ca6afa99c5b0dd1a9e`) with
-> `mintable: true`, which makes Tonscan display the token as still mintable.
+> `api.dyor.io/v1/jettons/EQCba…` still returns the pre-revoke admin
+> `0:5f60ba6a44da788d5bdf7d86fab9c91c1953364b917527ca6afa99c5b0dd1a9e` with `mintable: true`,
+> so Tonscan shows the token as still mintable by the old admin.
 >
-> Note the upstream `toncenter /api/v3/jetton/masters` row is stale too, so a refresh may
-> need to bypass it or wait for their fix.
+> It looks specific to a **null** admin rather than a burn address — your Notcoin record
+> handles `0:0000…0000` correctly with `mintable: false`. The upstream
+> `toncenter /api/v3/jetton/masters` row is stale for the same reason
+> (filed as toncenter/ton-indexer#447), so a refresh may need to re-read the contract directly.
 >
-> Also happy to complete jetton verification — currently `JVS_NONE`.
+> Separately, I'd like to complete jetton verification — currently `JVS_NONE`. Happy to
+> provide whatever you need.
 
 ---
 
