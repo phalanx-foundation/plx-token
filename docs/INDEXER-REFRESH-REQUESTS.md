@@ -23,7 +23,13 @@ Get-method tidak error di provider mana pun (`exit_code: 0`), jadi ini bukan kon
 
 ---
 
-## 1. toncenter / TON Index
+## 1. toncenter / TON Index — TERKIRIM
+
+**Issue:** [toncenter/ton-indexer#447](https://github.com/toncenter/ton-indexer/issues/447)
+(dibuka 2026-08-29, OPEN, atas persetujuan user memakai akun pribadi).
+
+Isi issue memuat tabel `last_transaction_lt` lintas 4 token dan bukti `/accountStates`
+vs `/jetton/masters`. Teks lengkap arsip di bawah.
 
 **Repo:** https://github.com/toncenter/ton-indexer
 
@@ -55,9 +61,9 @@ Get-method tidak error di provider mana pun (`exit_code: 0`), jadi ini bukan kon
 > Downstream impact: explorers reading this endpoint show the token as still mintable by
 > the old admin, which is the opposite of the on-chain state.
 
-**Catatan identitas:** kebijakan repo PLX melarang membuka issue publik dari akun GitHub
-pribadi untuk urusan ini. Kirim dari akun org `phalanx-foundation`, atau lewat kanal
-Telegram toncenter jika tersedia.
+**Catatan identitas:** user menyetujui pemakaian akun pribadi `KelvinHernata` karena
+issue [opentonapi#963](https://github.com/tonkeeper/opentonapi/issues/963) sudah dibuka dari
+akun yang sama.
 
 ---
 
