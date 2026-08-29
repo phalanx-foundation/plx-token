@@ -83,12 +83,12 @@ tApps does **not** have an official template, but reviewers expect **2–3 minut
 | SDK | Function | Phalanx status |
 |-----|----------|----------------|
 | **Telegram WebApp SDK** (`telegram-web-app.js`) | Native UI: expand, header color, close, swipe lock | ✅ global in `layout.tsx`, active via `AppBootstrap` |
-| **Telegram Mini Apps Analytics SDK** (`@telegram-apps/analytics`) | Anonymous events for tApps ranking; **required for listing** | ✅ code present; needs token from TON Builders |
+| **Telegram Mini Apps Analytics SDK** (`@telegram-apps/analytics`) | Anonymous events for tApps ranking; **required for listing** | ✅ code present; needs token from [@DataChief_bot](https://t.me/DataChief_bot) |
 
 Analytics token:
 
-1. https://builders.ton.org → login Telegram → project PLX App
-2. Tab **Analytics** → bot URL + domain `app.plx.foundation`
+1. [@DataChief_bot](https://t.me/DataChief_bot) → follow the flow for project PLX App (`builders.ton.org` is deprecated)
+2. Provide bot URL + domain `app.plx.foundation`
 3. Copy token → env:
    - `NEXT_PUBLIC_TG_ANALYTICS_TOKEN`
    - `NEXT_PUBLIC_TG_ANALYTICS_APP_NAME` (identifier, e.g. `plx_app`)
@@ -144,6 +144,16 @@ powershell -File "D:\DATA TOOLS\PLX-ACTON\scripts\tapps-readiness-check.ps1"
 
 ---
 
+## Submit to DYOR / DappRadar / Tonviewer catalog
+
+| Platform | Entry point | Auth | Notes |
+|----------|-------------|------|-------|
+| DYOR.io Dapps center | https://dyor.io/settings/dapps/create | **Connect wallet** (deployer wallet) | No Telegram login; paste the public dapp URL back into the dashboard |
+| DappRadar | https://dappradar.com/developers → Submit Dapp / Claim dapp | Email, Google, or wallet | Logo 250×250 ≤150KB, ≤5 tags, raw contract addresses, description ≤2000 chars, disable ad blockers |
+| Tonviewer / Tonkeeper catalog | https://tonconsole.com/ (catalog shown at https://tonviewer.com/catalog) | TON Console account | Curated — no public form; requires working TON Connect first |
+
+---
+
 ## After approval
 
 - Update [`TOKEN-LISTING-INDEX-MATRIX.md`](TOKEN-LISTING-INDEX-MATRIX.md) rows D2–D3 → **LIVE** + evidence URL
@@ -156,7 +166,10 @@ powershell -File "D:\DATA TOOLS\PLX-ACTON\scripts\tapps-readiness-check.ps1"
 | Blocker | Owner |
 |---------|-------|
 | Tonkeeper whitelist (ton-assets PR) | TON maintainer merge |
-| Analytics token TON Builders | Login Telegram org |
+| Analytics token via @DataChief_bot | Login Telegram org |
+| DYOR dapp create (wallet connect) | Human with deployer wallet |
+| DappRadar submit/claim dapp | Human in Developer Dashboard |
+| Tonviewer/Tonkeeper catalog placement | Tonkeeper curation via TON Console |
 | Submit @app_moderation_bot | Human in Telegram |
 | Record demo video | Human screen record |
 | BotFather Main Mini App URL = `https://app.plx.foundation/` | Manual BotFather step |
