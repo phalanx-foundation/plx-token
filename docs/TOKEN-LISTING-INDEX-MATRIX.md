@@ -49,9 +49,10 @@ Single checklist for **Phalanx (PLX)** discoverability after mainnet LP. Update 
 | # | Platform | Submit URL | Gate | Status | Evidence |
 |---|----------|------------|------|--------|----------|
 | D1 | TON Console | https://tonconsole.com | Product + TonAPI key | **Key in `.env`** | [`TON-CONSOLE-PLX.md`](TON-CONSOLE-PLX.md) — infra, not listing |
-| D2 | tApps Center | https://ton.org/dev/opportunities/tapps-listing | Mini App demo | **TODO** | [`TAPPS-TON-FOUNDATION.md`](TAPPS-TON-FOUNDATION.md) |
+| D1b | Tonkeeper Messages | https://tonconsole.com → Tonkeeper Messages | dApp registered + domain verified | **VERIFIED** (2026-08-29) | `app.plx.foundation/tc-verify.json`; push/retention, **bukan** katalog |
+| D2 | tApps Center | https://ton.org/dev/opportunities/tapps-listing | Mini App demo | **READY — submit manual** | Pack + media: [`APP-SUBMISSION-PACK.md`](APP-SUBMISSION-PACK.md); blocker = analytics token |
 | D2b | Entertainment spin-off | Brand terpisah | WL casino + quest | **PLAN** | [`PLX-ENTERTAINMENT-AND-GAME-SUPPLY-PLAN.md`](PLX-ENTERTAINMENT-AND-GAME-SUPPLY-PLAN.md) |
-| D3 | tonscan apps | https://t.me/SubmitAppBot | Public app URL | **TODO** | After Mini App |
+| D3 | tonscan apps | https://t.me/SubmitAppBot | Public app URL | **READY — submit manual** | URL + icon siap di [`APP-SUBMISSION-PACK.md`](APP-SUBMISSION-PACK.md) |
 | D4 | TON Foundation grants | https://ton.org / opportunities | Pitch + live product | **TODO** | Same doc |
 
 ---

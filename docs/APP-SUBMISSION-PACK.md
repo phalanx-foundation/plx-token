@@ -186,6 +186,19 @@ metadata/app-submission/preview-640x360.gif
 
 ---
 
+## TON Connect / Ton Console (sudah live)
+
+Form katalog kadang menanyakan manifest atau bukti Web3. Nilai yang benar:
+
+| Field | Value |
+|-------|-------|
+| TON Connect manifest | `https://app.plx.foundation/tonconnect-manifest.json` |
+| Manifest `name` | `Phalanx Toolkit` |
+| Ton Console domain proof | `https://app.plx.foundation/tc-verify.json` |
+| Tonkeeper Messages | Registered + verified 2026-08-29 (push/retention, bukan katalog) |
+
+Jangan isi URL manifest di kolom "Mini App URL" — pakai `https://t.me/phalanxfoundationbot/plxtoolkit`.
+
 ## Quick submit checklist
 
 1. [@DataChief_bot](https://t.me/DataChief_bot) — name `PLX App`, short desc, Mini App URL, channel, GitHub di atas

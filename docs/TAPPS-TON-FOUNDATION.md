@@ -30,6 +30,10 @@ For **marketing discoverability** after **PLX App** is listed.
 - [x] PLX App subdomain `app.plx.foundation` live (DNS CNAME + CF Pages custom domain)
 - [x] `X-Robots-Tag: noindex, nofollow` on app subdomain
 - [x] Bottom tab bar navigation (native app feel)
+- [x] TON Connect manifest live: `https://app.plx.foundation/tonconnect-manifest.json`
+- [x] Ton Console dApp registered + domain verified (`https://app.plx.foundation/tc-verify.json`)
+- [x] Bot menu button + 11 commands synced (`npm run configure-tapps`, 2026-08-29)
+- [x] Mini App short link `https://t.me/phalanxfoundationbot/plxtoolkit`
 - [ ] BotFather **Main Mini App URL** = `https://app.plx.foundation/` (manual step)
 - [ ] Analytics token from [@DataChief_bot](https://t.me/DataChief_bot) (not builders.ton.org)
 - [ ] List on [ton.app/profile/new](https://ton.app/profile/new) after Connect Telegram
@@ -41,6 +45,17 @@ For **marketing discoverability** after **PLX App** is listed.
 ## TON Console (not a listing)
 
 https://tonconsole.com — TonAPI keys ([`TON-CONSOLE-PLX.md`](TON-CONSOLE-PLX.md)).
+
+**Tonkeeper Messages** (registered 2026-08-29): push notification ke wallet yang sudah connect
+via TON Connect — **retention tool, bukan entri katalog**. Tidak menempatkan PLX App di daftar
+"recommended apps" Tonkeeper.
+
+| Item | Detail |
+|------|--------|
+| Registered app | `https://app.plx.foundation` |
+| Domain proof | `https://app.plx.foundation/tc-verify.json` (route + static asset) |
+| API token | `TON_CONSOLE_MESSAGES_API_TOKEN` di `.env` (gitignored) |
+| Docs | https://docs.tonconsole.com/tonconsole/tonkeeper-messages |
 
 ## Ops scripts
 
