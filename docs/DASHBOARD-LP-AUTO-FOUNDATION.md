@@ -12,18 +12,20 @@ Operators add Ston.fi liquidity from **Dashboard → Add liquidity**:
 Web: `toolkit-staging/web/components/dashboard/add-liquidity-panel.tsx`  
 API: `toolkit-staging/api/routes/deployments.py` → `liquidity/confirm`
 
-## Foundation auto-LP (planned — not built)
+## Foundation auto-LP (ops wallets)
 
-Treasury sweep today runs `scripts/stonfi-add-liquidity.py` for the **25% LP slice** from toolkit TON payments:
+Treasury sweep + buy-side thickener run `scripts/stonfi-add-liquidity.py`:
 
 | Step | Status |
 |------|--------|
 | Simulate balanced provision | Done |
-| Queue `pending_broadcast` in `data/lp-pending.json` | Done |
-| On-chain router broadcast (mirror `scripts/stonfi-swap/execute.mjs`) | **TODO** |
-| Acton worker `/plx-treasury-sweep` endpoint | **TODO** (docs reference only) |
+| Queue entries in `data/lp-pending.json` | Done |
+| On-chain router broadcast (`scripts/stonfi-swap/execute-lp.mjs`, W5 `plx-lp`) | Done — gate with `STONFI_LP_BROADCAST_ENABLED` |
+| Acton worker `/lp-add` + `/plx-treasury-sweep` | Done |
 
-This path uses **ops wallets** (`plx-treasury`, Acton Tolk) — separate from user TonConnect LP.
+Buy-side thickening parks GRAM directly in `plx-lp`, then `/lp-add` broadcasts both
+TON + PLX provide_lp legs once the 15–20 TON threshold is met. User TonConnect LP
+on the dashboard stays a separate path.
 
 When implementing auto-LP for tokens built via toolkit:
 
