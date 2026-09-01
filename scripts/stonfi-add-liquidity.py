@@ -21,6 +21,7 @@ import subprocess
 import sys
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -113,8 +114,33 @@ def _http_json(method: str, url: str, body: dict | None = None) -> dict | None:
     req = urllib.request.Request(
         url,
         data=data,
-        headers={"Content-Type": "application/json"},
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "plx-lp/1.0",
+        },
         method=method,
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as res:
+            parsed = json.loads(res.read().decode())
+            return parsed if isinstance(parsed, dict) else None
+    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError):
+        return None
+
+
+def _http_query_post(url: str, params: dict[str, str]) -> dict | None:
+    """Ston.fi simulate endpoints take query-string params (not JSON body)."""
+    full = f"{url}?{urllib.parse.urlencode(params)}"
+    req = urllib.request.Request(
+        full,
+        data=b"",
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": "plx-lp/1.0",
+        },
+        method="POST",
     )
     try:
         with urllib.request.urlopen(req, timeout=30) as res:
@@ -144,16 +170,20 @@ def _resolve_pool(plx_jetton: str) -> str | None:
 def _simulate_balanced(
     pool: str, plx_jetton: str, ton_nano: int, wallet: str
 ) -> dict | None:
-    body = {
-        "provision_type": "Balanced",
-        "pool_address": pool,
-        "slippage_tolerance": SLIPPAGE,
-        "token_a": TON_NATIVE,
-        "token_b": plx_jetton,
-        "token_a_units": str(ton_nano),
-        "wallet_address": wallet,
-    }
-    return _http_json("POST", f"{STONFI_API}/v1/liquidity_provision/simulate", body)
+    # Official API: POST /v1/liquidity_provision/simulate with *query* params.
+    # JSON body returns 400 missing field `provision_type`.
+    return _http_query_post(
+        f"{STONFI_API}/v1/liquidity_provision/simulate",
+        {
+            "provision_type": "Balanced",
+            "pool_address": pool,
+            "slippage_tolerance": SLIPPAGE,
+            "token_a": TON_NATIVE,
+            "token_b": plx_jetton,
+            "token_a_units": str(ton_nano),
+            "wallet_address": wallet,
+        },
+    )
 
 
 def _lp_ton_balance_nano(lp_address: str) -> int | None:
