@@ -25,7 +25,7 @@ def load_wallet_mnemonic(wallet_name: str) -> str | None:
     match = re.search(
         rf"\[wallets\.{re.escape(wallet_name)}\](.*?)(?=\n\[|\Z)",
         text,
-        re.S,
+        re.DOTALL,
     )
     if not match:
         return None

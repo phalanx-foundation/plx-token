@@ -27,7 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from lib.stonfi_lp import run_lp_executor  # noqa: E402
+from lib.stonfi_lp import run_lp_executor
 
 STONFI_API = os.environ.get("STONFI_API_BASE", "https://api.ston.fi").rstrip("/")
 MIN_LP_NANO = int(os.environ.get("STONFI_LP_MIN_NANO", str(10_000_000)))  # 0.01 TON
@@ -71,7 +71,9 @@ def _funds_already_in_lp() -> bool:
 
 
 def _queue_lp(entry: dict) -> None:
-    queue_path = Path(os.environ.get("LP_QUEUE_FILE", ROOT / "data" / "lp-pending.json"))
+    queue_path = Path(
+        os.environ.get("LP_QUEUE_FILE", ROOT / "data" / "lp-pending.json")
+    )
     queue_path.parent.mkdir(parents=True, exist_ok=True)
     entries: list = []
     if queue_path.exists():
@@ -139,7 +141,9 @@ def _resolve_pool(plx_jetton: str) -> str | None:
     return None
 
 
-def _simulate_balanced(pool: str, plx_jetton: str, ton_nano: int, wallet: str) -> dict | None:
+def _simulate_balanced(
+    pool: str, plx_jetton: str, ton_nano: int, wallet: str
+) -> dict | None:
     body = {
         "provision_type": "Balanced",
         "pool_address": pool,
@@ -164,7 +168,13 @@ def _lp_ton_balance_nano(lp_address: str) -> int | None:
             data = json.loads(res.read().decode())
             if data.get("ok") and data.get("result") is not None:
                 return int(data["result"])
-    except (urllib.error.URLError, json.JSONDecodeError, TimeoutError, TypeError, ValueError):
+    except (
+        urllib.error.URLError,
+        json.JSONDecodeError,
+        TimeoutError,
+        TypeError,
+        ValueError,
+    ):
         return None
     return None
 
@@ -203,7 +213,11 @@ def add_liquidity(ton_nano: int, network: str) -> dict:
 
     if not plx_jetton:
         if already_funded:
-            return {"mode": "skipped", "ok": False, "error": "missing_plx_jetton_minter"}
+            return {
+                "mode": "skipped",
+                "ok": False,
+                "error": "missing_plx_jetton_minter",
+            }
         result = _fallback_transfer(ton_nano, lp_address, network)
         result["note"] = "missing_plx_jetton_minter"
         return result
@@ -220,7 +234,12 @@ def add_liquidity(ton_nano: int, network: str) -> dict:
             }
         )
         if already_funded:
-            return {"mode": "fallback_no_pool", "ok": False, "queued": True, "ton_nano": ton_nano}
+            return {
+                "mode": "fallback_no_pool",
+                "ok": False,
+                "queued": True,
+                "ton_nano": ton_nano,
+            }
         return _fallback_transfer(ton_nano, lp_address, network) | {
             "mode": "fallback_no_pool",
             "queued": True,
@@ -246,7 +265,11 @@ def add_liquidity(ton_nano: int, network: str) -> dict:
     sim = _simulate_balanced(pool, plx_jetton, spend_nano, lp_address)
     if not sim:
         if already_funded:
-            return {"mode": "fallback_simulate_failed", "ok": False, "ton_nano": spend_nano}
+            return {
+                "mode": "fallback_simulate_failed",
+                "ok": False,
+                "ton_nano": spend_nano,
+            }
         return _fallback_transfer(ton_nano, lp_address, network) | {
             "mode": "fallback_simulate_failed"
         }

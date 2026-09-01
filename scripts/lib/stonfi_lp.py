@@ -13,7 +13,9 @@ DEFAULT_LP_WALLET = "plx-lp"
 DEFAULT_LP_ADDRESS = "EQAiQ41f7R5qzKsoimbujtYdy0bRKW_7Fb0rV5Z4Lw6gr3zH"
 
 
-def run_lp_executor(ton_nano: int, *, wallet_name: str = DEFAULT_LP_WALLET, dry_run: bool = False) -> tuple[int, str, str]:
+def run_lp_executor(
+    ton_nano: int, *, wallet_name: str = DEFAULT_LP_WALLET, dry_run: bool = False
+) -> tuple[int, str, str]:
     """Run scripts/stonfi-swap/execute-lp.mjs with the LP wallet mnemonic."""
     script = ROOT / "scripts" / "stonfi-swap" / "execute-lp.mjs"
     if not script.is_file():
