@@ -19,6 +19,21 @@ export STONFI_POOL_ADDRESS=EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq
 node execute.mjs
 ```
 
+## Buyback swap (`execute-buyback.mjs`) — W5 / v5r1 `plx-treasury`
+
+Called by `scripts/buyback-swap-burn.py` when `STONFI_SWAP_ENABLED=true`.
+Mnemonic loaded from `wallets.toml` (`plx-treasury`) unless `TON_OPERATOR_MNEMONIC` is set.
+
+```bash
+export SWAP_UNITS=500000000
+export STONFI_POOL_ADDRESS=EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq
+export EXPECTED_WALLET_ADDRESS=EQBBlAF4yz12NbrbKXYfGA1OsZzWFpkRj-TU6ciuYjBjK1aX
+export DRY_RUN=true   # omit to broadcast
+node execute-buyback.mjs
+```
+
+After swap credits PLX to treasury, `buyback-burn.tolk` burns the received amount.
+
 ## LP provide (`execute-lp.mjs`) — W5 / v5r1 `plx-lp`
 
 Called by `scripts/stonfi-add-liquidity.py` when `STONFI_LP_AUTO_ENABLED=true` and

@@ -124,7 +124,7 @@ quarterly report. Categories:
 
 | Category | Share | Purpose | Automated? |
 |---|---|---|---|
-| **Buyback** | 25% | Treasury buys PLX from Stonfi/DeDust LP and burns. Compounds the burn slice — an extra deflationary pulse on top of the on-receipt burn. | **Yes** (TON / PayPal virtual sweep) — queued then Ston.fi swap + burn ([`TREASURY-SWEEP.md`](TREASURY-SWEEP.md)) |
+| **Buyback** | 25% | Treasury buys PLX from Stonfi/DeDust LP and burns. Compounds the burn slice — an extra deflationary pulse on top of the on-receipt burn. | **Armed** (Phase 1 queue + Phase 2 swap+burn wired on Acton host; live needs treasury TON float — see [`TREASURY-SWEEP.md`](TREASURY-SWEEP.md) Phase 2) |
 | **LP deepening** | 25% | TON-side liquidity injection into Stonfi/DeDust pairs. Tighter spreads + lower slippage → more organic trading volume → more LP fee accrual. | **Yes** (Phase 1: TON → `plx-lp`; Phase 3: Ston.fi add-liquidity) |
 | **Operations** | 25% | Gas reserves for the operator wallet, infra (Cloudflare, Railway, Neon DB), audit retainers, and core team compensation. | **Yes** → PLX TOOLKIT ops wallet (`EQC5X2o...`) |
 | **Growth** | 25% | Marketing campaigns, community contests, listing fees, partnership grants, hackathon sponsorships. | **Yes** → `plx-marketing` (`EQDB9yV...`) |

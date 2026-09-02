@@ -128,18 +128,36 @@ TON_TREASURY_ADDRESS_MAINNET=EQBBlAF4yz12NbrbKXYfGA1OsZzWFpkRj-TU6ciuYjBjK1aX
 
 ## Phase 2 — Buyback queue processor
 
+**Status (2026-09-02):** wired end-to-end on Acton host — `execute-buyback.mjs` (W5 `plx-treasury`) → wait jetton credit → `buyback-burn.tolk`. Live swap+burn requires treasury TON ≥ `BUYBACK_MIN_SWAP_NANO` + gas reserve.
+
 ```bash
 # Cron every 15 min on acton server
-*/15 * * * * cd ~/projects/plx-acton && bash scripts/process-buyback-queue.sh
+*/15 * * * * cd ~/projects/plx-acton && bash scripts/process-buyback-queue.sh >> logs/buyback-queue.log 2>&1
 ```
 
 Env when PLX/TON pool is live:
 
 ```env
-STONFI_POOL_ADDRESS=<pool>
-JETTON_MINTER_ADDRESS=EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS
-STONFI_SWAP_ENABLED=true   # after swap integration tested
+STONFI_POOL_ADDRESS=EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq
+PLX_JETTON_MINTER_MAINNET=EQCbaUJqiRIuw5U-A_tUYTK4mdH0L37oFMvxeMEDGE5nVfLS
+TON_TREASURY_ADDRESS_MAINNET=EQBBlAF4yz12NbrbKXYfGA1OsZzWFpkRj-TU6ciuYjBjK1aX
+WALLETS_TOML=/home/dev/projects/plx-acton/wallets.toml
+STONFI_SWAP_ENABLED=true          # armed; blocks with insufficient_treasury_ton until funded
+BUYBACK_MIN_SWAP_NANO=500000000   # 0.5 TON minimum per queue entry
+BUYBACK_GAS_RESERVE_NANO=300000000
+DRY_RUN=false                     # true = simulate swap only (no burn)
 ```
+
+Manual smoke (dry-run):
+
+```bash
+export STONFI_SWAP_ENABLED=true DRY_RUN=true
+printf '%s\n' '[{"deployment_id":"smoke","network":"mainnet","buyback_nano":500000000,"status":"pending"}]' > data/buyback-pending.json
+python3 scripts/buyback-swap-burn.py
+# expect queue entry status: buyback_dry_run
+```
+
+Queue statuses: `pending` → `buyback_dry_run` | `swap_broadcast` → `burned` | `insufficient_treasury_ton` | `queued_for_manual_swap` (when `STONFI_SWAP_ENABLED=false`).
 
 ## Phase 3 — Ston.fi LP automation
 
@@ -221,7 +239,7 @@ ACTON_PLX_SWEEP_URL=https://phalanxdigital.taila5c428.ts.net/plx-treasury-sweep
 2. Mainnet smoke: 1 TON Standard deploy → 4×5 TON logical split
 3. Double verify → no duplicate `sweep_tx_hashes`
 4. PLX rail deploy → `plx_sweep_tx_hashes` populated (not `sweep_tx_hashes`)
-5. After Phase 2: queue entry → `burned` status + supply decrease
+5. After Phase 2: queue entry → `buyback_dry_run` (dry-run) or `burned` + supply decrease (live, treasury TON funded)
 
 ## Audit
 
