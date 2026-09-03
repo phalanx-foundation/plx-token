@@ -82,6 +82,11 @@ display-name = "LiquidityLocker"
 src = "contracts/LiquidityLocker.tolk"
 depends = []
 
+[contracts.MidasHandEscrow]
+display-name = "MidasHandEscrow"
+src = "contracts/MidasHandEscrow.tolk"
+depends = []
+
 [contracts.NftItem]
 display-name = "NftItem"
 src = "contracts/NftItem.tolk"
@@ -127,6 +132,9 @@ plx-treasury-sweep-testnet = "bash scripts/plx-treasury-jetton-sweep.sh"
 plx-treasury-sweep-mainnet = "bash scripts/plx-treasury-jetton-sweep.sh"
 buyback-process-queue = "bash scripts/process-buyback-queue.sh"
 stonfi-lp-add = "bash scripts/stonfi-add-liquidity.sh"
+deploy-midas-escrow-emulation = "acton script scripts/deploy-midas-escrow.tolk"
+deploy-midas-escrow-testnet = "acton script scripts/deploy-midas-escrow.tolk --net testnet"
+deploy-midas-escrow-mainnet = "acton script scripts/deploy-midas-escrow.tolk --net mainnet"
 drop-admin-testnet = "acton script scripts/drop-admin.tolk --net testnet"
 drop-admin-mainnet = "acton script scripts/drop-admin.tolk --net mainnet"
 info-distribution-testnet = "acton script scripts/info-distribution.tolk --net testnet"
