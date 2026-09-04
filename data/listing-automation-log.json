@@ -3167,5 +3167,107 @@
       "coinmarketcap": "blocked_until_volume_gate",
       "coingecko": "blocked_until_lp_gate"
     }
+  },
+  {
+    "at": "2026-09-04T20:40:18.260103+00:00",
+    "checks": {
+      "dexscreener_pair": {
+        "ok": false,
+        "liquidity_usd": 0.0,
+        "pool_ton_quote": null,
+        "url": "https://dexscreener.com/ton/eqam-5hxqpfql8_lqyvax4aeps9lxp6re8afr35hcfrpyztq",
+        "price_usd": null,
+        "txns_24h": null
+      },
+      "stonfi_pool": {
+        "ok": true,
+        "ton_human": 9.823675436,
+        "url": "https://app.ston.fi/pools/EQAm-5HxQpfQl8_lqyvax4AEPS9LXp6rE8AFr35hcfRPyZTq"
+      },
+      "dexscreener_orders": {
+        "ok": true,
+        "orders": []
+      },
+      "tonapi": {
+        "ok": true,
+        "verification": "whitelist",
+        "holders": 9,
+        "symbol": "PLX"
+      },
+      "tonapi_rates": {
+        "ok": false,
+        "usd": 0.0,
+        "price_ready": false,
+        "diff_24h": "0.00%"
+      },
+      "tonapi_price_gates": {
+        "tonapi_price_ready": false,
+        "holders_ready": false,
+        "pool_ton_ready": false,
+        "holders": 9,
+        "pool_ton_quote": 9.823675436,
+        "usd_price": 0.0,
+        "min_holders": 100,
+        "min_ton_reserve": 100.0,
+        "tonkeeper_usd_ready": false
+      },
+      "dyor": {
+        "ok": true,
+        "indexed": true,
+        "count": 1
+      },
+      "coingecko": {
+        "ok": false,
+        "coin": null
+      },
+      "ton_assets_pr": {
+        "ok": true,
+        "state": "MERGED",
+        "merged": true,
+        "url": "https://github.com/tonkeeper/ton-assets/pull/5540",
+        "phalanx_comment_count": 0,
+        "updated_at": "2026-06-15T09:10:14Z"
+      },
+      "eligibility": {
+        "coingecko_ready": false,
+        "coingecko_min_usd": 5000,
+        "cmc_ready": false,
+        "cmc_min_usd": 10000,
+        "liquidity_usd": 0.0
+      }
+    },
+    "actions": {
+      "quest": {
+        "posted": false,
+        "reason": "interval"
+      },
+      "pr_nudge": {
+        "nudged": false,
+        "reason": "pr_not_open",
+        "pr": {
+          "ok": true,
+          "state": "MERGED",
+          "merged": true,
+          "url": "https://github.com/tonkeeper/ton-assets/pull/5540",
+          "phalanx_comment_count": 0,
+          "updated_at": "2026-06-15T09:10:14Z"
+        }
+      },
+      "branding_swap": {
+        "skipped": "LISTING_RUN_BRANDING false"
+      },
+      "telegram_summary": "skipped_summary_interval",
+      "tonkeeper_usd_alert": {
+        "sent": true
+      },
+      "telegram_marketing": "skipped_disabled"
+    },
+    "platform_notes": {
+      "tonscan_labels": "no_api \u2014 automation monitors only",
+      "tonviewer_labels": "no_api \u2014 automation monitors only",
+      "tapps_center": "media_ready \u2014 submit manually via @app_moderation_bot (no API)",
+      "coinmarketcap": "blocked_until_volume_gate",
+      "coingecko": "blocked_until_lp_gate"
+    }
   }
 ]
