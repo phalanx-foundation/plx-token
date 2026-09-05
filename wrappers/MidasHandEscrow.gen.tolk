@@ -178,8 +178,10 @@ fun MidasHandEscrow.getEscrowData(self): (
     uint8,
     coins,
     coins,
+    coins,
     uint32,
     uint32,
+    uint8,
 ) {
     return net.runGetMethod(self.address, "get_escrow_data");
 }
