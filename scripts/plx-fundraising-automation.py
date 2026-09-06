@@ -43,10 +43,12 @@ TRACKS: list[dict[str, Any]] = [
     {
         "id": "ton_ecosystem_grant",
         "title": "[Funding] TON ecosystem grant — Phalanx Toolkit + PLX",
-        "apply_url": "https://ton.org/",
+        "apply_url": "https://ton.org/en/ton-grants",
         "labels": ["funding", "grants"],
         "body": f"""## Program
 TON Foundation / ecosystem grants (TON-native jetton + open toolkit).
+Model 2026: Contender -> Champion, milestone-based. 5 verticals (AI, Simplified DeFi,
+Telegram In-App Economy, Payments, GameFi).
 
 ## Project
 - **Site:** {TOKEN_PAGE}
@@ -55,13 +57,46 @@ TON Foundation / ecosystem grants (TON-native jetton + open toolkit).
 - **Ston.fi pool:** {STONFI_POOL_URL}
 - **Tonkeeper ton-assets:** PR https://github.com/tonkeeper/ton-assets/pull/5540
 
+## Vertical
+Simplified DeFi (primary) + Telegram In-App Economy (secondary) + open-source public goods.
+
 ## Pitch
 {DESCRIPTION}
 
-## Milestones (grant)
-1. Tonkeeper whitelist merge + toolkit `/build` happy path on prod
-2. Mini App demo + tApps listing
-3. LP bootstrap from grant TON → transparent sweep to `plx-lp`
+## Milestones (grant, milestone-based)
+1. Deploy grant TON + matching PLX to Ston.fi pool -> on-chain (M1 LP bootstrap)
+2. Deploy TokenStaking + TokenGovernance to mainnet (M3)
+3. Third-party audit (M4)
+4. Toolkit E2E across 6 Jetton templates (M5)
+
+## Apply
+https://ton.org/en/ton-grants (portal ecosystem TON; NOT builders.ton.org — deprecated).
+
+## Agent
+Auto-opened by `scripts/plx-fundraising-automation.py`
+""",
+    },
+    {
+        "id": "stonfi_grant",
+        "title": "[Funding] STON.fi DEX Grant — SDK integration (Phalanx)",
+        "apply_url": "https://ston.fi/grant-program",
+        "labels": ["funding", "grants"],
+        "body": f"""## Program
+STON.fi DEX Grant — up to $10K USDT, evergreen. Requires STON.fi SDK/widget integration
+(already live in production).
+
+## Integration proof
+- LP provisioning: `toolkit-staging/web/lib/stonfi-liquidity.ts` (StonApiClient + dexFactory)
+- Swap: `toolkit-staging/web/lib/stonfi-swap-sell.ts`
+- UI: `add-liquidity-panel.tsx`, `plx86-swap-sheet.tsx`
+- Pool: {STONFI_POOL_URL}
+
+## Pitch
+No-code Jetton deployer that routes every deployed token through STON.fi SDK for
+liquidity + swap -> every deploy = new pool + volume for STON.fi (ecosystem multiplier).
+
+## Apply
+https://ston.fi/grant-program
 
 ## Agent
 Auto-opened by `scripts/plx-fundraising-automation.py`
@@ -287,7 +322,24 @@ def main() -> int:
     state["last_run"] = run["at"]
     _save_state(state)
 
-    print(json.dumps({"ok": True, "run": run}))
+    # Run the dedicated grants/deadline tracker in the same cron pass so
+    # application status + deadline alerts stay in sync with GitHub tickets.
+    grants_result: dict[str, Any] = {"skipped": "GRANTS_TRACKER_ENABLED false"}
+    if os.environ.get("GRANTS_TRACKER_ENABLED", "").lower() == "true":
+        try:
+            import importlib.util
+
+            grants_path = ROOT / "scripts" / "grants-tracker.py"
+            spec = importlib.util.spec_from_file_location("grants_tracker", grants_path)
+            if spec is None or spec.loader is None:
+                raise ImportError("cannot load grants-tracker.py")
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            grants_result = module.main()
+        except Exception as exc:  # noqa: BLE001
+            grants_result = {"error": f"{type(exc).__name__}: {exc}"}
+
+    print(json.dumps({"ok": True, "run": run, "grants_tracker": grants_result}))
     return 0
 
 

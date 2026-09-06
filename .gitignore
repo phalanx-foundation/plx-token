@@ -72,3 +72,6 @@ libraries.toml
 -w
 backup-opennext-*/
 data/tonkeeper-price-probe.json
+
+data/grants-state.json
+data/grant-packs/

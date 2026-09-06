@@ -15,9 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run fundraising tracker
+      - name: Run fundraising tracker + grants deadline alerts
         env:
           FUNDRAISING_AUTOMATION_ENABLED: "true"
+          GRANTS_TRACKER_ENABLED: "true"
+          GRANTS_DEADLINE_WINDOW_DAYS: "7"
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TOKEN_TELEGRAM_BOT: ${{ secrets.TOKEN_TELEGRAM_BOT }}
           TELEGRAM_OPS_CHAT_ID: ${{ secrets.TELEGRAM_OPS_CHAT_ID }}
