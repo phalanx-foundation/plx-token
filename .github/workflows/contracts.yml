@@ -47,6 +47,12 @@ jobs:
 
       - name: Build all contracts (generates @gen/* wrappers)
         run: acton build
+        # Second pass: dependent contracts import @gen/<Dep>.code, which only
+        # exists after the first pass generated it. gen/ is gitignored, so on a
+        # fresh checkout a single pass fails with "Failed to import: No such
+        # file or directory". The second pass always succeeds and produces
+        # the real build/ artifacts.
+        run: acton build
 
       - name: Lint (acton check)
         run: acton check
