@@ -244,3 +244,9 @@ ACTON_PLX_SWEEP_URL=https://phalanxdigital.taila5c428.ts.net/plx-treasury-sweep
 ## Audit
 
 All outbound txs from `plx-treasury` are visible on [Tonviewer](https://tonviewer.com). Quarterly reports: `docs/TREASURY-REPORT-YYYY-Qn.md` (see `docs/TOKENOMICS.md`).
+
+## Agent enablement note (2026-09-17)
+
+LP broadcast remains gated by `STONFI_LP_BROADCAST_ENABLED` (default false).
+Buyback Phase 2 queue: `scripts/process-buyback-queue.sh` + `BUYBACK_MIN_SWAP_NANO` / `STONFI_SWAP_ENABLED`.
+Do not flip prod flags until treasury wallet funding is confirmed.

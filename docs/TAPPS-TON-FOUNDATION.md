@@ -67,3 +67,8 @@ powershell -File scripts/tapps-readiness-check.ps1
 cd toolkit-staging/bot
 npm run configure-tapps
 ```
+
+## Agent readiness snapshot (2026-09-17)
+
+Automated `scripts/tapps-readiness-check.ps1`: public URLs + TonConnect manifest OK.
+Still MISSING for submission: Telegram Analytics token + app name env vars (see runbook).
