@@ -45,13 +45,16 @@ jobs:
       - name: Initialize project (download Tolk stdlib)
         run: acton init
 
-      - name: Build all contracts (generates @gen/* wrappers)
+      - name: Build contracts (pass 1 — generate @gen/*)
+        # Pass 1 wajib boleh gagal: kontrak turunan meng-import @gen/<Dep>.code
+        # yang baru lahir dari pass ini, dan gen/ di-gitignore, jadi checkout
+        # bersih selalu mati dengan "Failed to import: No such file or directory".
+        # Dua kunci `run:` di satu step (bug lama) membuat YAML menimpa pass
+        # pertama sehingga gate build selalu merah.
         run: acton build
-        # Second pass: dependent contracts import @gen/<Dep>.code, which only
-        # exists after the first pass generated it. gen/ is gitignored, so on a
-        # fresh checkout a single pass fails with "Failed to import: No such
-        # file or directory". The second pass always succeeds and produces
-        # the real build/ artifacts.
+        continue-on-error: true
+
+      - name: Build contracts (pass 2 — gate build sebenarnya)
         run: acton build
 
       - name: Lint (acton check)
