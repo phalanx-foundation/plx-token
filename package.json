@@ -1,5 +1,9 @@
 {
   "devDependencies": {
     "@ton/mcp": "^0.1.15-alpha.23"
+  },
+  "overrides": {
+    "undici": "^8.11.0",
+    "ws": "^8.21.3"
   }
 }
