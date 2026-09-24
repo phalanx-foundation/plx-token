@@ -25,22 +25,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Read pinned Acton version
+        id: acton-version
+        # Versi CLI dibaca dari Acton.toml, bukan "latest". Aktif `acton` menolak
+        # jalan kalau versinya tidak sama dengan [toolchain].acton, jadi memasang
+        # rilis terbaru (insiden 2026-09-24: latest = 1.2.0 sementara proyek
+        # mem-pin 1.1.0) membuat seluruh job merah tanpa satu baris Tolk salah.
+        run: |
+          version=$(grep -m1 '^acton = ' Acton.toml | cut -d'"' -f2)
+          if [ -z "$version" ]; then
+            echo "Tidak bisa membaca [toolchain].acton dari Acton.toml" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Acton yang di-pin proyek: $version"
+
       - name: Cache Acton CLI
         id: cache-acton
         uses: actions/cache@v4
         with:
           path: ~/.acton
-          key: acton-${{ runner.os }}-latest-v1
+          key: acton-${{ runner.os }}-${{ steps.acton-version.outputs.version }}-v1
 
       - name: Install Acton CLI
         if: steps.cache-acton.outputs.cache-hit != 'true'
-        run: curl -LsSf https://github.com/ton-blockchain/acton/releases/latest/download/acton-installer.sh | sh
+        run: curl -LsSf "https://github.com/ton-blockchain/acton/releases/download/v${{ steps.acton-version.outputs.version }}/acton-installer.sh" | sh
 
       - name: Add Acton to PATH
         run: echo "$HOME/.acton/bin" >> $GITHUB_PATH
 
       - name: Verify Acton install
-        run: acton --version
+        run: |
+          acton --version
+          expected="${{ steps.acton-version.outputs.version }}"
+          installed=$(acton --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+          if [ "$installed" != "$expected" ]; then
+            echo "Acton terpasang $installed, tapi proyek butuh $expected" >&2
+            exit 1
+          fi
 
       - name: Initialize project (download Tolk stdlib)
         run: acton init
