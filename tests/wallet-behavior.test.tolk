@@ -158,6 +158,49 @@ get fun `test wallet: transfer notification should preserve forward payload`() {
     }
 }
 
+get fun `test wallet: bare-ref forward payload is rejected (TEP-74 either required)`() {
+    val (minter, deployer, notDeployer) = setupTest();
+    val wallet = mintTo(minter, deployer, deployer.address, ton("2"));
+    val balanceBefore = wallet.getJettonBalance();
+
+    // A "forward payload in a ref" must be tagged `either$1`: one `1` bit, then
+    // the ref (TEP-74, what `storeMaybeRef` writes and what both the DeDust and
+    // the STON.fi SDK build). A bare ref carries zero bits, so the wallet's
+    // `checkIsCorrectTlbEither` underflows before it can even read the tag.
+    // Regressing this turns every two-leg add-LP into a dead leg.
+    val bareRefPayload = beginCell().storeRef(makeRichCustomPayload()).endCell().beginParse();
+    val body = buildTransferBody(
+        ton("1"),
+        DEFAULT_FORWARD_TON_AMOUNT,
+        notDeployer.address,
+        deployer.address,
+        bareRefPayload,
+    );
+    val res = sendRawTransferPayload(deployer.address, wallet.address, body.toCell());
+
+    expect(res).toHaveFailedTx<AskToTransfer>({
+        from: deployer.address,
+        to: wallet.address,
+        exitCode: 9, // cell underflow: the either tag bit is missing
+    });
+    expect(wallet.getJettonBalance()).toEqual(balanceBefore);
+
+    // The tagged form (`either$1` + ref) is accepted: the leg goes through.
+    val taggedPayload = beginCell().storeMaybeRef(makeRichCustomPayload()).endCell().beginParse();
+    val okBody = buildTransferBody(
+        ton("1"),
+        DEFAULT_FORWARD_TON_AMOUNT,
+        notDeployer.address,
+        deployer.address,
+        taggedPayload,
+    );
+    val okRes = sendRawTransferPayload(deployer.address, wallet.address, okBody.toCell());
+    expect(okRes).toHaveSuccessfulTx<AskToTransfer>({
+        from: deployer.address,
+        to: wallet.address,
+    });
+}
+
 get fun `test wallet: transfer to undeployed recipient wallet should still work`() {
     val (minter, deployer, _) = setupTest();
     val senderWallet = mintTo(minter, deployer, deployer.address, ton("2"));

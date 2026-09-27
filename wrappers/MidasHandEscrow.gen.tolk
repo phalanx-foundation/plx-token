@@ -122,6 +122,37 @@ fun MidasHandEscrow.sendCancel(
     return net.send(from, genericMsg);
 }
 
+fun MidasHandEscrow.sendCancelDedustDeposit(
+    self,
+    from: address,
+    queryId: uint64,
+    config: SendParams = {},
+): SendResultList {
+    val genericMsg = createMessage({
+        bounce: config.bounce,
+        value: config.value,
+        dest: self.address,
+        body: CancelDedustDeposit { queryId },
+    });
+    return net.send(from, genericMsg);
+}
+
+fun MidasHandEscrow.sendBindDedustLiquidityDeposit(
+    self,
+    from: address,
+    queryId: uint64,
+    liquidityDeposit: address,
+    config: SendParams = {},
+): SendResultList {
+    val genericMsg = createMessage({
+        bounce: config.bounce,
+        value: config.value,
+        dest: self.address,
+        body: BindDedustLiquidityDeposit { queryId, liquidityDeposit },
+    });
+    return net.send(from, genericMsg);
+}
+
 fun MidasHandEscrow.sendTransferNotificationForRecipient(
     self,
     from: address,
@@ -184,6 +215,18 @@ fun MidasHandEscrow.getEscrowData(self): (
     uint8,
 ) {
     return net.runGetMethod(self.address, "get_escrow_data");
+}
+
+fun MidasHandEscrow.getDepositDeadline(self): uint32 {
+    return net.runGetMethod(self.address, "get_deposit_deadline");
+}
+
+fun MidasHandEscrow.getDexType(self): uint8 {
+    return net.runGetMethod(self.address, "get_dex_type");
+}
+
+fun MidasHandEscrow.getDedustLiquidityDeposit(self): address? {
+    return net.runGetMethod(self.address, "get_dedust_liquidity_deposit");
 }
 
 fun MidasHandEscrow.getConfig(self): MidasEscrowConfig {

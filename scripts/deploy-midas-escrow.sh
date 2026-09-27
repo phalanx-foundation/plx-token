@@ -4,8 +4,11 @@
 # ACTON_DEPLOY_CMD locally.
 #
 # Required env: network (testnet|mainnet), DEPLOYER, MH_WHALE, MH_OWNER,
-# MH_MINTER, MH_ADMIN, MH_ROUTER, MH_POOL, MH_PTON_MASTER, MH_LP_WALLET_CODE,
-# MH_PTON_WALLET_CODE. Optional: MH_PROPOSAL_TIMEOUT_SEC (default 604800).
+# MH_MINTER, MH_ADMIN, MH_DEX (0=STON.fi, 1=DeDust), MH_POOL, MH_LP_WALLET_CODE.
+# STON.fi (MH_DEX=0) also needs MH_ROUTER, MH_PTON_MASTER, MH_PTON_WALLET_CODE.
+# DeDust (MH_DEX=1) also needs MH_DEDUST_NATIVE_VAULT, MH_DEDUST_JETTON_VAULT
+# (optional MH_DEDUST_STABLE_POOL, only 0 is supported).
+# Optional: MH_PROPOSAL_TIMEOUT_SEC (default 604800).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
