@@ -46,6 +46,25 @@ case "$JETTON_TEMPLATE_NORM" in
     ;;
 esac
 
+# Contracts import generated per-contract code (for example
+# "@gen/AntiWhaleJettonWallet.code") that is NOT committed to git. On a fresh
+# clone the script then dies with "Generated dependency helper @gen/... is
+# missing" and the buyer's paid order never deploys. Regenerate it on demand,
+# and only when something actually is missing, so concurrent deploys do not
+# race on writes into gen/.
+GEN_MISSING=""
+if [[ -f "$DEPLOY_SCRIPT" ]]; then
+  while IFS= read -r REF; do
+    [[ -n "$REF" ]] || continue
+    [[ -f "gen/${REF#@gen/}.tolk" ]] || GEN_MISSING="1"
+  done < <(grep -rhoE '@gen/[A-Za-z0-9_]+\.code' "$DEPLOY_SCRIPT" contracts | sort -u || true)
+  if [[ -n "$GEN_MISSING" ]]; then
+    if ! BUILD_OUT="$("$ACTON" build 2>&1)"; then
+      printf 'acton build failed: %s\n' "$(printf '%s' "$BUILD_OUT" | tail -c 300 | tr -d '"\\' | tr '\n' ' ')" >>"$LOG"
+    fi
+  fi
+fi
+
 if ! "$ACTON" script "$DEPLOY_SCRIPT" --net "$NETWORK" >"$LOG" 2>&1; then
   # deploy-jetton-combo.tolk prints the fail-closed reason as TOOLKIT ERROR=...
   # Surface it instead of a generic message so the buyer sees what to fix.
