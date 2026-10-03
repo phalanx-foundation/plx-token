@@ -25,15 +25,33 @@ trap 'rm -f "$LOG"' EXIT
 
 # Multi-wallet distribution (Distribution/Enterprise tiers) uses a dedicated
 # script that mints per-bucket + deploys vesting; else standard single mint.
+# Advanced templates (fee/antiwhale/staking/airdrop) use the combo script so the
+# buyer really gets the contract they paid for instead of a plain jetton.
 ALLOC_COUNT="${JETTON_ALLOC_COUNT:-0}"
-if [[ "$ALLOC_COUNT" =~ ^[0-9]+$ && "$ALLOC_COUNT" -gt 0 ]]; then
-  DEPLOY_SCRIPT="scripts/deploy-distribution-client.tolk"
-else
-  DEPLOY_SCRIPT="scripts/deploy-client-jetton.tolk"
-fi
+JETTON_TEMPLATE_NORM="$(printf '%s' "${JETTON_TEMPLATE:-standard}" | tr '[:upper:]' '[:lower:]')"
+case "$JETTON_TEMPLATE_NORM" in
+  fee|antiwhale|staking|airdrop)
+    if [[ "$ALLOC_COUNT" =~ ^[0-9]+$ && "$ALLOC_COUNT" -gt 0 ]]; then
+      echo '{"error":"advanced template with multi-wallet allocations is not supported"}' >&2
+      exit 1
+    fi
+    DEPLOY_SCRIPT="scripts/deploy-jetton-combo.tolk"
+    ;;
+  *)
+    if [[ "$ALLOC_COUNT" =~ ^[0-9]+$ && "$ALLOC_COUNT" -gt 0 ]]; then
+      DEPLOY_SCRIPT="scripts/deploy-distribution-client.tolk"
+    else
+      DEPLOY_SCRIPT="scripts/deploy-client-jetton.tolk"
+    fi
+    ;;
+esac
 
 if ! "$ACTON" script "$DEPLOY_SCRIPT" --net "$NETWORK" >"$LOG" 2>&1; then
-  echo "{\"error\":\"acton deploy failed\",\"log_tail\":\"$(tail -c 500 "$LOG" | tr -d '\"\\')\"}" >&2
+  # deploy-jetton-combo.tolk prints the fail-closed reason as TOOLKIT ERROR=...
+  # Surface it instead of a generic message so the buyer sees what to fix.
+  REASON="$(grep -oP 'TOOLKIT ERROR=\K.*' "$LOG" | tail -1 | tr -d '"\\' | tr '\n' ' ' | sed -e 's/[[:space:]]*$//' || true)"
+  TAIL="$(tail -c 500 "$LOG" | tr -d '"\\' | tr '\n' ' ' || true)"
+  printf '{"error":"%s","log_tail":"%s"}\n' "${REASON:-acton deploy failed}" "$TAIL" >&2
   exit 1
 fi
 
@@ -42,6 +60,9 @@ TX="$(grep -oE '[A-Fa-f0-9]{64}' "$LOG" | head -1 || true)"
 PENDING="$(grep -oP 'TOOLKIT PENDING_ADMIN_CLAIM=\K\S+' "$LOG" | tail -1 || true)"
 # Collect deployed vesting contract addresses (distribution buckets with lock).
 VESTING_ADDRS="$(grep -oP 'TOOLKIT ALLOC_VESTING=\K\S+' "$LOG" || true)"
+# Staking / airdrop companion deployed by deploy-jetton-combo.tolk, so the client
+# can actually find the contract they paid for.
+COMPANION="$(grep -oP 'TOOLKIT COMPANION_CONTRACT=\K\S+' "$LOG" | tail -1 || true)"
 
 if [[ -z "$MINTER" ]]; then
   MINTER="$(grep -oP 'JETTON MINTER_ADDRESS=\K\S+' "$LOG" | tail -1 || true)"
@@ -56,13 +77,16 @@ if [[ -z "$TX" ]]; then
   TX="deploy-${MINTER}"
 fi
 
-VESTING_ADDRS="${VESTING_ADDRS}" python3 - <<PY
+MINTER="$MINTER" TX="$TX" PENDING="$PENDING" VESTING_ADDRS="$VESTING_ADDRS" \
+  COMPANION="$COMPANION" TEMPLATE="$JETTON_TEMPLATE_NORM" python3 - <<'PY'
 import json, os
 vesting = [a for a in os.environ.get("VESTING_ADDRS", "").split() if a.strip()]
 print(json.dumps({
-    "minter_address": "${MINTER}",
-    "deploy_tx_hash": "${TX}",
-    "pending_admin_claim": "${PENDING}" == "true",
+    "template": os.environ.get("TEMPLATE", "standard"),
+    "minter_address": os.environ["MINTER"],
+    "deploy_tx_hash": os.environ["TX"],
+    "pending_admin_claim": os.environ.get("PENDING") == "true",
     "vesting_contracts": vesting,
+    "companion_contract": os.environ.get("COMPANION") or None,
 }))
 PY

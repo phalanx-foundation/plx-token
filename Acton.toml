@@ -52,6 +52,11 @@ display-name = "AntiWhaleJettonWallet"
 src = "contracts/AntiWhaleJettonWallet.tolk"
 depends = []
 
+[contracts.AntiWhaleJettonMinter]
+display-name = "AntiWhaleJettonMinter"
+src = "contracts/AntiWhaleJettonMinter.tolk"
+depends = ["AntiWhaleJettonWallet"]
+
 [contracts.PlxAirdrop]
 display-name = "PlxAirdrop"
 src = "contracts/PlxAirdrop.tolk"
@@ -161,6 +166,7 @@ deploy-custom-staking-emulation = "acton script scripts/deploy-custom-staking.to
 deploy-custom-staking-testnet = "acton script scripts/deploy-custom-staking.tolk --net testnet"
 deploy-jetton-combo-emulation = "acton script scripts/deploy-jetton-combo.tolk"
 deploy-jetton-combo-testnet = "acton script scripts/deploy-jetton-combo.tolk --net testnet"
+deploy-jetton-combo-mainnet = "acton script scripts/deploy-jetton-combo.tolk --net mainnet"
 deploy-nft-collection-emulation = "acton script scripts/deploy-nft-collection.tolk"
 deploy-nft-collection-testnet = "acton script scripts/deploy-nft-collection.tolk --net testnet"
 deploy-nft-collection-mainnet = "acton script scripts/deploy-nft-collection.tolk --net mainnet"
