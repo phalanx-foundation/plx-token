@@ -69,9 +69,28 @@ libraries.toml
 # === Local Cursor / agent tooling (never publish to public plx-token) ===
 .cursorignore
 .kilo/
--w
 backup-opennext-*/
 data/tonkeeper-price-probe.json
 
 data/grants-state.json
 data/grant-packs/
+
+# === Scratch / debug / verification artifacts (never publish to public plx-token) ===
+.verify/
+frame-out/
+check_landing.py
+headers.txt
+it.json
+nft1.json
+page.html
+r.json
+t.json
+my-nft-label.patch
+ref-anim-read.gif
+landing-*.png
+summary-*.json
+tmp-*.json
+tmp-landing.html
+web-build.sh
+web-deploy.sh
+tests/zz-scratch.test.tolk
