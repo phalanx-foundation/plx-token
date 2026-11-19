@@ -1,4 +1,3 @@
-import "@gen/JettonWallet.code"
 import "errors"
 import "jetton-utils"
 import "messages"
@@ -15,6 +14,12 @@ contract LiquidityLocker {
 struct LockerConfig {
     admin: address
     lpTokenMinter: address
+    // LP jetton wallet code read from the pool's get_jetton_data(). DEX LP
+    // tokens (Ston.fi / DeDust) use their OWN wallet code, not the standard
+    // PLX JettonWallet code, so the locker must verify custody against this
+    // stored code — hardcoding JettonWallet.code would compute the wrong wallet
+    // and bounce the LP transfer back (never locked).
+    lpWalletCode: cell
 }
 
 /// LockRecord: one locked position.
@@ -73,9 +78,8 @@ fun LockerStorage.save(self) {
     contract.setData(self.toCell());
 }
 
-fun ownLpJettonWallet(lpTokenMinter: address): address {
-    val jettonWalletCode = jettonWalletCompiledCode();
-    return calcAddressOfJettonWallet(contract.getAddress(), lpTokenMinter, jettonWalletCode);
+fun ownLpJettonWallet(config: LockerConfig): address {
+    return calcAddressOfJettonWallet(contract.getAddress(), config.lpTokenMinter, config.lpWalletCode);
 }
 
 fun parseLockPayload(payload: ForwardPayloadRemainder): (uint32, bool) {
@@ -102,7 +106,7 @@ fun onInternalMessage(in: InMessage) {
         TransferNotificationForRecipient => {
             var storage = lazy LockerStorage.load();
             val config = storage.config.load();
-            val ourWallet = ownLpJettonWallet(config.lpTokenMinter);
+            val ourWallet = ownLpJettonWallet(config);
             assert (in.senderAddress == ourWallet) throw Errors.NotValidWallet;
 
             val incomingAmount = msg.jettonAmount;
@@ -151,7 +155,7 @@ fun onInternalMessage(in: InMessage) {
 
             val transferMsg = createMessage({
                 bounce: BounceMode.Only256BitsOfBody,
-                dest: ownLpJettonWallet(config.lpTokenMinter),
+                dest: ownLpJettonWallet(config),
                 value: LP_TRANSFER_VALUE,
                 body: AskToTransfer {
                     queryId: msg.queryId,

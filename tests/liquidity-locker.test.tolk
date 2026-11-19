@@ -38,6 +38,7 @@ fun setupLiquidityLocker(): (JettonMinter, LiquidityLocker, Treasury, Treasury) 
     val config: LockerConfig = {
         admin: deployer.address,
         lpTokenMinter: lpMinter.address,
+        lpWalletCode: lpMinter.getJettonData().jettonWalletCode,
     };
 
     val locker = LiquidityLocker.fromStorage({
