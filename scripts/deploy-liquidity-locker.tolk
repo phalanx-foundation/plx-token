@@ -47,7 +47,7 @@ fun main() {
         locks: [],
     });
 
-    locker.deploy(deployer, { value: ton("1") });
+    locker.deploy(deployer.address, { value: ton("1") });
 
     println("---");
     println("Locker deployed at: {}", locker.address);
