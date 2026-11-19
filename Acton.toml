@@ -80,7 +80,7 @@ depends = ["JettonWallet"]
 [contracts.TokenGovernance]
 display-name = "TokenGovernance"
 src = "contracts/TokenGovernance.tolk"
-depends = []
+depends = ["JettonWallet"]
 
 [contracts.LiquidityLocker]
 display-name = "LiquidityLocker"
@@ -140,6 +140,9 @@ stonfi-lp-add = "bash scripts/stonfi-add-liquidity.sh"
 deploy-midas-escrow-emulation = "acton script scripts/deploy-midas-escrow.tolk"
 deploy-midas-escrow-testnet = "acton script scripts/deploy-midas-escrow.tolk --net testnet"
 deploy-midas-escrow-mainnet = "acton script scripts/deploy-midas-escrow.tolk --net mainnet"
+deploy-token-governance-emulation = "acton script scripts/deploy-token-governance.tolk"
+deploy-token-governance-testnet = "acton script scripts/deploy-token-governance.tolk --net testnet"
+deploy-token-governance-mainnet = "acton script scripts/deploy-token-governance.tolk --net mainnet"
 drop-admin-testnet = "acton script scripts/drop-admin.tolk --net testnet"
 drop-admin-mainnet = "acton script scripts/drop-admin.tolk --net mainnet"
 info-distribution-testnet = "acton script scripts/info-distribution.tolk --net testnet"
