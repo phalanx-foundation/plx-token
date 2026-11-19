@@ -26,6 +26,10 @@ fun governanceDescriptionHash(): bits256 {
     return beginCell().storeUint("governance-test-description".sha256(), 256).endCell().beginParse() as bits256;
 }
 
+fun governanceDescriptionHashCell(): cell {
+    return beginCell().storeUint("governance-test-description".sha256(), 256).endCell();
+}
+
 fun setupGovernance(): (JettonMinter, TokenGovernance, Treasury, Treasury) {
     val admin = testing.treasury("gv-admin");
     val voter = testing.treasury("gv-voter");
@@ -141,7 +145,7 @@ get fun `test governance: admin can create a proposal`() {
     expect(proposal.id).toEqual(0);
     expect(proposal.proposer).toEqual(admin.address);
     expect(proposal.targetContract).toEqual(voter.address);
-    expect(proposal.descriptionHash).toEqual(governanceDescriptionHash());
+    expect(proposal.descriptionHash.hash()).toEqual(governanceDescriptionHashCell().hash());
     expect(proposal.snapshotBalance).toEqual(0);
     expect(proposal.voteFor).toEqual(0);
     expect(proposal.voteAgainst).toEqual(0);
@@ -483,4 +487,32 @@ get fun `test governance: cannot unstake more than staked`() {
         exitCode: Errors.BalanceError,
     });
     expect(gov.getTotalStaked()).toEqual(500 * GV_UNIT);
+}
+
+get fun `test governance: next proposal id starts at zero and increments`() {
+    val (minter, gov, admin, voter) = setupGovernance();
+    expect(gov.getNextProposalId()).toEqual(0);
+
+    createGovernanceProposal(gov, admin, voter.address);
+    expect(gov.getNextProposalId()).toEqual(1);
+
+    createGovernanceProposal(gov, admin, voter.address);
+    expect(gov.getNextProposalId()).toEqual(2);
+}
+
+get fun `test governance: voter stake getter exposes amount and lock`() {
+    val (minter, gov, admin, voter) = setupGovernance();
+    expect(gov.getVoterStake(voter.address)).toEqual(null);
+
+    stakeGovernance(minter, admin, voter, gov, 500 * GV_UNIT);
+    val stake = gov.getVoterStake(voter.address)!.load();
+    expect(stake.amount).toEqual(500 * GV_UNIT);
+    expect(stake.lockedUntil).toEqual(0);
+
+    createGovernanceProposal(gov, admin, voter.address);
+    gov.sendCastVote(voter.address, 0, 0, true, { bounce: false, value: ton("0.2") });
+
+    val locked = gov.getVoterStake(voter.address)!.load();
+    expect(locked.amount).toEqual(500 * GV_UNIT);
+    expect(locked.lockedUntil).toEqual(GV_START + GV_VOTING_PERIOD);
 }

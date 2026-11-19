@@ -202,3 +202,11 @@ fun TokenGovernance.getVotingPower(self, voter: address): coins {
 fun TokenGovernance.getTotalStaked(self): coins {
     return net.runGetMethod(self.address, "get_total_staked");
 }
+
+fun TokenGovernance.getNextProposalId(self): uint64 {
+    return net.runGetMethod(self.address, "get_next_proposal_id");
+}
+
+fun TokenGovernance.getVoterStake(self, voter: address): Cell<VoterStake>? {
+    return net.runGetMethod(self.address, "get_voter_stake", [voter]);
+}

@@ -29,7 +29,7 @@ struct GovernanceConfig {
 struct Proposal {
     id: uint64
     proposer: address
-    descriptionHash: bits256
+    descriptionHash: cell
     targetContract: address
     payload: cell
     snapshotBalance: coins
@@ -168,7 +168,7 @@ fun onInternalMessage(in: InMessage) {
             val proposal: Proposal = {
                 id: proposalId,
                 proposer: in.senderAddress,
-                descriptionHash: msg.descriptionHash,
+                descriptionHash: beginCell().storeSlice(msg.descriptionHash as slice).endCell(),
                 targetContract: msg.targetContract,
                 payload: msg.payload,
                 snapshotBalance: storage.totalStaked,
@@ -367,4 +367,18 @@ get fun get_voting_power(voter: address): coins {
 get fun get_total_staked(): coins {
     val storage = GovernanceStorage.load();
     return storage.totalStaked;
+}
+
+get fun get_next_proposal_id(): uint64 {
+    val storage = GovernanceStorage.load();
+    return storage.nextProposalId;
+}
+
+get fun get_voter_stake(voter: address): Cell<VoterStake>? {
+    val storage = GovernanceStorage.load();
+    val entry = storage.stakes.get(voter);
+    if (!entry.isFound) {
+        return null;
+    }
+    return entry.loadValue();
 }
