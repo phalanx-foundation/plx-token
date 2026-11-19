@@ -9,11 +9,13 @@ import "@acton/testing/assert"
 import "@contracts/TokenGovernance"
 import "@contracts/messages"
 
+/// Storage `GovernanceStorage` is defined in `@contracts/TokenGovernance`
 struct TokenGovernance {
     address: address
     stateInit: ContractState? = null
 }
 
+/// Creates a contract wrapper instance from the storage data
 fun TokenGovernance.fromStorage(
     storage: GovernanceStorage,
     toShard: AddressShardingOptions? = null,
@@ -26,10 +28,12 @@ fun TokenGovernance.fromStorage(
     return TokenGovernance { address, stateInit };
 }
 
+/// Creates a contract wrapper instance from the address
 fun TokenGovernance.fromAddress(address: address): TokenGovernance {
     return TokenGovernance { address };
 }
 
+/// Deploys the contract to the blockchain
 fun TokenGovernance.deploy(self, from: address, config: SendParams = {}): SendResultList {
     if (self.stateInit == null) {
         Assert.fail("Cannot deploy a contract created with 'fromAddress' because it lacks state init for deployment");
@@ -40,10 +44,6 @@ fun TokenGovernance.deploy(self, from: address, config: SendParams = {}): SendRe
         dest: { stateInit: self.stateInit },
     });
     return net.send(from, genericMsg);
-}
-
-fun TokenGovernance.sendDeploy(self, from: address, config: SendParams = {}): SendResultList {
-    return self.deploy(from, config);
 }
 
 fun TokenGovernance.sendCreateProposal(
@@ -116,6 +116,47 @@ fun TokenGovernance.sendUpdateConfig(
     return net.send(from, genericMsg);
 }
 
+fun TokenGovernance.sendUnstakeVotingPower(
+    self,
+    from: address,
+    queryId: uint64,
+    amount: coins,
+    config: SendParams = {},
+): SendResultList {
+    val genericMsg = createMessage({
+        bounce: config.bounce,
+        value: config.value,
+        dest: self.address,
+        body: UnstakeVotingPower { queryId, amount },
+    });
+    return net.send(from, genericMsg);
+}
+
+fun TokenGovernance.sendTransferNotificationForRecipient(
+    self,
+    from: address,
+    queryId: uint64,
+    jettonAmount: coins,
+    transferInitiator: address?,
+    forwardPayload: PayloadInline | PayloadInRef,
+    config: SendParams = {},
+): SendResultList {
+    // build body cell manually, because some fields have @abi.clientType
+    val bodyB = beginCell()
+        .storeUint(0x7362d09c, 32)
+        .storeAny(queryId)
+        .storeAny(jettonAmount)
+        .storeAny(transferInitiator)
+        .storeAny(forwardPayload);
+    val genericMsg = createMessage({
+        bounce: config.bounce,
+        value: config.value,
+        dest: self.address,
+        body: TransferNotificationForRecipient.fromSlice(bodyB.toSlice()),
+    });
+    return net.send(from, genericMsg);
+}
+
 fun TokenGovernance.sendTopUpTons(self, from: address, config: SendParams = {}): SendResultList {
     val genericMsg = createMessage({
         bounce: config.bounce,
@@ -126,7 +167,13 @@ fun TokenGovernance.sendTopUpTons(self, from: address, config: SendParams = {}):
     return net.send(from, genericMsg);
 }
 
-fun TokenGovernance.sendAny(self, from: address, body: cell, config: SendParams = {}): SendResultList {
+/// Send message to the contract with a custom body cell
+fun TokenGovernance.sendAny(
+    self,
+    from: address,
+    body: cell,
+    config: SendParams = {},
+): SendResultList {
     val genericMsg = createMessage({
         bounce: config.bounce,
         value: config.value,
@@ -146,4 +193,12 @@ fun TokenGovernance.getProposal(self, proposalId: uint64): Cell<Proposal>? {
 
 fun TokenGovernance.hasVoted(self, proposalId: uint64, voter: address): bool {
     return net.runGetMethod(self.address, "has_voted", [proposalId, voter]);
+}
+
+fun TokenGovernance.getVotingPower(self, voter: address): coins {
+    return net.runGetMethod(self.address, "get_voting_power", [voter]);
+}
+
+fun TokenGovernance.getTotalStaked(self): coins {
+    return net.runGetMethod(self.address, "get_total_staked");
 }
