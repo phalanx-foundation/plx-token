@@ -83,9 +83,14 @@ jobs:
         run: acton check
         continue-on-error: true
 
-      - name: Format check (acton fmt --check)
+      - name: Format check (acton fmt --check) — blocking
+        # Dinaikkan dari continue-on-error menjadi gate wajib sejak 2026-11-22:
+        # setelah commit 5137831 (`acton fmt` diterapkan ke contracts, scripts,
+        # wrappers, tests) perintah ini keluar exit 0 dengan "All files are
+        # properly formatted", jadi diff format sudah nol dan tidak ada lagi
+        # alasan gate ini boleh gagal diam-diam.
+        # Kalau step ini merah: jalankan `acton fmt` lokal lalu commit hasilnya.
         run: acton fmt --check
-        continue-on-error: true
 
       - name: Run test suite (185 tests, real quality gate)
         run: acton test
