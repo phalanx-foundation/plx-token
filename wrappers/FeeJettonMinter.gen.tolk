@@ -115,7 +115,12 @@ fun FeeJettonMinter.sendTopUpTons(self, from: address, config: SendParams = {}):
     return net.send(from, genericMsg);
 }
 
-fun FeeJettonMinter.sendAny(self, from: address, body: cell, config: SendParams = {}): SendResultList {
+fun FeeJettonMinter.sendAny(
+    self,
+    from: address,
+    body: cell,
+    config: SendParams = {},
+): SendResultList {
     val genericMsg = createMessage({
         bounce: config.bounce,
         value: config.value,

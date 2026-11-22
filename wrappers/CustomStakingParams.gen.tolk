@@ -100,13 +100,21 @@ fun CustomStakingParams.sendUpdateBonusTiers(
             queryId,
             baseAprBps,
             tierCount,
-            tier0, tier1, tier2, tier3, tier4,
+            tier0,
+            tier1,
+            tier2,
+            tier3,
+            tier4,
         },
     });
     return net.send(from, genericMsg);
 }
 
-fun CustomStakingParams.sendTopUpTons(self, from: address, config: SendParams = {}): SendResultList {
+fun CustomStakingParams.sendTopUpTons(
+    self,
+    from: address,
+    config: SendParams = {},
+): SendResultList {
     val genericMsg = createMessage({
         bounce: config.bounce,
         value: config.value,
@@ -116,7 +124,12 @@ fun CustomStakingParams.sendTopUpTons(self, from: address, config: SendParams = 
     return net.send(from, genericMsg);
 }
 
-fun CustomStakingParams.sendAny(self, from: address, body: cell, config: SendParams = {}): SendResultList {
+fun CustomStakingParams.sendAny(
+    self,
+    from: address,
+    body: cell,
+    config: SendParams = {},
+): SendResultList {
     val genericMsg = createMessage({
         bounce: config.bounce,
         value: config.value,

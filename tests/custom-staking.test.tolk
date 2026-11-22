@@ -6,15 +6,15 @@ import "@contracts/CustomStakingParams"
 import "@contracts/errors"
 import "@contracts/messages"
 import "@contracts/storage"
-import "@wrappers/JettonMinter.gen"
 import "@wrappers/CustomStakingParams.gen"
+import "@wrappers/JettonMinter.gen"
 import "@wrappers/utils"
 
 import "test-utils"
 
 const CS_UNIT = 1000000000
-const CS_BASE_APR: uint32 = 500   // 5%
-const CS_MIN_LOCK_SEC: uint32 = 2592000  // 30 days
+const CS_BASE_APR: uint32 = 500 // 5%
+const CS_MIN_LOCK_SEC: uint32 = 2592000 // 30 days
 const CS_REWARD_FUND = 100000 * CS_UNIT
 const CS_STAKE_AMOUNT = 10000 * CS_UNIT
 
@@ -30,7 +30,10 @@ fun makeCustomRewardPoolPayload(): slice {
 }
 
 fun emptyBonusTier(): BonusTier {
-    return BonusTier { minAmount: 0, bonusBps: 0 };
+    return BonusTier {
+        minAmount: 0,
+        bonusBps: 0,
+    };
 }
 
 fun setupCustomStaking(
@@ -81,11 +84,23 @@ fun setupCustomStaking(
 
     // Mint tokens for tests
     expect(
-        minter.sendMint(deployer.address, deployer.address, CS_REWARD_FUND * 2, ton("0.05"), ton("0.5")),
+        minter.sendMint(
+            deployer.address,
+            deployer.address,
+            CS_REWARD_FUND * 2,
+            ton("0.05"),
+            ton("0.5"),
+        ),
     ).toHaveSuccessfulTx<MintNewJettons>({ from: deployer.address, to: minter.address });
 
     expect(
-        minter.sendMint(deployer.address, user.address, CS_STAKE_AMOUNT * 100, ton("0.05"), ton("0.5")),
+        minter.sendMint(
+            deployer.address,
+            user.address,
+            CS_STAKE_AMOUNT * 100,
+            ton("0.05"),
+            ton("0.5"),
+        ),
     ).toHaveSuccessfulTx<MintNewJettons>({ from: deployer.address, to: minter.address });
 
     return (minter, staking, deployer, user);
@@ -152,7 +167,10 @@ get fun `test custom-staking: effective APR with no tiers equals base APR`() {
 }
 
 get fun `test custom-staking: effective APR with tier bonus applies for qualifying stake`() {
-    val tier0: BonusTier = { minAmount: CS_STAKE_AMOUNT, bonusBps: 300 };  // +3% for staking >= CS_STAKE_AMOUNT
+    val tier0: BonusTier = {
+        minAmount: CS_STAKE_AMOUNT,
+        bonusBps: 300,
+    };                                                                    // +3% for staking >= CS_STAKE_AMOUNT
     val tier1: BonusTier = { minAmount: 0, bonusBps: 0 };
     val (_, staking, _, _) = setupCustomStaking(CS_BASE_APR, 1, tier0, tier1);
 
@@ -164,8 +182,8 @@ get fun `test custom-staking: effective APR with tier bonus applies for qualifyi
 }
 
 get fun `test custom-staking: higher tier bonus overrides lower for large stake`() {
-    val tier0: BonusTier = { minAmount: 1000 * CS_UNIT, bonusBps: 100 };   // +1% for >= 1000
-    val tier1: BonusTier = { minAmount: 50000 * CS_UNIT, bonusBps: 500 };  // +5% for >= 50000
+    val tier0: BonusTier = { minAmount: 1000 * CS_UNIT, bonusBps: 100 };  // +1% for >= 1000
+    val tier1: BonusTier = { minAmount: 50000 * CS_UNIT, bonusBps: 500 }; // +5% for >= 50000
     val (_, staking, _, _) = setupCustomStaking(CS_BASE_APR, 2, tier0, tier1);
 
     val smallStake = 5000 * CS_UNIT;
@@ -214,12 +232,20 @@ get fun `test custom-staking: admin can update bonus tiers`() {
 
     val newTier0: BonusTier = { minAmount: 1000 * CS_UNIT, bonusBps: 250 };
     val res = staking.sendUpdateBonusTiers(
-        deployer.address, 0,
-        600, 1,
-        newTier0, emptyBonusTier(), emptyBonusTier(), emptyBonusTier(), emptyBonusTier(),
+        deployer.address,
+        0,
+        600,
+        1,
+        newTier0,
+        emptyBonusTier(),
+        emptyBonusTier(),
+        emptyBonusTier(),
+        emptyBonusTier(),
         { bounce: false, value: ton("0.1") },
     );
-    expect(res).toHaveSuccessfulTx<UpdateBonusTiers>({ from: deployer.address, to: staking.address });
+    expect(
+        res,
+    ).toHaveSuccessfulTx<UpdateBonusTiers>({ from: deployer.address, to: staking.address });
 
     val effectiveApr = staking.getEffectiveApr(1000 * CS_UNIT);
     expect(effectiveApr).toEqual(600 + 250);
@@ -230,7 +256,16 @@ get fun `test custom-staking: non-admin cannot update bonus tiers`() {
     val (_, staking, _, user) = setupCustomStaking(CS_BASE_APR, 0, t0, t0);
 
     val res = staking.sendUpdateBonusTiers(
-        user.address, 0, 999, 0, t0, t0, t0, t0, t0, { bounce: false, value: ton("0.1") },
+        user.address,
+        0,
+        999,
+        0,
+        t0,
+        t0,
+        t0,
+        t0,
+        t0,
+        { bounce: false, value: ton("0.1") },
     );
     expect(res).toHaveFailedTx<UpdateBonusTiers>({
         from: user.address,

@@ -47,7 +47,8 @@ fun onInternalMessage(in: InMessage) {
             var storage = lazy FeeWalletStorage.load();
             if (in.senderAddress != storage.minterAddress) {
                 assert (
-                    in.senderAddress == calcAddressOfFeeJettonWallet(
+                    in.senderAddress ==
+                    calcAddressOfFeeJettonWallet(
                         msg.transferInitiator!,
                         storage.minterAddress,
                         contract.getCode(),
@@ -76,7 +77,7 @@ fun onInternalMessage(in: InMessage) {
 
             if (msg.sendExcessesTo != null) {
                 val toLeaveOnBalance = contract.getOriginalBalance() - in.valueCoins +
-                    contract.getStorageDuePayment();
+                contract.getStorageDuePayment();
                 reserveToncoinsOnBalance(
                     max(toLeaveOnBalance, calculateJettonWalletMinStorageFee()),
                     RESERVE_MODE_AT_MOST,
@@ -93,8 +94,14 @@ fun onInternalMessage(in: InMessage) {
 
         AskToTransfer => {
             msg.forwardPayload.checkIsCorrectTlbEither();
-            assert (msg.transferRecipient.getWorkchain() == MY_WORKCHAIN) throw Errors.WrongWorkchain;
-            checkAmountIsEnoughToTransfer(in.valueCoins, msg.forwardTonAmount, in.originalForwardFee);
+            assert (
+                msg.transferRecipient.getWorkchain() == MY_WORKCHAIN
+            ) throw Errors.WrongWorkchain;
+            checkAmountIsEnoughToTransfer(
+                in.valueCoins,
+                msg.forwardTonAmount,
+                in.originalForwardFee,
+            );
 
             var storage = lazy FeeWalletStorage.load();
             assert (in.senderAddress == storage.ownerAddress) throw Errors.NotOwner;

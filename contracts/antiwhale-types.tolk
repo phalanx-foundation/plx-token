@@ -78,6 +78,10 @@ fun calcWhaleWalletAddress(
     maxWalletBalance: coins,
 ): address {
     return calcWhaleWalletDeployAddress(
-        ownerAddress, minterAddress, walletCode, maxTransferAmount, maxWalletBalance,
+        ownerAddress,
+        minterAddress,
+        walletCode,
+        maxTransferAmount,
+        maxWalletBalance,
     ).calculateAddress();
 }

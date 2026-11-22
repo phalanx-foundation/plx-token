@@ -4,11 +4,11 @@ import "@acton/fmt"
 import "@acton/io"
 import "@acton/emulation/network"
 import "@acton/emulation/scripts"
-import "@contracts/storage"
 import "@contracts/nft-storage"
+import "@contracts/sharding"
+import "@contracts/storage"
 import "@gen/NftItem.code"
 import "@wrappers/NftCollection.gen"
-import "@contracts/sharding"
 import "utils/common"
 
 /**

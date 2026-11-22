@@ -6,8 +6,8 @@ import "@contracts/AntiWhaleJettonWallet"
 import "@contracts/errors"
 import "@contracts/messages"
 import "@contracts/storage"
-import "@wrappers/JettonMinter.gen"
 import "@wrappers/AntiWhaleJettonWallet.gen"
+import "@wrappers/JettonMinter.gen"
 import "@wrappers/utils"
 
 import "test-utils"
@@ -98,7 +98,8 @@ get fun `test anti-whale: transfer within limit succeeds`() {
     // Inject balance from minter
     val injectRes = injectBalance(minter, ownerWallet, AW_MAX_TRANSFER * 5);
     expect(injectRes).toHaveSuccessfulTx<InternalTransferStep>({
-        from: minter.address, to: ownerWallet.address,
+        from: minter.address,
+        to: ownerWallet.address,
     });
     expect(ownerWallet.getJettonBalance()).toEqual(AW_MAX_TRANSFER * 5);
 
@@ -130,7 +131,13 @@ get fun `test anti-whale: receiving that would exceed max wallet balance rejecte
     val recipient = testing.treasury("aw-recipient3");
 
     // Recipient wallet has max balance of AW_MAX_WALLET
-    val recipientWallet = deployAntiWhaleWallet(recipient, minter, 0, AW_MAX_TRANSFER, AW_MAX_WALLET);
+    val recipientWallet = deployAntiWhaleWallet(
+        recipient,
+        minter,
+        0,
+        AW_MAX_TRANSFER,
+        AW_MAX_WALLET,
+    );
     val ownerWallet = deployAntiWhaleWallet(owner, minter, 0, AW_MAX_WALLET * 2, 0);
 
     // Fill recipient up to limit
@@ -162,9 +169,13 @@ get fun `test anti-whale: UpdateWhaleConfig accepted from minterAddress`() {
     val wallet = deployAntiWhaleWallet(owner, minter, 0, AW_MAX_TRANSFER, AW_MAX_WALLET);
 
     val newMax = AW_MAX_TRANSFER * 2;
-    val newMaxWallet: coins = 0;  // disable
+    val newMaxWallet: coins = 0; // disable
     val res = wallet.sendUpdateWhaleConfig(
-        minter.address, 0, newMax, newMaxWallet, { bounce: false, value: ton("0.05") },
+        minter.address,
+        0,
+        newMax,
+        newMaxWallet,
+        { bounce: false, value: ton("0.05") },
     );
     expect(res).toHaveSuccessfulTx<UpdateWhaleConfig>({
         from: minter.address,
@@ -183,7 +194,11 @@ get fun `test anti-whale: UpdateWhaleConfig rejected from non-minter`() {
     val wallet = deployAntiWhaleWallet(owner, minter, 0, AW_MAX_TRANSFER, AW_MAX_WALLET);
 
     val res = wallet.sendUpdateWhaleConfig(
-        owner.address, 0, AW_MAX_TRANSFER * 2, 0, { bounce: false, value: ton("0.05") },
+        owner.address,
+        0,
+        AW_MAX_TRANSFER * 2,
+        0,
+        { bounce: false, value: ton("0.05") },
     );
     expect(res).toHaveFailedTx<UpdateWhaleConfig>({
         from: owner.address,

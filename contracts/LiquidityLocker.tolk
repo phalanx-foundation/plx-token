@@ -79,7 +79,11 @@ fun LockerStorage.save(self) {
 }
 
 fun ownLpJettonWallet(config: LockerConfig): address {
-    return calcAddressOfJettonWallet(contract.getAddress(), config.lpTokenMinter, config.lpWalletCode);
+    return calcAddressOfJettonWallet(
+        contract.getAddress(),
+        config.lpTokenMinter,
+        config.lpWalletCode,
+    );
 }
 
 fun parseLockPayload(payload: ForwardPayloadRemainder): (uint32, bool) {

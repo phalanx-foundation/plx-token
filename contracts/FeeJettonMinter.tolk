@@ -54,7 +54,8 @@ fun onInternalMessage(in: InMessage) {
             val feeConfig = storage.feeConfig.load();
             val walletCode = feeWalletCode();
             assert (
-                in.senderAddress == calcAddressOfFeeJettonWallet(
+                in.senderAddress ==
+                calcAddressOfFeeJettonWallet(
                     msg.burnInitiator,
                     contract.getAddress(),
                     walletCode,
@@ -189,10 +190,7 @@ fun onInternalMessage(in: InMessage) {
             assertSenderIsFeeMinterAdmin(in.senderAddress, storage.adminAddress);
             // Anti-rug: feeBps cannot exceed 10%
             assert (msg.feeBps <= MAX_FEE_BPS_MINTER) throw Errors.InvalidOp;
-            val newConfig: FeeMinterConfig = {
-                feeBps: msg.feeBps,
-                feeCollector: msg.feeCollector,
-            };
+            val newConfig: FeeMinterConfig = { feeBps: msg.feeBps, feeCollector: msg.feeCollector };
             storage.feeConfig = newConfig.toCell();
             storage.save();
         }

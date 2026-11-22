@@ -22,7 +22,10 @@ import "utils/common"
 fun main() {
     val deployer = promptJettonWallet("DEPLOYER", "Deployer wallet");
     val admin = promptJettonAddressRequired("LL_ADMIN", "Locker admin address");
-    val lpTokenMinter = promptJettonAddressRequired("LL_LP_TOKEN_MINTER", "LP token minter address");
+    val lpTokenMinter = promptJettonAddressRequired(
+        "LL_LP_TOKEN_MINTER",
+        "LP token minter address",
+    );
     val lpWalletCode = env<cell>("LL_LP_WALLET_CODE");
     if (lpWalletCode == null) {
         println("ERROR: LL_LP_WALLET_CODE required (base64/hex BoC of the pool LP jetton wallet code)");

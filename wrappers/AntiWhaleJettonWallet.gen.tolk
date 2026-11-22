@@ -48,7 +48,11 @@ fun AntiWhaleJettonWallet.sendDeploy(self, from: address, config: SendParams = {
     return self.deploy(from, config);
 }
 
-fun AntiWhaleJettonWallet.sendTopUpTons(self, from: address, config: SendParams = {}): SendResultList {
+fun AntiWhaleJettonWallet.sendTopUpTons(
+    self,
+    from: address,
+    config: SendParams = {},
+): SendResultList {
     val genericMsg = createMessage({
         bounce: config.bounce,
         value: config.value,
@@ -75,7 +79,12 @@ fun AntiWhaleJettonWallet.sendUpdateWhaleConfig(
     return net.send(from, genericMsg);
 }
 
-fun AntiWhaleJettonWallet.sendAny(self, from: address, body: cell, config: SendParams = {}): SendResultList {
+fun AntiWhaleJettonWallet.sendAny(
+    self,
+    from: address,
+    body: cell,
+    config: SendParams = {},
+): SendResultList {
     val genericMsg = createMessage({
         bounce: config.bounce,
         value: config.value,

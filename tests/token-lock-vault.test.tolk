@@ -33,7 +33,10 @@ fun makeRewardPoolPayload(): slice {
 }
 
 fun emptyLockTier(): LockTier {
-    return LockTier { durationSec: 0, bonusBps: 0 };
+    return LockTier {
+        durationSec: 0,
+        bonusBps: 0,
+    };
 }
 
 fun setupLockVault(): (JettonMinter, TokenLockVault, Treasury, Treasury) {
@@ -55,7 +58,10 @@ fun setupLockVault(): (JettonMinter, TokenLockVault, Treasury, Treasury) {
         admin: deployer.address,
         minterAddress: minter.address,
         tierCount: 1,
-        tier0: LockTier { durationSec: LV_TIER_DURATION, bonusBps: LV_TIER_BONUS_BPS },
+        tier0: LockTier {
+            durationSec: LV_TIER_DURATION,
+            bonusBps: LV_TIER_BONUS_BPS,
+        },
         tier1: emptyLockTier(),
         tier2: emptyLockTier(),
         tier3: emptyLockTier(),

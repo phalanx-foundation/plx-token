@@ -77,7 +77,12 @@ fun FeeJettonWallet.sendUpdateFeeConfig(
     return net.send(from, genericMsg);
 }
 
-fun FeeJettonWallet.sendAny(self, from: address, body: cell, config: SendParams = {}): SendResultList {
+fun FeeJettonWallet.sendAny(
+    self,
+    from: address,
+    body: cell,
+    config: SendParams = {},
+): SendResultList {
     val genericMsg = createMessage({
         bounce: config.bounce,
         value: config.value,

@@ -77,7 +77,12 @@ fun PaymentSplitter.sendTopUpTons(self, from: address, config: SendParams = {}):
 }
 
 /// Send message to the contract with a custom body cell
-fun PaymentSplitter.sendAny(self, from: address, body: cell, config: SendParams = {}): SendResultList {
+fun PaymentSplitter.sendAny(
+    self,
+    from: address,
+    body: cell,
+    config: SendParams = {},
+): SendResultList {
     val genericMsg = createMessage({
         bounce: config.bounce,
         value: config.value,

@@ -1,15 +1,15 @@
+import "@stdlib/strings"
 import "@acton/env"
 import "@acton/io"
 import "@acton/emulation/network"
 import "@acton/emulation/scripts"
-import "@stdlib/strings"
+import "@contracts/PlxAirdrop"
+import "@contracts/TokenStaking"
 import "@contracts/antiwhale-types"
 import "@contracts/errors"
 import "@contracts/fee-types"
 import "@contracts/jetton-utils"
 import "@contracts/messages"
-import "@contracts/PlxAirdrop"
-import "@contracts/TokenStaking"
 import "@wrappers/AntiWhaleJettonMinter.gen"
 import "@wrappers/FeeJettonMinter.gen"
 import "@wrappers/JettonMinter.gen"
@@ -73,7 +73,14 @@ fun main() {
         deployAntiWhaleTemplate(deployer, clientAdmin, recipient, mintAmountNano, useEscrow);
         return;
     }
-    deployStandardTemplate(clientAdmin, deployer, recipient, mintAmountNano, useEscrow, template);
+    deployStandardTemplate(
+        clientAdmin,
+        deployer,
+        recipient,
+        mintAmountNano,
+        useEscrow,
+        template,
+    );
 }
 
 fun failClosed(message: string) {
@@ -179,7 +186,10 @@ fun deployFeeTemplate(
         minter
             .sendAny(
                 deployer.address,
-                ChangeMinterAdmin { queryId: 0, newAdminAddress: clientAdmin }.toCell(),
+                ChangeMinterAdmin {
+                    queryId: 0,
+                    newAdminAddress: clientAdmin,
+                }.toCell(),
                 { bounce: false, value: ton("0.05") },
             )
             .waitForTrace();
@@ -212,10 +222,7 @@ fun deployAntiWhaleTemplate(
         failClosed("antiwhale initial mint exceeds JETTON_MAX_WALLET_BALANCE");
     }
 
-    val whaleConfig: WhaleConfig = {
-        maxTransferAmount: maxTransfer,
-        maxWalletBalance: maxWallet,
-    };
+    val whaleConfig: WhaleConfig = { maxTransferAmount: maxTransfer, maxWalletBalance: maxWallet };
     val adminForDeploy = useEscrow ? deployer.address : clientAdmin;
     val storage: AntiWhaleMinterStorage = {
         totalSupply: 0,

@@ -22,7 +22,11 @@ const TEST_STAKE_FORWARD_DEPOSIT_OP: uint32 = 0x54414b01
 const TEST_STAKE_FORWARD_REWARD_POOL_OP: uint32 = 0x54414b06
 
 fun makeStakeDepositPayload(lockSec: int): slice {
-    return beginCell().storeUint(TEST_STAKE_FORWARD_DEPOSIT_OP, 32).storeUint(lockSec, 32).endCell().beginParse();
+    return beginCell()
+        .storeUint(TEST_STAKE_FORWARD_DEPOSIT_OP, 32)
+        .storeUint(lockSec, 32)
+        .endCell()
+        .beginParse();
 }
 
 fun makeStakeRewardPoolPayload(): slice {
@@ -65,7 +69,13 @@ fun setupStaking(): (JettonMinter, PlxStaking, Treasury, Treasury) {
     });
 
     expect(
-        minter.sendMint(deployer.address, deployer.address, REWARD_FUND * 2, ton("0.05"), ton("0.5")),
+        minter.sendMint(
+            deployer.address,
+            deployer.address,
+            REWARD_FUND * 2,
+            ton("0.05"),
+            ton("0.5"),
+        ),
     ).toHaveSuccessfulTx<MintNewJettons>({ from: deployer.address, to: minter.address });
 
     expect(
@@ -132,7 +142,9 @@ get fun `test staking: early unstake rejected`() {
     userStakesToContract(minter, staking, user, MIN_LOCK, ONE_MONTH_SEC);
 
     val res = staking.sendUnstakePlx(user.address, 0, 0, { bounce: false, value: ton("0.2") });
-    expect(res).toHaveFailedTx<UnstakePlx>({ from: user.address, to: staking.address, exitCode: 100 });
+    expect(
+        res,
+    ).toHaveFailedTx<UnstakePlx>({ from: user.address, to: staking.address, exitCode: 100 });
 }
 
 get fun `test staking: unstake after lock period`() {

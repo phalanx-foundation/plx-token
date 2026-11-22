@@ -180,7 +180,9 @@ fun onInternalMessage(in: InMessage) {
                 return;
             }
 
-            val (tierIndex, isSovereign, isRewardPool) = parseLockForwardPayload(msg.forwardPayload);
+            val (tierIndex, isSovereign, isRewardPool) = parseLockForwardPayload(
+                msg.forwardPayload,
+            );
             if (isRewardPool) {
                 storage.rewardPool += incomingAmount;
                 storage.save();

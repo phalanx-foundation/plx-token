@@ -18,7 +18,7 @@ struct (0x1fc1f25e) DeployNftItem {
 }
 
 struct (0x810273dc) BatchDeployNftItem {
-    items: cell  // ref to list of DeployNftItem
+    items: cell // ref to list of DeployNftItem
 }
 
 struct (0x4edc4880) ChangeCollectionOwner {
@@ -60,7 +60,7 @@ struct (0x9f5c8a3b) DeployItemWithProof {
     itemIndex: uint64
     claimant: address
     individualContent: cell
-    proofCell: cell         // cell containing sibling hashes as uint256 chain
+    proofCell: cell // cell containing sibling hashes as uint256 chain
 }
 
 struct (0x1a4e7c2d) SetMerkleRoot {
@@ -73,5 +73,4 @@ struct (0x1a4e7c2d) SetMerkleRoot {
 struct (0xd53276db) NftExcesses {
     queryId: uint64
 }
-
 // TopUpTons lives in messages.tolk — import that module from collection contracts.

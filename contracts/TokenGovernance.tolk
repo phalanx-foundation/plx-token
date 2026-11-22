@@ -101,7 +101,7 @@ type AllowedMessageToGovernance =
 const GOVERNANCE_EXECUTE_VALUE = 100000000
 const QUORUM_DENOMINATOR: int = 10000
 const UNSTAKE_TRANSFER_VALUE = 80000000
-const STAKE_FORWARD_OP: uint32 = 0x474f5653  // "GOVS"
+const STAKE_FORWARD_OP: uint32 = 0x474f5653 // "GOVS"
 
 fun GovernanceStorage.load(): GovernanceStorage {
     return GovernanceStorage.fromCell(contract.getData());
@@ -238,7 +238,9 @@ fun onInternalMessage(in: InMessage) {
 
             assert (!proposal.executed) throw Errors.InvalidOp;
             assert (blockchain.now() >= proposal.votingEndsAt) throw Errors.NothingToClaim;
-            assert (blockchain.now() >= proposal.votingEndsAt + config.timelockSec) throw Errors.NothingToClaim;
+            assert (
+                blockchain.now() >= proposal.votingEndsAt + config.timelockSec
+            ) throw Errors.NothingToClaim;
             assert (hasPassed(proposal, config)) throw Errors.InvalidOp;
 
             proposal.executed = true;

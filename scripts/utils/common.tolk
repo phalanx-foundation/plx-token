@@ -91,7 +91,11 @@ fun promptJettonMetadata(descriptionDefault: string): JettonMetadata {
             "Enter jetton description",
             descriptionDefault,
         ),
-        image: promptJettonString("JETTON_IMAGE", "Enter jetton image URL", defaultJettonImageUrl()),
+        image: promptJettonString(
+            "JETTON_IMAGE",
+            "Enter jetton image URL",
+            defaultJettonImageUrl(),
+        ),
         decimals: promptJettonString(
             "JETTON_DECIMALS",
             "Enter jetton decimals",

@@ -131,11 +131,17 @@ fun getBonusBps(config: CustomStakingConfig, stakeAmount: coins): uint32 {
     var i: uint8 = 0;
     while (i < config.tierCount) {
         var tier: BonusTier;
-        if (i == 0) { tier = config.tier0; }
-        else if (i == 1) { tier = config.tier1; }
-        else if (i == 2) { tier = config.tier2; }
-        else if (i == 3) { tier = config.tier3; }
-        else { tier = config.tier4; }
+        if (i == 0) {
+            tier = config.tier0;
+        } else if (i == 1) {
+            tier = config.tier1;
+        } else if (i == 2) {
+            tier = config.tier2;
+        } else if (i == 3) {
+            tier = config.tier3;
+        } else {
+            tier = config.tier4;
+        }
 
         if (stakeAmount >= tier.minAmount && tier.bonusBps > best) {
             best = tier.bonusBps;
@@ -158,7 +164,7 @@ fun accrueCustomRewards(storage: CustomStakingStorage, config: CustomStakingConf
     val elapsed = now - storage.lastUpdateTime;
     // Use baseAprBps for global accrual (bonus is per-stake at claim time)
     val rewardDelta = storage.totalStaked * config.baseAprBps * elapsed /
-        (10000 * CUSTOM_SECONDS_PER_YEAR);
+    (10000 * CUSTOM_SECONDS_PER_YEAR);
     storage.rewardPerTokenStored += rewardDelta * CUSTOM_REWARD_SCALE / storage.totalStaked;
     storage.lastUpdateTime = now;
 }

@@ -8,6 +8,9 @@ import "utils/common"
 
 fun main() {
     val amount = env<coins>("PLX_BURN_AMOUNT")!;
-    println("[buyback-swap-burn] PLX_BURN_AMOUNT={} (invoke buyback-burn after Ston.fi swap)", amount);
+    println(
+        "[buyback-swap-burn] PLX_BURN_AMOUNT={} (invoke buyback-burn after Ston.fi swap)",
+        amount,
+    );
     println("[buyback-swap-burn] run: acton script scripts/buyback-burn.tolk --net mainnet");
 }

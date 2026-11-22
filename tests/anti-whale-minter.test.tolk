@@ -16,11 +16,12 @@ const AW_MINTER_MAX_TRANSFER = 1000 * AW_MINTER_UNIT
 const AW_MINTER_MAX_WALLET = 5000 * AW_MINTER_UNIT
 
 /// Deploy an AntiWhaleJettonMinter with the given caps and `admin` in charge.
-fun deployWhaleMinter(admin: Treasury, maxTransfer: coins, maxWallet: coins): AntiWhaleJettonMinter {
-    val whaleConfig: WhaleConfig = {
-        maxTransferAmount: maxTransfer,
-        maxWalletBalance: maxWallet,
-    };
+fun deployWhaleMinter(
+    admin: Treasury,
+    maxTransfer: coins,
+    maxWallet: coins,
+): AntiWhaleJettonMinter {
+    val whaleConfig: WhaleConfig = { maxTransferAmount: maxTransfer, maxWalletBalance: maxWallet };
     val storage: AntiWhaleMinterStorage = {
         totalSupply: 0,
         adminAddress: admin.address,
@@ -90,7 +91,9 @@ get fun `test anti-whale minter: mint credits the wallet the minter reports`() {
     val minter = deployWhaleMinter(admin, AW_MINTER_MAX_TRANSFER, AW_MINTER_MAX_WALLET);
 
     val amount = AW_MINTER_MAX_TRANSFER * 2;
-    expect(mintWhaleJettons(minter, admin, owner.address, amount)).toHaveSuccessfulTx<MintNewJettons>({
+    expect(
+        mintWhaleJettons(minter, admin, owner.address, amount),
+    ).toHaveSuccessfulTx<MintNewJettons>({
         from: admin.address,
         to: minter.address,
     });
@@ -104,12 +107,13 @@ get fun `test anti-whale minter: mint from a non-admin is rejected`() {
     val stranger = testing.treasury("awm-stranger");
     val minter = deployWhaleMinter(admin, AW_MINTER_MAX_TRANSFER, AW_MINTER_MAX_WALLET);
 
-    expect(mintWhaleJettons(minter, stranger, stranger.address, AW_MINTER_MAX_TRANSFER))
-        .toHaveFailedTx<MintNewJettons>({
-            from: stranger.address,
-            to: minter.address,
-            exitCode: Errors.NotOwner,
-        });
+    expect(
+        mintWhaleJettons(minter, stranger, stranger.address, AW_MINTER_MAX_TRANSFER),
+    ).toHaveFailedTx<MintNewJettons>({
+        from: stranger.address,
+        to: minter.address,
+        exitCode: Errors.NotOwner,
+    });
 }
 
 get fun `test anti-whale minter: transfer above max transfer is rejected with 200`() {
@@ -128,12 +132,13 @@ get fun `test anti-whale minter: transfer above max transfer is rejected with 20
         owner.address,
         makeTinyForwardPayload(),
     );
-    expect(sendRawTransferPayload(owner.address, ownerWallet.address, body.toCell(), ton("0.4")))
-        .toHaveFailedTx<AskToTransfer>({
-            from: owner.address,
-            to: ownerWallet.address,
-            exitCode: 200,
-        });
+    expect(
+        sendRawTransferPayload(owner.address, ownerWallet.address, body.toCell(), ton("0.4")),
+    ).toHaveFailedTx<AskToTransfer>({
+        from: owner.address,
+        to: ownerWallet.address,
+        exitCode: 200,
+    });
 
     // The rejected transfer must not move any balance.
     expect(ownerWallet.getJettonBalance()).toEqual(AW_MINTER_MAX_TRANSFER * 2);
@@ -150,12 +155,13 @@ get fun `test anti-whale minter: credit above max wallet balance is rejected wit
 
     // Goes through the real mint path: the minter books the supply, the wallet
     // rejects the credit, and the bounce must restore the supply exactly.
-    expect(mintWhaleJettons(minter, admin, owner.address, tooMuch))
-        .toHaveFailedTx<InternalTransferStep>({
-            from: minter.address,
-            to: walletAddress,
-            exitCode: 201,
-        });
+    expect(
+        mintWhaleJettons(minter, admin, owner.address, tooMuch),
+    ).toHaveFailedTx<InternalTransferStep>({
+        from: minter.address,
+        to: walletAddress,
+        exitCode: 201,
+    });
 
     expect(whaleWallet(minter, owner.address).getJettonBalance()).toEqual(0);
     expect(minter.getJettonData().totalSupply).toEqual(0);
@@ -177,14 +183,17 @@ get fun `test anti-whale minter: transfer between two of its wallets lands where
         owner.address,
         makeTinyForwardPayload(),
     );
-    expect(sendRawTransferPayload(owner.address, ownerWallet.address, body.toCell(), ton("0.4")))
-        .toHaveSuccessfulTx<AskToTransfer>({
-            from: owner.address,
-            to: ownerWallet.address,
-        });
+    expect(
+        sendRawTransferPayload(owner.address, ownerWallet.address, body.toCell(), ton("0.4")),
+    ).toHaveSuccessfulTx<AskToTransfer>({
+        from: owner.address,
+        to: ownerWallet.address,
+    });
 
     expect(ownerWallet.getJettonBalance()).toEqual(AW_MINTER_MAX_TRANSFER);
-    expect(whaleWallet(minter, recipient.address).getJettonBalance()).toEqual(AW_MINTER_MAX_TRANSFER);
+    expect(whaleWallet(minter, recipient.address).getJettonBalance()).toEqual(
+        AW_MINTER_MAX_TRANSFER,
+    );
 }
 
 get fun `test anti-whale minter: zero cap means unlimited`() {
@@ -203,14 +212,16 @@ get fun `test anti-whale minter: zero cap means unlimited`() {
         owner.address,
         makeTinyForwardPayload(),
     );
-    expect(sendRawTransferPayload(owner.address, ownerWallet.address, body.toCell(), ton("0.4")))
-        .toHaveSuccessfulTx<AskToTransfer>({
-            from: owner.address,
-            to: ownerWallet.address,
-        });
+    expect(
+        sendRawTransferPayload(owner.address, ownerWallet.address, body.toCell(), ton("0.4")),
+    ).toHaveSuccessfulTx<AskToTransfer>({
+        from: owner.address,
+        to: ownerWallet.address,
+    });
 
-    expect(whaleWallet(minter, recipient.address).getJettonBalance())
-        .toEqual(AW_MINTER_MAX_TRANSFER * 10);
+    expect(whaleWallet(minter, recipient.address).getJettonBalance()).toEqual(
+        AW_MINTER_MAX_TRANSFER * 10,
+    );
 }
 
 get fun `test anti-whale minter: admin handover waits for the new admin to claim`() {
@@ -218,30 +229,33 @@ get fun `test anti-whale minter: admin handover waits for the new admin to claim
     val client = testing.treasury("awm-client");
     val minter = deployWhaleMinter(admin, AW_MINTER_MAX_TRANSFER, AW_MINTER_MAX_WALLET);
 
-    expect(minter.sendChangeMinterAdmin(admin.address, 0, client.address, { value: ton("0.1") }))
-        .toHaveSuccessfulTx<ChangeMinterAdmin>({
-            from: admin.address,
-            to: minter.address,
-        });
+    expect(
+        minter.sendChangeMinterAdmin(admin.address, 0, client.address, { value: ton("0.1") }),
+    ).toHaveSuccessfulTx<ChangeMinterAdmin>({
+        from: admin.address,
+        to: minter.address,
+    });
 
     // Still owned by the old admin until the new one claims.
     expect(minter.getJettonData().adminAddress).toEqual(admin.address);
     expect(minter.getNextAdminAddress()).toEqual(client.address);
 
-    expect(minter.sendClaimMinterAdmin(client.address, 0, { value: ton("0.1") }))
-        .toHaveSuccessfulTx<ClaimMinterAdmin>({
-            from: client.address,
-            to: minter.address,
-        });
+    expect(
+        minter.sendClaimMinterAdmin(client.address, 0, { value: ton("0.1") }),
+    ).toHaveSuccessfulTx<ClaimMinterAdmin>({
+        from: client.address,
+        to: minter.address,
+    });
 
     expect(minter.getJettonData().adminAddress).toEqual(client.address);
     expect(minter.getNextAdminAddress()).toEqual(null);
 
     // The previous admin is now powerless.
-    expect(mintWhaleJettons(minter, admin, admin.address, AW_MINTER_MAX_TRANSFER))
-        .toHaveFailedTx<MintNewJettons>({
-            from: admin.address,
-            to: minter.address,
-            exitCode: Errors.NotOwner,
-        });
+    expect(
+        mintWhaleJettons(minter, admin, admin.address, AW_MINTER_MAX_TRANSFER),
+    ).toHaveFailedTx<MintNewJettons>({
+        from: admin.address,
+        to: minter.address,
+        exitCode: Errors.NotOwner,
+    });
 }

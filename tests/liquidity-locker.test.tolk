@@ -83,8 +83,15 @@ get fun `test liquidity-locker: lock then unlock after period`() {
     expect(totalLocked).toEqual(LL_LOCK_AMOUNT);
 
     testing.setNow(unlockAt + 1);
-    val unlockRes = locker.sendUnlockLiquidity(provider.address, 0, 0, { bounce: false, value: ton("0.2") });
-    expect(unlockRes).toHaveSuccessfulTx<UnlockLiquidity>({ from: provider.address, to: locker.address });
+    val unlockRes = locker.sendUnlockLiquidity(
+        provider.address,
+        0,
+        0,
+        { bounce: false, value: ton("0.2") },
+    );
+    expect(
+        unlockRes,
+    ).toHaveSuccessfulTx<UnlockLiquidity>({ from: provider.address, to: locker.address });
 
     val (_, totalAfter) = locker.getLockerData();
     expect(totalAfter).toEqual(0);
@@ -95,7 +102,12 @@ get fun `test liquidity-locker: early unlock rejected`() {
     val unlockAt = 1700000000 + LL_UNLOCK_DAYS;
     transferTokensTo(lpMinter, provider, locker.address, LL_LOCK_AMOUNT, makeLockPayload(unlockAt));
 
-    val early = locker.sendUnlockLiquidity(provider.address, 0, 0, { bounce: false, value: ton("0.2") });
+    val early = locker.sendUnlockLiquidity(
+        provider.address,
+        0,
+        0,
+        { bounce: false, value: ton("0.2") },
+    );
     expect(early).toHaveFailedTx<UnlockLiquidity>({
         from: provider.address,
         to: locker.address,

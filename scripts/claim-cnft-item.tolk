@@ -50,10 +50,7 @@ fun buildProofCell(): cell {
     val s6 = proofSibling("CNFT_PROOF_6");
     val s7 = proofSibling("CNFT_PROOF_7");
 
-    val cell2 = beginCell()
-        .storeUint(s6, 256)
-        .storeUint(s7, 256)
-        .endCell();
+    val cell2 = beginCell().storeUint(s6, 256).storeUint(s7, 256).endCell();
     val cell1 = beginCell()
         .storeUint(s3, 256)
         .storeUint(s4, 256)

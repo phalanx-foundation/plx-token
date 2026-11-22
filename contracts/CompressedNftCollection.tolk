@@ -1,9 +1,9 @@
 import "@stdlib/gas-payments"
 import "errors"
-import "sharding"
 import "messages"
 import "nft-messages"
 import "nft-storage"
+import "sharding"
 
 contract CompressedNftCollection {
     author: "Phalanx Foundation"
@@ -21,7 +21,7 @@ type AllowedCompressedCollectionMessage =
     | GetRoyaltyParams
     | TopUpTons
 
-const _TREE_DEPTH: int = 8;
+const _TREE_DEPTH: int = 8
 
 fun hashPair(left: uint256, right: uint256): uint256 {
     // Same idiom as PlxAirdrop: cell.hash() (no @stdlib/hash)
@@ -86,10 +86,7 @@ fun calcDeployedNftItem(
         .storeRef(individualContent)
         .endCell();
 
-    return {
-        workchain: MY_WORKCHAIN,
-        stateInit: { code: nftItemCode, data: nftInitData },
-    };
+    return { workchain: MY_WORKCHAIN, stateInit: { code: nftItemCode, data: nftInitData } };
 }
 
 fun onInternalMessage(in: InMessage) {
@@ -109,8 +106,13 @@ fun onInternalMessage(in: InMessage) {
             val leafHash = hashLeaf(proofMsg.itemIndex, proofMsg.claimant);
 
             assert (
-                verifyMerkleProof(leafHash, proofMsg.proofCell, proofMsg.itemIndex, storage.merkleRoot)
-            ) throw 104; // Invalid Merkle proof
+                verifyMerkleProof(
+                    leafHash,
+                    proofMsg.proofCell,
+                    proofMsg.itemIndex,
+                    storage.merkleRoot,
+                )
+            ) throw 104;                                                                                                // Invalid Merkle proof
 
             val deployMsg = createMessage({
                 bounce: BounceMode.Only256BitsOfBody,
@@ -194,16 +196,18 @@ get fun get_nft_address_by_index(index: int, owner: address, individualContent: 
     val storage = lazy CompressedNftCollectionStorage.load();
     assert (index < storage.maxSupply) throw 102;
 
-    return calcDeployedNftItem(index, owner, individualContent, storage.nftItemCode).calculateAddress();
+    return calcDeployedNftItem(
+        index,
+        owner,
+        individualContent,
+        storage.nftItemCode,
+    ).calculateAddress();
 }
 
 get fun get_nft_content(index: int, individualContent: cell): cell {
     val storage = lazy CompressedNftCollectionStorage.load();
 
-    return beginCell()
-        .storeRef(storage.collectionContent)
-        .storeRef(individualContent)
-        .endCell();
+    return beginCell().storeRef(storage.collectionContent).storeRef(individualContent).endCell();
 }
 
 get fun get_merkle_root(): uint256 {

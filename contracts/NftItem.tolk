@@ -37,14 +37,16 @@ fun onInternalMessage(in: InMessage) {
             if (forwardAmount != 0) {
                 // OwnershipAssigned notification body as slice (Acton 1.1: builder.toSlice)
                 val notificationBody = beginCell()
-                    .storeUint(0x41661e1f, 32)    // ownership_assigned
+                    .storeUint(0x41661e1f, 32) // ownership_assigned
                     .storeUint(msg.queryId, 64)
-                    .storeUint(0, 64)               // prev_owner (zero = not provided)
-                    .storeRef(beginCell()
-                        .storeAddress(storage.collectionAddress)
-                        .storeCoins(0)
-                        .storeRef(storage.individualContent)
-                        .endCell())
+                    .storeUint(0, 64) // prev_owner (zero = not provided)
+                    .storeRef(
+                        beginCell()
+                            .storeAddress(storage.collectionAddress)
+                            .storeCoins(0)
+                            .storeRef(storage.individualContent)
+                            .endCell(),
+                    )
                     .toSlice();
 
                 val notifyMsg = createMessage({
@@ -63,7 +65,9 @@ fun onInternalMessage(in: InMessage) {
                     value: 0,
                     body: NftExcesses { queryId: msg.queryId },
                 });
-                excessMsg.send(SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE | SEND_MODE_IGNORE_ERRORS);
+                excessMsg.send(
+                    SEND_MODE_CARRY_ALL_REMAINING_MESSAGE_VALUE | SEND_MODE_IGNORE_ERRORS,
+                );
             }
         }
 

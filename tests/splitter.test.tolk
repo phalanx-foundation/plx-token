@@ -74,7 +74,12 @@ fun payerSendsToSplitter(
         forwardTonAmount: forwardTon,
         forwardPayload: makeTinyForwardPayload(),
     };
-    return sendRawTransferPayload(payer.address, payerWallet.address, transferBody.toCell(), msgValue);
+    return sendRawTransferPayload(
+        payer.address,
+        payerWallet.address,
+        transferBody.toCell(),
+        msgValue,
+    );
 }
 
 get fun `test splitter: deploy initialises storage with zero counters`() {
@@ -136,7 +141,15 @@ get fun `test splitter: odd amount remainder goes to treasury`() {
 get fun `test splitter: tiny amount still settles`() {
     val (minter, splitter, _, treasury, payer) = setupSplitter();
 
-    payerSendsToSplitter(minter, splitter, payer, TINY_AMOUNT, 0, 200000000, 500000000);
+    payerSendsToSplitter(
+        minter,
+        splitter,
+        payer,
+        TINY_AMOUNT,
+        0,
+        200000000,
+        500000000,
+    );
 
     val expectedBurn = TINY_AMOUNT / 2;
     val expectedForward = TINY_AMOUNT - expectedBurn;
@@ -191,7 +204,15 @@ get fun `test splitter: notification from non-jetton-wallet is rejected`() {
 get fun `test splitter: zero-amount notification is a no-op`() {
     val (minter, splitter, _, _, payer) = setupSplitter();
 
-    payerSendsToSplitter(minter, splitter, payer, 0, 0, 200000000, 400000000);
+    payerSendsToSplitter(
+        minter,
+        splitter,
+        payer,
+        0,
+        0,
+        200000000,
+        400000000,
+    );
 
     expect(splitter.getBurnedTotal()).toEqual(0);
     expect(splitter.getForwardedTotal()).toEqual(0);

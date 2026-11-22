@@ -85,6 +85,11 @@ fun calcAddressOfFeeJettonWallet(
     feeBps: uint16,
     feeCollector: address,
 ): address {
-    return calcDeployedFeeJettonWallet(ownerAddress, minterAddress, walletCode, feeBps, feeCollector)
-        .calculateAddress();
+    return calcDeployedFeeJettonWallet(
+        ownerAddress,
+        minterAddress,
+        walletCode,
+        feeBps,
+        feeCollector,
+    ).calculateAddress();
 }

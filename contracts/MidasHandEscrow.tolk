@@ -104,45 +104,45 @@ const DEX_DEDUST: uint8 = 1
 // === status ===
 const STATUS_PROPOSED: uint8 = 0
 const STATUS_FUNDED: uint8 = 1
-const STATUS_ADDING: uint8 = 2   // LP mint in flight (owner approved)
-const STATUS_ACTIVE: uint8 = 3   // LP received, locked
+const STATUS_ADDING: uint8 = 2 // LP mint in flight (owner approved)
+const STATUS_ACTIVE: uint8 = 3 // LP received, locked
 const STATUS_SETTLING: uint8 = 4 // LP burn in flight
 const STATUS_CLOSED: uint8 = 5
 const STATUS_REFUNDED: uint8 = 6
 const STATUS_CANCELLED: uint8 = 7
 
 // === settle-progress bitmask (single-flight per refund leg) ===
-const SETTLE_BIT_TON: uint8 = 1    // TON leg refunded to whale
+const SETTLE_BIT_TON: uint8 = 1 // TON leg refunded to whale
 const SETTLE_BIT_JETTON: uint8 = 2 // jetton leg refunded to owner
 
 // === forward-payload op code (owner seed-jetton deposit) ===
 const MIDAS_OWNER_DEPOSIT_OP: uint32 = 0x4d484531
 
 // === STON.fi v2.2 op codes (pinned from @ston-fi/sdk@2.7.0 + STON.fi docs) ===
-const STONFI_PROVIDE_LP_OP: uint32 = 0x37C096DF  // 935368415 provide_liquidity
+const STONFI_PROVIDE_LP_OP: uint32 = 0x37C096DF // 935368415 provide_liquidity
 const PTON_TON_TRANSFER_OP: uint32 = 0x01F3835D // 32736093 pTON v2.1 ProxyToncoinTransfer (unwrap pTON -> native TON)
-const STONFI_TX_DEADLINE_SEC: uint32 = 900       // 15 min SDK default
+const STONFI_TX_DEADLINE_SEC: uint32 = 900 // 15 min SDK default
 
 // === DeDust v2 op codes and gas (pinned from chain data + @dedust/sdk@0.8.7) ===
-const DEDUST_DEPOSIT_NATIVE_OP: uint32 = 0xD55E4686     // native vault deposit_liquidity
-const DEDUST_DEPOSIT_JETTON_OP: uint32 = 0x40E108D6     // jetton vault deposit_liquidity forward payload
-const DEDUST_CANCEL_DEPOSIT_OP: uint32 = 0x166CEDEE     // LiquidityDeposit.cancel_deposit
-const DEDUST_NATIVE_TAG: uint4 = 0b0000                 // Asset = native
-const DEDUST_JETTON_TAG: uint4 = 0b0001                 // Asset = jetton$0001 wc hash
+const DEDUST_DEPOSIT_NATIVE_OP: uint32 = 0xD55E4686 // native vault deposit_liquidity
+const DEDUST_DEPOSIT_JETTON_OP: uint32 = 0x40E108D6 // jetton vault deposit_liquidity forward payload
+const DEDUST_CANCEL_DEPOSIT_OP: uint32 = 0x166CEDEE // LiquidityDeposit.cancel_deposit
+const DEDUST_NATIVE_TAG: uint4 = 0b0000 // Asset = native
+const DEDUST_JETTON_TAG: uint4 = 0b0001 // Asset = jetton$0001 wc hash
 // Chain-verified: the native vault leg carries amount + 0.3 TON, and the
 // LiquidityDeposit cancel costs 0.5 TON. Both fit the 0.6 TON per-leg budget.
-const DEDUST_NATIVE_VAULT_GAS: coins = 300000000        // 0.3 TON
-const DEDUST_CANCEL_GAS: coins = 500000000              // 0.5 TON
-const DEDUST_JETTON_FORWARD_GAS: coins = 400000000      // 0.4 TON forward to the jetton vault
+const DEDUST_NATIVE_VAULT_GAS: coins = 300000000 // 0.3 TON
+const DEDUST_CANCEL_GAS: coins = 500000000 // 0.5 TON
+const DEDUST_JETTON_FORWARD_GAS: coins = 400000000 // 0.4 TON forward to the jetton vault
 // A DeDust deposit parks in LiquidityDeposit until both legs land. If the
 // second leg never lands, anyone allowed may recover the parked funds after
 // this window, then refund through the normal FUNDED paths.
-const DEDUST_DEPOSIT_DEADLINE_SEC: uint32 = 3600        // 1 hour
+const DEDUST_DEPOSIT_DEADLINE_SEC: uint32 = 3600 // 1 hour
 
 // === amounts / durations ===
 const MIDAS_MIN_TON_NANO: coins = 500000000000 // 500 TON minimum whale deposit
-const MIDAS_GAS_RESERVE: coins = 100000000      // 0.1 TON reserved for fees
-const MIDAS_TRANSFER_VALUE: coins = 80000000    // 0.08 TON for jetton transfer ops
+const MIDAS_GAS_RESERVE: coins = 100000000 // 0.1 TON reserved for fees
+const MIDAS_TRANSFER_VALUE: coins = 80000000 // 0.08 TON for jetton transfer ops
 const THREE_MONTHS_SEC: uint32 = 7776000
 const SIX_MONTHS_SEC: uint32 = 15552000
 const TWELVE_MONTHS_SEC: uint32 = 31104000
@@ -150,19 +150,19 @@ const DEFAULT_PROPOSAL_TIMEOUT_SEC: uint32 = 86400 // 24h owner response window
 
 // Gas budget for the two-leg add-LP (TON leg + jetton leg). Bounded so a
 // malicious config can't drain the entire balance; split across both legs.
-const MIDAS_ADD_LP_TON_LEG_NANO: coins = 600000000    // 0.6 TON for the TON (native TON) leg
+const MIDAS_ADD_LP_TON_LEG_NANO: coins = 600000000 // 0.6 TON for the TON (native TON) leg
 const MIDAS_ADD_LP_JETTON_LEG_NANO: coins = 600000000 // 0.6 TON for the jetton leg
-const MIDAS_PTON_UNWRAP_VALUE: coins = 100000000      // 0.1 TON for pTON unwrap ProxyToncoinTransfer
+const MIDAS_PTON_UNWRAP_VALUE: coins = 100000000 // 0.1 TON for pTON unwrap ProxyToncoinTransfer
 
 @overflow1023_policy("suppress")
 struct MidasEscrowConfig {
-    whaleAddress: address          // TON provider
-    ownerAddress: address          // seed-jetton provider
-    minterAddress: address         // seed token jetton minter (PLX)
-    seedWalletCode: cell           // seed token jetton wallet code (own-wallet verify)
-    adminMultisig: Cell<address>   // limited admin: cancel
-    proposalTimeoutSec: uint32     // owner response window
-    dexType: uint8                 // DEX_STONFI | DEX_DEDUST — exactly one deal, one DEX
+    whaleAddress: address        // TON provider
+    ownerAddress: address        // seed-jetton provider
+    minterAddress: address       // seed token jetton minter (PLX)
+    seedWalletCode: cell         // seed token jetton wallet code (own-wallet verify)
+    adminMultisig: Cell<address> // limited admin: cancel
+    proposalTimeoutSec: uint32   // owner response window
+    dexType: uint8               // DEX_STONFI | DEX_DEDUST — exactly one deal, one DEX
     // Exactly one of the two DEX configs is set. The other stays null, so it
     // costs one bit instead of a ref and the main config keeps 3 refs total.
     stonfi: Cell<StonFiConfig>?
@@ -171,16 +171,16 @@ struct MidasEscrowConfig {
 
 @overflow1023_policy("suppress")
 struct StonFiConfig {
-    routerAddress: address         // v2.2 router (route add-LP / burn refund)
-    poolAddress: address           // LP jetton minter = pool (PLX/TON pool)
-    ptonMaster: address            // pTON v2.1 master (TON side wrap/unwrap)
-    lpWalletCode: cell             // LP jetton wallet code (own LP-wallet verify)
-    ptonWalletCode: cell           // pTON jetton wallet code (own pTON-wallet verify)
+    routerAddress: address // v2.2 router (route add-LP / burn refund)
+    poolAddress: address   // LP jetton minter = pool (PLX/TON pool)
+    ptonMaster: address    // pTON v2.1 master (TON side wrap/unwrap)
+    lpWalletCode: cell     // LP jetton wallet code (own LP-wallet verify)
+    ptonWalletCode: cell   // pTON jetton wallet code (own pTON-wallet verify)
 }
 
 @overflow1023_policy("suppress")
 struct DedustConfig {
-    poolAddress: address            // LP jetton minter = the DeDust pool
+    poolAddress: address       // LP jetton minter = the DeDust pool
     // The LiquidityDeposit account that parks this escrow's deposit legs. Its
     // address is derived from the depositor, which is this escrow, so it CANNOT
     // be part of the deploy config: the escrow address is the hash of that very
@@ -189,10 +189,10 @@ struct DedustConfig {
     // after deploy, from the DeDust factory get-method
     // `get_liquidity_deposit_address(escrow, poolType, assets)`.
     liquidityDeposit: address?
-    nativeVault: Cell<address>      // factory native vault (TON leg destination)
-    jettonVault: Cell<address>      // factory jetton vault for the seed jetton
-    lpWalletCode: cell              // pool's LP jetton wallet code (own LP-wallet verify)
-    stablePool: bool                // PoolType: false = volatile (the only supported pool)
+    nativeVault: Cell<address> // factory native vault (TON leg destination)
+    jettonVault: Cell<address> // factory jetton vault for the seed jetton
+    lpWalletCode: cell         // pool's LP jetton wallet code (own LP-wallet verify)
+    stablePool: bool           // PoolType: false = volatile (the only supported pool)
 }
 
 // DeDust deposit target balances. Chain data shows the native vault reads these
@@ -213,9 +213,9 @@ struct DedustTargets {
 struct (0xD55E4686) DedustNativeDepositLiquidity {
     queryId: uint64
     amount: coins
-    stablePool: bool                    // PoolType (1 bit)
-    asset0Tag: uint4                    // DEDUST_NATIVE_TAG
-    asset1Tag: uint4                    // DEDUST_JETTON_TAG
+    stablePool: bool // PoolType (1 bit)
+    asset0Tag: uint4 // DEDUST_NATIVE_TAG
+    asset1Tag: uint4 // DEDUST_JETTON_TAG
     jettonWorkchain: int8
     jettonHash: uint256
     targets: Cell<DedustTargets>
@@ -229,9 +229,9 @@ struct (0xD55E4686) DedustNativeDepositLiquidity {
 // and the SDK agree for this side.
 @overflow1023_policy("suppress")
 struct (0x40E108D6) DedustJettonDepositLiquidity {
-    stablePool: bool                    // PoolType (1 bit)
-    asset0Tag: uint4                    // DEDUST_NATIVE_TAG
-    asset1Tag: uint4                    // DEDUST_JETTON_TAG
+    stablePool: bool // PoolType (1 bit)
+    asset0Tag: uint4 // DEDUST_NATIVE_TAG
+    asset1Tag: uint4 // DEDUST_JETTON_TAG
     jettonWorkchain: int8
     jettonHash: uint256
     minLpAmount: coins
@@ -252,13 +252,13 @@ struct (0x166CEDEE) DedustCancelDeposit {
 struct MidasEscrowStorage {
     config: Cell<MidasEscrowConfig>
     status: uint8
-    termType: uint8 // 0 = 3mo, 1 = 6mo, 2 = 12mo (chosen by whale)
+    termType: uint8         // 0 = 3mo, 1 = 6mo, 2 = 12mo (chosen by whale)
     whaleTonDeposited: coins
     ownerJettonDeposited: coins
     lpHeld: coins
     lockUntil: uint32
     proposalDeadline: uint32
-    settleProgress: uint8 // SETTLE_BIT_* bitmask; 0 outside settlement
+    settleProgress: uint8   // SETTLE_BIT_* bitmask; 0 outside settlement
     depositDeadline: uint32 // DeDust only: when a parked deposit may be recovered
 }
 
@@ -330,7 +330,11 @@ fun MidasEscrowStorage.save(self) {
 }
 
 fun ownSeedWallet(config: MidasEscrowConfig): address {
-    return calcAddressOfJettonWallet(contract.getAddress(), config.minterAddress, config.seedWalletCode);
+    return calcAddressOfJettonWallet(
+        contract.getAddress(),
+        config.minterAddress,
+        config.seedWalletCode,
+    );
 }
 
 fun isDedust(config: MidasEscrowConfig): bool {
@@ -493,9 +497,9 @@ fun makeProvideLpForwardPayload(
             beginCell()
                 .storeCoins(minLpOut)
                 .storeAddress(receiver)
-                .storeUint(1, 1)          // bothPositive (balanced)
-                .storeCoins(0)            // dexCustomPayloadForwardGasAmount
-                .storeMaybeRef(null)      // dexCustomPayload
+                .storeUint(1, 1) // bothPositive (balanced)
+                .storeCoins(0) // dexCustomPayloadForwardGasAmount
+                .storeMaybeRef(null) // dexCustomPayload
                 .endCell(),
         )
         .endCell();
@@ -583,9 +587,8 @@ fun onInternalMessage(in: InMessage) {
         // stray transfer) into the whale bucket while the deal is not settling.
         if (
             isDedust(config) &&
-            (storage.status == STATUS_FUNDED ||
-                storage.status == STATUS_ADDING ||
-                storage.status == STATUS_ACTIVE)
+            (storage.status == STATUS_FUNDED || storage.status == STATUS_ADDING ||
+            storage.status == STATUS_ACTIVE)
         ) {
             storage.whaleTonDeposited += in.valueCoins;
             storage.save();
@@ -683,7 +686,12 @@ fun onInternalMessage(in: InMessage) {
 
             sendTonOut(config.whaleAddress, refundableTon(storage.whaleTonDeposited));
             if (storage.ownerJettonDeposited > 0) {
-                sendJettonOut(ownSeedWallet(config), config.ownerAddress, storage.ownerJettonDeposited, msg.queryId);
+                sendJettonOut(
+                    ownSeedWallet(config),
+                    config.ownerAddress,
+                    storage.ownerJettonDeposited,
+                    msg.queryId,
+                );
             }
 
             storage.status = STATUS_REFUNDED;
@@ -702,14 +710,18 @@ fun onInternalMessage(in: InMessage) {
             // the deposit deadline first, then cancel.
             assert (!(isDedust(config) && storage.status == STATUS_ADDING)) throw Errors.InvalidOp;
             assert (
-                storage.status == STATUS_PROPOSED ||
-                storage.status == STATUS_FUNDED ||
+                storage.status == STATUS_PROPOSED || storage.status == STATUS_FUNDED ||
                 storage.status == STATUS_ADDING
             ) throw Errors.InvalidOp;
 
             sendTonOut(config.whaleAddress, refundableTon(storage.whaleTonDeposited));
             if (storage.ownerJettonDeposited > 0) {
-                sendJettonOut(ownSeedWallet(config), config.ownerAddress, storage.ownerJettonDeposited, msg.queryId);
+                sendJettonOut(
+                    ownSeedWallet(config),
+                    config.ownerAddress,
+                    storage.ownerJettonDeposited,
+                    msg.queryId,
+                );
             }
 
             storage.status = STATUS_CANCELLED;
@@ -728,8 +740,7 @@ fun onInternalMessage(in: InMessage) {
             // approved). From ADDING on, the address is frozen so a compromised
             // admin cannot point a live recovery at some other account.
             assert (
-                storage.status == STATUS_PROPOSED ||
-                storage.status == STATUS_FUNDED
+                storage.status == STATUS_PROPOSED || storage.status == STATUS_FUNDED
             ) throw Errors.InvalidOp;
 
             storage.config = withDedustLiquidityDeposit(config, msg.liquidityDeposit).toCell();
@@ -751,8 +762,7 @@ fun onInternalMessage(in: InMessage) {
                 in.senderAddress == config.adminMultisig.load()
             ) throw Errors.NotOwner;
             assert (
-                storage.status == STATUS_ADDING ||
-                storage.status == STATUS_FUNDED ||
+                storage.status == STATUS_ADDING || storage.status == STATUS_FUNDED ||
                 storage.status == STATUS_ACTIVE
             ) throw Errors.InvalidOp;
             // depositDeadline doubles as the "recovery not requested yet" guard:
@@ -918,14 +928,21 @@ fun startStonfiAddLiquidity(storage: MidasEscrowStorage, config: MidasEscrowConf
 
     // TON leg: native TON -> router's pTON wallet (wraps + routes).
     val routerPtonWallet = calcAddressOfJettonWallet(
-        router, sc.ptonMaster, sc.ptonWalletCode,
+        router,
+        sc.ptonMaster,
+        sc.ptonWalletCode,
     );
     val routerSeedWallet = calcAddressOfJettonWallet(
-        router, config.minterAddress, config.seedWalletCode,
+        router,
+        config.minterAddress,
+        config.seedWalletCode,
     );
     val tonForward = makeProvideLpForwardPayload(
         routerSeedWallet, // otherTokenWallet = PLX (jetton side)
-        refund, excess, receiver, minLpOut,
+        refund,
+        excess,
+        receiver,
+        minLpOut,
     );
     sendTonProvideLeg(
         routerPtonWallet,
@@ -936,7 +953,10 @@ fun startStonfiAddLiquidity(storage: MidasEscrowStorage, config: MidasEscrowConf
     // Jetton leg: seed jetton -> router (forwardPayload provides PLX).
     val jettonForward = makeProvideLpForwardPayload(
         routerPtonWallet, // otherTokenWallet = pTON (TON side)
-        refund, excess, receiver, minLpOut,
+        refund,
+        excess,
+        receiver,
+        minLpOut,
     );
     sendJettonProvideLeg(
         ownSeedWallet(config),
@@ -1190,7 +1210,16 @@ fun unwrapPton(
     outMsg.send(SEND_MODE_PAY_FEES_SEPARATELY | SEND_MODE_BOUNCE_ON_ACTION_FAIL);
 }
 
-get fun get_escrow_data(): (uint8, uint8, coins, coins, coins, uint32, uint32, uint8) {
+get fun get_escrow_data(): (
+    uint8,
+    uint8,
+    coins,
+    coins,
+    coins,
+    uint32,
+    uint32,
+    uint8,
+) {
     val storage = MidasEscrowStorage.load();
     return (
         storage.status,

@@ -56,7 +56,8 @@ fun main() {
     val minterAddr = promptJettonAddressRequired("MH_MINTER", "Seed token minter address");
     val admin = promptJettonAddressRequired("MH_ADMIN", "Admin multisig address");
     val dexType: uint8 = (env<int>("MH_DEX") ?? 0) as uint8;
-    val proposalTimeoutSec = env<int>("MH_PROPOSAL_TIMEOUT_SEC") ?? 604800;  // 7-day owner confirmation window
+    val proposalTimeoutSec = env<int>("MH_PROPOSAL_TIMEOUT_SEC") ??
+    604800;                                                                 // 7-day owner confirmation window
 
     val minter = JettonMinter.fromAddress(minterAddr);
     val seedWalletCode = minter.getJettonData().jettonWalletCode;
@@ -77,8 +78,14 @@ fun main() {
         // admin binds it right after deploy with BindDedustLiquidityDeposit
         // (0x4d484537), keeping the escrow address unchanged.
         val pool = promptJettonAddressRequired("MH_POOL", "DeDust pool address");
-        val nativeVault = promptJettonAddressRequired("MH_DEDUST_NATIVE_VAULT", "DeDust native vault");
-        val jettonVault = promptJettonAddressRequired("MH_DEDUST_JETTON_VAULT", "DeDust jetton vault");
+        val nativeVault = promptJettonAddressRequired(
+            "MH_DEDUST_NATIVE_VAULT",
+            "DeDust native vault",
+        );
+        val jettonVault = promptJettonAddressRequired(
+            "MH_DEDUST_JETTON_VAULT",
+            "DeDust jetton vault",
+        );
         val stablePool = (env<int>("MH_DEDUST_STABLE_POOL") ?? 0) != 0;
         val lpWalletCode = env<cell>("MH_LP_WALLET_CODE");
         if (lpWalletCode == null) {

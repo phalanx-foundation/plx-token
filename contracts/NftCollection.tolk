@@ -1,9 +1,9 @@
 import "@stdlib/gas-payments"
 import "errors"
-import "sharding"
 import "messages"
 import "nft-messages"
 import "nft-storage"
+import "sharding"
 
 contract NftCollection {
     author: "Phalanx Foundation"
@@ -45,10 +45,7 @@ fun calcDeployedNftItem(
         .storeRef(individualContent)
         .endCell();
 
-    return {
-        workchain: MY_WORKCHAIN,
-        stateInit: { code: nftItemCode, data: nftInitData },
-    };
+    return { workchain: MY_WORKCHAIN, stateInit: { code: nftItemCode, data: nftInitData } };
 }
 
 fun onInternalMessage(in: InMessage) {
@@ -168,16 +165,18 @@ get fun get_nft_address_by_index(index: int, owner: address, individualContent: 
     val storage = lazy NftCollectionStorage.load();
     assert (index < storage.nextItemIndex) throw 102; // Index out of bounds
 
-    return calcDeployedNftItem(index, owner, individualContent, storage.nftItemCode).calculateAddress();
+    return calcDeployedNftItem(
+        index,
+        owner,
+        individualContent,
+        storage.nftItemCode,
+    ).calculateAddress();
 }
 
 get fun get_nft_content(index: int, individualContent: cell): cell {
     val storage = lazy NftCollectionStorage.load();
 
-    return beginCell()
-        .storeRef(storage.collectionContent)
-        .storeRef(individualContent)
-        .endCell();
+    return beginCell().storeRef(storage.collectionContent).storeRef(individualContent).endCell();
 }
 
 get fun royalty_params(): RoyaltyParamsReply {

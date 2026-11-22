@@ -128,7 +128,9 @@ fun onInternalMessage(in: InMessage) {
             var storage = lazy AirdropStorage.load();
 
             // Reject after deadline
-            assert (storage.deadline == 0 || blockchain.now() <= storage.deadline) throw Errors.InvalidOp;
+            assert (
+                storage.deadline == 0 || blockchain.now() <= storage.deadline
+            ) throw Errors.InvalidOp;
 
             val claimant = in.senderAddress;
             val claimKey = addressToClaimKey(claimant);
@@ -174,7 +176,9 @@ fun onInternalMessage(in: InMessage) {
             val storage = lazy AirdropStorage.load();
             assert (in.senderAddress == storage.admin) throw Errors.NotOwner;
             // Can only withdraw after deadline has passed
-            assert (storage.deadline != 0 && blockchain.now() > storage.deadline) throw Errors.NothingToClaim;
+            assert (
+                storage.deadline != 0 && blockchain.now() > storage.deadline
+            ) throw Errors.NothingToClaim;
 
             val transferMsg = createMessage({
                 bounce: BounceMode.Only256BitsOfBody,
@@ -210,7 +214,6 @@ get fun get_airdrop_data(): (uint256, address, address, uint32) {
     val storage = AirdropStorage.load();
     return (storage.merkleRoot, storage.jettonMinter, storage.admin, storage.deadline);
 }
-
 
 get fun is_claimed(claimant: address): bool {
     val storage = AirdropStorage.load();

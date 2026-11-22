@@ -23,7 +23,10 @@ fun makeGovernanceStakePayload(): slice {
 }
 
 fun governanceDescriptionHash(): bits256 {
-    return beginCell().storeUint("governance-test-description".sha256(), 256).endCell().beginParse() as bits256;
+    return beginCell()
+        .storeUint("governance-test-description".sha256(), 256)
+        .endCell()
+        .beginParse() as bits256;
 }
 
 fun governanceDescriptionHashCell(): cell {
@@ -69,7 +72,13 @@ fun setupGovernance(): (JettonMinter, TokenGovernance, Treasury, Treasury) {
     return (minter, gov, admin, voter);
 }
 
-fun stakeGovernance(minter: JettonMinter, admin: Treasury, user: Treasury, gov: TokenGovernance, amount: coins): void {
+fun stakeGovernance(
+    minter: JettonMinter,
+    admin: Treasury,
+    user: Treasury,
+    gov: TokenGovernance,
+    amount: coins,
+): void {
     mintTokensTo(admin, minter, user.address, amount);
     val res = transferTokensTo(minter, user, gov.address, amount, makeGovernanceStakePayload());
     expect(res).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: gov.address });

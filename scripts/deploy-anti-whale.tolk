@@ -24,8 +24,8 @@ fun main() {
     val deployer = promptJettonWallet("DEPLOYER", "Deployer wallet");
     val owner = promptJettonAddressRequired("AW_OWNER", "Wallet owner address");
     val minter = promptJettonAddressRequired("AW_MINTER", "Jetton minter address");
-    val maxTransfer: coins = env<coins>("AW_MAX_TRANSFER") ?? 1000000000000;  // default 1000 tokens
-    val maxWallet: coins = env<coins>("AW_MAX_WALLET") ?? 0;  // default: disabled
+    val maxTransfer: coins = env<coins>("AW_MAX_TRANSFER") ?? 1000000000000; // default 1000 tokens
+    val maxWallet: coins = env<coins>("AW_MAX_WALLET") ?? 0;                 // default: disabled
 
     val storage: AntiWhaleWalletStorage = {
         jettonBalance: 0,

@@ -4,8 +4,8 @@ import "@acton/testing/expect"
 
 import "@contracts/FeeJettonMinter"
 import "@contracts/FeeJettonWallet"
-import "@contracts/fee-types"
 import "@contracts/errors"
+import "@contracts/fee-types"
 import "@contracts/messages"
 import "@contracts/storage"
 import "@wrappers/FeeJettonMinter.gen"
@@ -16,7 +16,7 @@ import "test-utils"
 
 const FEE_PLX_UNIT = 1000000000
 const FEE_TEST_SUPPLY = 1000000 * FEE_PLX_UNIT
-const TEST_FEE_BPS: uint16 = 500  // 5%
+const TEST_FEE_BPS: uint16 = 500 // 5%
 
 fun makeFeeForwardPayload(): slice {
     return beginCell().storeUint(0, 1).toSlice();
@@ -27,10 +27,7 @@ fun setupFeeJetton(feeBps: uint16): (FeeJettonMinter, Treasury, Treasury, Treasu
     val collector = testing.treasury("fee-collector");
     val user = testing.treasury("fee-user");
 
-    val feeConfig: FeeMinterConfig = {
-        feeBps,
-        feeCollector: collector.address,
-    };
+    val feeConfig: FeeMinterConfig = { feeBps, feeCollector: collector.address };
 
     val minter = FeeJettonMinter.fromStorage({
         totalSupply: 0,
@@ -143,7 +140,11 @@ get fun `test fee-jetton: UpdateFeeConfig on minter accepted from admin`() {
     val newCollector = testing.treasury("new-collector");
 
     val res = minter.sendUpdateFeeConfig(
-        deployer.address, 0, 200, newCollector.address, { bounce: false, value: ton("0.1") },
+        deployer.address,
+        0,
+        200,
+        newCollector.address,
+        { bounce: false, value: ton("0.1") },
     );
     expect(res).toHaveSuccessfulTx<UpdateFeeConfig>({ from: deployer.address, to: minter.address });
 
@@ -157,7 +158,11 @@ get fun `test fee-jetton: UpdateFeeConfig rejected if fee_bps > 1000`() {
     val collector = testing.treasury("bad-collector");
 
     val res = minter.sendUpdateFeeConfig(
-        deployer.address, 0, 1001, collector.address, { bounce: false, value: ton("0.1") },
+        deployer.address,
+        0,
+        1001,
+        collector.address,
+        { bounce: false, value: ton("0.1") },
     );
     expect(res).toHaveFailedTx<UpdateFeeConfig>({
         from: deployer.address,
@@ -171,7 +176,11 @@ get fun `test fee-jetton: UpdateFeeConfig on minter rejected from non-admin`() {
     val collector = testing.treasury("bad-collector2");
 
     val res = minter.sendUpdateFeeConfig(
-        user.address, 0, 100, collector.address, { bounce: false, value: ton("0.1") },
+        user.address,
+        0,
+        100,
+        collector.address,
+        { bounce: false, value: ton("0.1") },
     );
     expect(res).toHaveFailedTx<UpdateFeeConfig>({
         from: user.address,
@@ -187,7 +196,11 @@ get fun `test fee-jetton: UpdateFeeConfig on wallet rejected from non-minter`() 
 
     // Send from user (not minter) — should fail
     val res = userWallet.sendUpdateFeeConfig(
-        user.address, 0, 100, collector.address, { bounce: false, value: ton("0.05") },
+        user.address,
+        0,
+        100,
+        collector.address,
+        { bounce: false, value: ton("0.05") },
     );
     expect(res).toHaveFailedTx<UpdateFeeConfig>({
         from: user.address,

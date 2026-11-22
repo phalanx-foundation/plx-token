@@ -56,10 +56,22 @@ fun setupLockVault(): (JettonMinter, PlxLockVault, Treasury, Treasury) {
         admin: deployer.address,
         minterAddress: minter.address,
         tierCount: 4,
-        tier0: LockTier { durationSec: 604800, bonusBps: 50 },
-        tier1: LockTier { durationSec: ONE_MONTH_SEC, bonusBps: 200 },
-        tier2: LockTier { durationSec: THREE_MONTH_SEC, bonusBps: 800 },
-        tier3: LockTier { durationSec: SIX_MONTH_SEC, bonusBps: 2000 },
+        tier0: LockTier {
+            durationSec: 604800,
+            bonusBps: 50,
+        },
+        tier1: LockTier {
+            durationSec: ONE_MONTH_SEC,
+            bonusBps: 200,
+        },
+        tier2: LockTier {
+            durationSec: THREE_MONTH_SEC,
+            bonusBps: 800,
+        },
+        tier3: LockTier {
+            durationSec: SIX_MONTH_SEC,
+            bonusBps: 2000,
+        },
         eventEndAt: 0,
         minLockAmount: MIN_LOCK,
         sovereignMinAmount: SOVEREIGN_MIN,
@@ -77,7 +89,13 @@ fun setupLockVault(): (JettonMinter, PlxLockVault, Treasury, Treasury) {
     });
 
     expect(
-        minter.sendMint(deployer.address, deployer.address, REWARD_FUND * 2, ton("0.05"), ton("0.5")),
+        minter.sendMint(
+            deployer.address,
+            deployer.address,
+            REWARD_FUND * 2,
+            ton("0.05"),
+            ton("0.5"),
+        ),
     ).toHaveSuccessfulTx<MintNewJettons>({ from: deployer.address, to: minter.address });
 
     expect(
@@ -167,7 +185,9 @@ get fun `test lock vault: early claim rejected`() {
     userLocksToVault(minter, vault, user, MIN_LOCK, 1);
 
     val res = vault.sendReleaseLock(user.address, 0, 0, { bounce: false, value: ton("0.2") });
-    expect(res).toHaveFailedTx<ReleaseLock>({ from: user.address, to: vault.address, exitCode: 100 });
+    expect(
+        res,
+    ).toHaveFailedTx<ReleaseLock>({ from: user.address, to: vault.address, exitCode: 100 });
 }
 
 get fun `test lock vault: maturity claim returns principal and bonus`() {
@@ -190,10 +210,12 @@ get fun `test lock vault: event end before maturity forfeits bonus`() {
     expect(fundRes).toHaveSuccessfulTx<TransferNotificationForRecipient>({ to: vault.address });
     userLocksToVault(minter, vault, user, MIN_LOCK, 2);
 
-    vault.sendSetEventEnd(deployer.address, 0, 1700000000 + ONE_MONTH_SEC, {
-        bounce: false,
-        value: ton("0.1"),
-    });
+    vault.sendSetEventEnd(
+        deployer.address,
+        0,
+        1700000000 + ONE_MONTH_SEC,
+        { bounce: false, value: ton("0.1") },
+    );
 
     testing.setNow(1700000000 + THREE_MONTH_SEC + 1);
     val (_, _, beforePool, _) = vault.getLockVaultData();
@@ -211,6 +233,7 @@ get fun `test lock vault: unauthorized claim rejected`() {
     testing.setNow(1700000000 + ONE_MONTH_SEC + 1);
 
     val res = vault.sendReleaseLock(deployer.address, 0, 0, { bounce: false, value: ton("0.2") });
-    expect(res).toHaveFailedTx<ReleaseLock>({ from: deployer.address, to: vault.address, exitCode: 73 });
+    expect(
+        res,
+    ).toHaveFailedTx<ReleaseLock>({ from: deployer.address, to: vault.address, exitCode: 73 });
 }
-

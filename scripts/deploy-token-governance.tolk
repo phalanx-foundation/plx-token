@@ -31,7 +31,10 @@ import "utils/common"
 fun main() {
     val deployer = promptJettonWallet("DEPLOYER", "Deployer wallet");
     val admin = promptJettonAddressRequired("GV_ADMIN", "Governance admin address");
-    val minter = promptJettonAddressRequired("GV_MINTER", "Governance (staked) jetton minter address");
+    val minter = promptJettonAddressRequired(
+        "GV_MINTER",
+        "Governance (staked) jetton minter address",
+    );
 
     val proposalThresholdRaw = env<int>("GV_PROPOSAL_THRESHOLD") ?? 1000000000000;
     val proposalThreshold: coins = proposalThresholdRaw;

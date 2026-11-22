@@ -72,11 +72,14 @@ fun processAllocation(
         minter
             .sendMint(deployerAddr, vesting.address, nano, ton("0.05"), ton("0.3"))
             .waitForTrace();
-        println("TOOLKIT ALLOC_VESTING={} AMOUNT={} BENEFICIARY={}", vesting.address, nano, recipient);
+        println(
+            "TOOLKIT ALLOC_VESTING={} AMOUNT={} BENEFICIARY={}",
+            vesting.address,
+            nano,
+            recipient,
+        );
     } else {
-        minter
-            .sendMint(deployerAddr, recipient, nano, ton("0.05"), ton("0.3"))
-            .waitForTrace();
+        minter.sendMint(deployerAddr, recipient, nano, ton("0.05"), ton("0.3")).waitForTrace();
         println("TOOLKIT ALLOC_MINT AMOUNT={} RECIPIENT={}", nano, recipient);
     }
 }
@@ -96,18 +99,126 @@ fun main() {
     println("TOOLKIT DEPLOY_TRACE={}", deployRes.waitForTrace());
 
     // Unrolled up to 12 buckets. Missing slots (null address) are skipped.
-    processAllocation(minter, deployer.address, clientAdmin, "JETTON_ALLOC_0_ADDRESS", "JETTON_ALLOC_0_NANO", "JETTON_ALLOC_0_VEST", "JETTON_ALLOC_0_VEST_START", "JETTON_ALLOC_0_VEST_DURATION");
-    processAllocation(minter, deployer.address, clientAdmin, "JETTON_ALLOC_1_ADDRESS", "JETTON_ALLOC_1_NANO", "JETTON_ALLOC_1_VEST", "JETTON_ALLOC_1_VEST_START", "JETTON_ALLOC_1_VEST_DURATION");
-    processAllocation(minter, deployer.address, clientAdmin, "JETTON_ALLOC_2_ADDRESS", "JETTON_ALLOC_2_NANO", "JETTON_ALLOC_2_VEST", "JETTON_ALLOC_2_VEST_START", "JETTON_ALLOC_2_VEST_DURATION");
-    processAllocation(minter, deployer.address, clientAdmin, "JETTON_ALLOC_3_ADDRESS", "JETTON_ALLOC_3_NANO", "JETTON_ALLOC_3_VEST", "JETTON_ALLOC_3_VEST_START", "JETTON_ALLOC_3_VEST_DURATION");
-    processAllocation(minter, deployer.address, clientAdmin, "JETTON_ALLOC_4_ADDRESS", "JETTON_ALLOC_4_NANO", "JETTON_ALLOC_4_VEST", "JETTON_ALLOC_4_VEST_START", "JETTON_ALLOC_4_VEST_DURATION");
-    processAllocation(minter, deployer.address, clientAdmin, "JETTON_ALLOC_5_ADDRESS", "JETTON_ALLOC_5_NANO", "JETTON_ALLOC_5_VEST", "JETTON_ALLOC_5_VEST_START", "JETTON_ALLOC_5_VEST_DURATION");
-    processAllocation(minter, deployer.address, clientAdmin, "JETTON_ALLOC_6_ADDRESS", "JETTON_ALLOC_6_NANO", "JETTON_ALLOC_6_VEST", "JETTON_ALLOC_6_VEST_START", "JETTON_ALLOC_6_VEST_DURATION");
-    processAllocation(minter, deployer.address, clientAdmin, "JETTON_ALLOC_7_ADDRESS", "JETTON_ALLOC_7_NANO", "JETTON_ALLOC_7_VEST", "JETTON_ALLOC_7_VEST_START", "JETTON_ALLOC_7_VEST_DURATION");
-    processAllocation(minter, deployer.address, clientAdmin, "JETTON_ALLOC_8_ADDRESS", "JETTON_ALLOC_8_NANO", "JETTON_ALLOC_8_VEST", "JETTON_ALLOC_8_VEST_START", "JETTON_ALLOC_8_VEST_DURATION");
-    processAllocation(minter, deployer.address, clientAdmin, "JETTON_ALLOC_9_ADDRESS", "JETTON_ALLOC_9_NANO", "JETTON_ALLOC_9_VEST", "JETTON_ALLOC_9_VEST_START", "JETTON_ALLOC_9_VEST_DURATION");
-    processAllocation(minter, deployer.address, clientAdmin, "JETTON_ALLOC_10_ADDRESS", "JETTON_ALLOC_10_NANO", "JETTON_ALLOC_10_VEST", "JETTON_ALLOC_10_VEST_START", "JETTON_ALLOC_10_VEST_DURATION");
-    processAllocation(minter, deployer.address, clientAdmin, "JETTON_ALLOC_11_ADDRESS", "JETTON_ALLOC_11_NANO", "JETTON_ALLOC_11_VEST", "JETTON_ALLOC_11_VEST_START", "JETTON_ALLOC_11_VEST_DURATION");
+    processAllocation(
+        minter,
+        deployer.address,
+        clientAdmin,
+        "JETTON_ALLOC_0_ADDRESS",
+        "JETTON_ALLOC_0_NANO",
+        "JETTON_ALLOC_0_VEST",
+        "JETTON_ALLOC_0_VEST_START",
+        "JETTON_ALLOC_0_VEST_DURATION",
+    );
+    processAllocation(
+        minter,
+        deployer.address,
+        clientAdmin,
+        "JETTON_ALLOC_1_ADDRESS",
+        "JETTON_ALLOC_1_NANO",
+        "JETTON_ALLOC_1_VEST",
+        "JETTON_ALLOC_1_VEST_START",
+        "JETTON_ALLOC_1_VEST_DURATION",
+    );
+    processAllocation(
+        minter,
+        deployer.address,
+        clientAdmin,
+        "JETTON_ALLOC_2_ADDRESS",
+        "JETTON_ALLOC_2_NANO",
+        "JETTON_ALLOC_2_VEST",
+        "JETTON_ALLOC_2_VEST_START",
+        "JETTON_ALLOC_2_VEST_DURATION",
+    );
+    processAllocation(
+        minter,
+        deployer.address,
+        clientAdmin,
+        "JETTON_ALLOC_3_ADDRESS",
+        "JETTON_ALLOC_3_NANO",
+        "JETTON_ALLOC_3_VEST",
+        "JETTON_ALLOC_3_VEST_START",
+        "JETTON_ALLOC_3_VEST_DURATION",
+    );
+    processAllocation(
+        minter,
+        deployer.address,
+        clientAdmin,
+        "JETTON_ALLOC_4_ADDRESS",
+        "JETTON_ALLOC_4_NANO",
+        "JETTON_ALLOC_4_VEST",
+        "JETTON_ALLOC_4_VEST_START",
+        "JETTON_ALLOC_4_VEST_DURATION",
+    );
+    processAllocation(
+        minter,
+        deployer.address,
+        clientAdmin,
+        "JETTON_ALLOC_5_ADDRESS",
+        "JETTON_ALLOC_5_NANO",
+        "JETTON_ALLOC_5_VEST",
+        "JETTON_ALLOC_5_VEST_START",
+        "JETTON_ALLOC_5_VEST_DURATION",
+    );
+    processAllocation(
+        minter,
+        deployer.address,
+        clientAdmin,
+        "JETTON_ALLOC_6_ADDRESS",
+        "JETTON_ALLOC_6_NANO",
+        "JETTON_ALLOC_6_VEST",
+        "JETTON_ALLOC_6_VEST_START",
+        "JETTON_ALLOC_6_VEST_DURATION",
+    );
+    processAllocation(
+        minter,
+        deployer.address,
+        clientAdmin,
+        "JETTON_ALLOC_7_ADDRESS",
+        "JETTON_ALLOC_7_NANO",
+        "JETTON_ALLOC_7_VEST",
+        "JETTON_ALLOC_7_VEST_START",
+        "JETTON_ALLOC_7_VEST_DURATION",
+    );
+    processAllocation(
+        minter,
+        deployer.address,
+        clientAdmin,
+        "JETTON_ALLOC_8_ADDRESS",
+        "JETTON_ALLOC_8_NANO",
+        "JETTON_ALLOC_8_VEST",
+        "JETTON_ALLOC_8_VEST_START",
+        "JETTON_ALLOC_8_VEST_DURATION",
+    );
+    processAllocation(
+        minter,
+        deployer.address,
+        clientAdmin,
+        "JETTON_ALLOC_9_ADDRESS",
+        "JETTON_ALLOC_9_NANO",
+        "JETTON_ALLOC_9_VEST",
+        "JETTON_ALLOC_9_VEST_START",
+        "JETTON_ALLOC_9_VEST_DURATION",
+    );
+    processAllocation(
+        minter,
+        deployer.address,
+        clientAdmin,
+        "JETTON_ALLOC_10_ADDRESS",
+        "JETTON_ALLOC_10_NANO",
+        "JETTON_ALLOC_10_VEST",
+        "JETTON_ALLOC_10_VEST_START",
+        "JETTON_ALLOC_10_VEST_DURATION",
+    );
+    processAllocation(
+        minter,
+        deployer.address,
+        clientAdmin,
+        "JETTON_ALLOC_11_ADDRESS",
+        "JETTON_ALLOC_11_NANO",
+        "JETTON_ALLOC_11_VEST",
+        "JETTON_ALLOC_11_VEST_START",
+        "JETTON_ALLOC_11_VEST_DURATION",
+    );
 
     // Escrow: hand minter admin to the client (client claims).
     minter

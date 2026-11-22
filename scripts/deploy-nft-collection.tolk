@@ -4,8 +4,8 @@ import "@acton/fmt"
 import "@acton/io"
 import "@acton/emulation/network"
 import "@acton/emulation/scripts"
-import "@contracts/storage"
 import "@contracts/nft-storage"
+import "@contracts/storage"
 import "@gen/NftItem.code"
 import "@wrappers/NftCollection.gen"
 import "utils/common"
@@ -60,7 +60,9 @@ fun main() {
     }
 
     val clientOwner = promptJettonAddressRequired("NFT_OWNER_ADDRESS", "NFT collection owner");
-    val itemCount = parseInt(promptJettonString("NFT_ITEM_COUNT", "Items to mint after deploy", "0"));
+    val itemCount = parseInt(
+        promptJettonString("NFT_ITEM_COUNT", "Items to mint after deploy", "0"),
+    );
     // Escrow: deployer must own collection to send DeployNftItem
     var storageOwner = clientOwner;
     if (itemCount > 0) {

@@ -4,8 +4,8 @@ import "@acton/fmt"
 import "@acton/io"
 import "@acton/emulation/network"
 import "@acton/emulation/scripts"
-import "@contracts/storage"
 import "@contracts/nft-storage"
+import "@contracts/storage"
 import "@gen/NftItem.code"
 import "@wrappers/CompressedNftCollection.gen"
 import "utils/common"
@@ -73,8 +73,12 @@ fun main() {
     val owner = promptJettonAddressRequired("NFT_OWNER_ADDRESS", "cNFT owner");
     val merkleRoot: uint256 = (env<int>("CNFT_MERKLE_ROOT") ?? 0) as uint256;
     val maxSupply = parseInt(promptJettonString("CNFT_MAX_SUPPLY", "Max supply", "256")) as uint64;
-    val royaltyFactor = parseInt(promptJettonString("ROYALTY_FACTOR", "Royalty factor", "0")) as uint16;
-    val royaltyBase = parseInt(promptJettonString("ROYALTY_BASE", "Royalty base", "10000")) as uint16;
+    val royaltyFactor = parseInt(
+        promptJettonString("ROYALTY_FACTOR", "Royalty factor", "0"),
+    ) as uint16;
+    val royaltyBase = parseInt(
+        promptJettonString("ROYALTY_BASE", "Royalty base", "10000"),
+    ) as uint16;
 
     val storage: CompressedNftCollectionStorage = {
         ownerAddress: owner,
