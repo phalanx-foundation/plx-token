@@ -25,21 +25,45 @@ sama tidak terulang.
 | G2 | Test suite | `acton test` | 185/185 passed di 21 file, exit 0 | PASS |
 | G3 | Metadata TEP-74 | validasi metadata | valid | PASS |
 | G4 | Contracts CI (GitHub Actions) | run `44994560000` | success (27s) | PASS |
+| G5 | Format | `acton fmt --check` | exit 0, diff nol | PASS (blocking sejak `e69e909`) |
+
+HEAD saat verifikasi: `9e70e66`, sinkron penuh dengan `origin/master`.
 
 Jumlah test yang benar adalah **185 test di 21 file**. Angka "60 tests"
 maupun "72+ tests" yang masih muncul di sebagian dokumen lama sudah **usang**
 dan tidak boleh dipakai sebagai acuan review.
 
+## Gerbang format (promosi dari non-blocking)
+
+| # | Gerbang | Kondisi | Status |
+|---|---------|---------|--------|
+| G5 | `acton fmt --check` | "All files are properly formatted", exit 0 tanpa perubahan worktree | PASS — **blocking** |
+
+Diff format sudah nol sejak commit `5137831`, sehingga gate ini dinaikkan
+menjadi wajib di `e69e909` (tidak lagi `continue-on-error`). Kalau step ini
+merah, jalankan `acton fmt` lokal lalu commit hasilnya — jangan menurunkannya
+kembali ke non-blocking.
+
 ## Gerbang non-blocking (continue-on-error)
 
 | # | Gerbang | Kondisi saat ini | Alasan tidak memblokir |
 |---|---------|------------------|------------------------|
-| N1 | `acton fmt --check` | masih ada diff format | kosmetik; sudah dirapikan bertahap, sisa diff tidak mengubah semantik |
-| N2 | `acton check` (lint) | ~105 warning gaya | gaya penulisan, bukan bug fungsional |
+| N1 | `acton check` (lint) | 18 warning gaya | gaya penulisan, bukan bug fungsional |
 
-Keduanya berstatus `continue-on-error` di workflow `Contracts CI`, sehingga
-tidak menghalangi merge maupun rilis. Target jangka menengah: menurunkan
-warning secara bertahap lalu menaikkan `fmt --check` menjadi gerbang wajib.
+Rincian warning per kode aturan (sesuai `acton check` terkini, bukan angka
+lama 105 yang kini usang):
+
+| Kode | Jumlah | Arti |
+|------|--------|------|
+| E028 | 8 | throw code sebaiknya memakai `Errors.<Name>` |
+| E016 | 6 | send dengan mode berbahaya perlu komentar keselamatan |
+| E019 | 3 | pembagian sebelum perkalian berpotensi kehilangan presisi |
+| E005 | 1 | import tidak terpakai |
+
+Tiga di antaranya bernilai fungsional — E016 dan E019 menyentuh keamanan
+pengiriman pesan dan presisi aritmetika — sehingga bukan sekadar kosmetik.
+Urutan penanganan: E019 → E016 → E028 → E005. Setelah tiap batch, jalankan
+`acton build` + `acton test`; suite harus tetap 185/185.
 
 ## Kebijakan penafsiran hasil
 
