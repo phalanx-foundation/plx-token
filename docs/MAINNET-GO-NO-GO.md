@@ -24,7 +24,7 @@ Gunakan checklist ini **sebelum** demo investor, press, atau kampanye retail. Sa
 
 | # | Cek | PASS |
 |---|-----|------|
-| C1 | `acton test` hijau di commit yang di-deploy | 72+ tests |
+| C1 | `acton test` hijau di commit yang di-deploy | 185/185 tests di 21 file (exit 0) |
 | C2 | Deploy log tersimpan | `.deploy-mainnet.log` di server |
 | C3 | Keputusan drop admin | `drop-admin` dijalankan ATAU alasan tertulis menunda |
 | C4 | TON Console / verifikasi kontrak | Terjadwal (tidak mengganti B1–B3) |
