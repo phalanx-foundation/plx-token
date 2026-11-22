@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   test:
-    name: Lint · Build · Test (60 tests)
+    name: Lint · Build · Test (185 tests)
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -87,5 +87,5 @@ jobs:
         run: acton fmt --check
         continue-on-error: true
 
-      - name: Run test suite (60 tests, real quality gate)
+      - name: Run test suite (185 tests, real quality gate)
         run: acton test

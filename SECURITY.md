@@ -63,7 +63,7 @@ None yet. Be the first.
 | Date | Scope | Auditor | Result |
 |------|-------|---------|--------|
 | 2026-06-13 | PlxLockVault, PlxStaking (stubs) | Internal review | NOT-SAFE-TO-DEPLOY — Phase 1 rewrite pending |
-| 2026-06 | JettonMinter, JettonWallet, TeamVesting, PaymentSplitter | Internal review + 60 tests passing | PASS — deployed to mainnet |
+| 2026-06 | JettonMinter, JettonWallet, TeamVesting, PaymentSplitter | Internal review + 185 tests passing | PASS — deployed to mainnet |
 | 2026-05-28 | GitHub repos (secrets scan) | Internal audit | CLEAN — no secrets committed to public/private repos |
 | Q4 2026 (planned) | Full codebase | External third-party auditor | TBD |
 

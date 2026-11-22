@@ -162,19 +162,33 @@ PLX uses **shard depth 8** (`SHARD_DEPTH=8` in `contracts/sharding.tolk`). This 
 
 ## Test Coverage
 
-60 tests across 7 files:
+185 tests across 21 files:
 
 | File | Tests | Focus |
 |---|---:|---|
+| `MidasHandEscrow.test.tolk` | 25 | Escrow lifecycle, release/refund paths |
+| `token-governance.test.tolk` | 24 | Governance proposals, voting, execution |
 | `admin-and-governance.test.tolk` | 14 | Admin handover, drop, metadata, upgrade, discovery, sharding |
-| `bounce-handling.test.tolk` | 3 | Bounce recovery for transfer/burn |
 | `gas.test.tolk` | 13 | Gas/fee bounds, edge cases |
-| `protocol-validation.test.tolk` | 7 | Reject malformed payloads, unauthorized senders |
-| `state-init.test.tolk` | 2 | Max value mint, storage size limits |
-| `wallet-behavior.test.tolk` | 9 | Owner transfer, burn, balance checks |
+| `splitter.test.tolk` | 12 | Payment splitter shares and distribution |
 | `vesting.test.tolk` | 12 | Linear release, claim, revoke, time edges |
+| `airdrop.test.tolk` | 10 | Airdrop claim windows and eligibility |
+| `wallet-behavior.test.tolk` | 10 | Owner transfer, burn, balance checks |
+| `custom-staking.test.tolk` | 9 | Custom staking pool accounting |
+| `anti-whale-minter.test.tolk` | 8 | Per-holder caps enforced by minter |
+| `fee-jetton.test.tolk` | 8 | Fee-on-transfer jetton behaviour |
+| `anti-whale.test.tolk` | 7 | Per-wallet transfer limits |
+| `protocol-validation.test.tolk` | 7 | Reject malformed payloads, unauthorized senders |
+| `formation-lock-staking.test.tolk` | 6 | Locked staking positions |
+| `bounce-handling.test.tolk` | 3 | Bounce recovery for transfer/burn |
+| `distribution-client.test.tolk` | 3 | Distribution client claims |
+| `formation-staking.test.tolk` | 3 | Formation staking basics |
+| `liquidity-locker.test.tolk` | 3 | LP token locking |
+| `token-lock-vault.test.tolk` | 3 | Time-locked vault release |
+| `token-staking.test.tolk` | 3 | Base staking accounting |
+| `state-init.test.tolk` | 2 | Max value mint, storage size limits |
 
-Run with `acton test`.
+Run with `acton test`. Current status: **185/185 passing, exit 0.**
 
 ## Security Considerations
 

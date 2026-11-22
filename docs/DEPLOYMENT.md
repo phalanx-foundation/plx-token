@@ -111,7 +111,7 @@ Use Tonkeeper testnet mode:
 > **Do NOT proceed unless** you have:
 >
 > - At least **5 TON** in your deployer wallet on mainnet
-> - Verified all 60 tests pass
+> - Verified all 185 tests pass
 > - Reviewed `contracts/*.tolk` for any production-only changes
 > - Backed up `wallets.toml` to offline secure storage
 > - Decided on whether to **drop admin** after distribution (recommended)
