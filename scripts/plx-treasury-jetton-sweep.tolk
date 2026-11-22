@@ -4,6 +4,10 @@ import "@acton/emulation/network"
 import "@acton/emulation/scripts"
 import "@wrappers/JettonMinter.gen"
 import "@wrappers/JettonWallet.gen"
+// sendTransfer (AskToTransfer + maybe-ref forward payload) hanya dideklarasikan di
+// wrappers/utils. Tanpa import ini `acton check` gagal C001 "method sendTransfer
+// not found" walaupun file ini tidak pernah di-build oleh gate CI.
+import "@wrappers/utils"
 
 fun sendJetton(
     from: ActonWallet,
