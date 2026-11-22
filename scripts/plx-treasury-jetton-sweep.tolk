@@ -4,7 +4,6 @@ import "@acton/emulation/network"
 import "@acton/emulation/scripts"
 import "@wrappers/JettonMinter.gen"
 import "@wrappers/JettonWallet.gen"
-import "utils/common"
 
 fun sendJetton(
     from: ActonWallet,

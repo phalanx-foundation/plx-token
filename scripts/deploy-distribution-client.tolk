@@ -3,7 +3,6 @@ import "@acton/io"
 import "@acton/emulation/network"
 import "@acton/emulation/scripts"
 import "@contracts/TeamVesting"
-import "@contracts/storage"
 import "@wrappers/JettonMinter.gen"
 import "@wrappers/TeamVesting.gen"
 import "@wrappers/utils"
@@ -61,8 +60,8 @@ fun processAllocation(
             admin: clientAdmin,
             minterAddress: minter.address,
             totalAmount: nano,
-            startTime: startTime,
-            duration: duration,
+            startTime,
+            duration,
         };
         val vesting = TeamVesting.fromStorage({
             config: vestingConfig.toCell(),

@@ -77,8 +77,8 @@ fun main() {
         nextItemIndex: 0,
         collectionContent: buildCollectionContentCell(),
         nftItemCode: nftItemCompiledCode(),
-        royaltyFactor: royaltyFactor,
-        royaltyBase: royaltyBase,
+        royaltyFactor,
+        royaltyBase,
         royaltyAddress: clientOwner,
     };
 

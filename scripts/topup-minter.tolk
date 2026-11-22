@@ -3,7 +3,6 @@ import "@acton/io"
 import "@acton/emulation/network"
 import "@acton/emulation/scripts"
 import "@wrappers/JettonMinter.gen"
-import "@wrappers/utils"
 
 fun main() {
     val fromName = env<string>("FROM_WALLET") ?? "plx-marketing";

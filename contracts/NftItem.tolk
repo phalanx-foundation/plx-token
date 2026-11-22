@@ -1,4 +1,3 @@
-import "@stdlib/gas-payments"
 import "nft-messages"
 import "nft-storage"
 

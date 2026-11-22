@@ -1,13 +1,9 @@
-import "@stdlib/strings"
 import "@acton/env"
-import "@acton/fmt"
 import "@acton/io"
-import "@acton/prompts"
 import "@acton/emulation/network"
 import "@acton/emulation/scripts"
 import "@contracts/CustomStakingParams"
 import "@wrappers/CustomStakingParams.gen"
-import "@wrappers/utils"
 import "utils/common"
 
 /**
@@ -57,7 +53,7 @@ fun main() {
     val res = staking.sendDeploy(deployer.address, { value: ton("0.1") });
     res.waitForFirstTransaction();
 
-    val (totalStaked, nextId, lastUpdate, pool, rewardPerToken) = staking.getStakingData();
+    val (totalStaked, _nextId, _lastUpdate, pool, _rewardPerToken) = staking.getStakingData();
 
     println("CUSTOM_STAKING CONTRACT_ADDRESS={}", staking.address);
     println("CUSTOM_STAKING ADMIN_ADDRESS={}", admin);

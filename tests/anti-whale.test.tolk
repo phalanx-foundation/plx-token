@@ -5,10 +5,7 @@ import "@acton/testing/expect"
 import "@contracts/AntiWhaleJettonWallet"
 import "@contracts/errors"
 import "@contracts/messages"
-import "@contracts/storage"
 import "@wrappers/AntiWhaleJettonWallet.gen"
-import "@wrappers/JettonMinter.gen"
-import "@wrappers/utils"
 
 import "test-utils"
 

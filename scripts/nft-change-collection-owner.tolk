@@ -1,6 +1,4 @@
-import "@stdlib/strings"
 import "@acton/env"
-import "@acton/fmt"
 import "@acton/io"
 import "@acton/emulation/network"
 import "@acton/emulation/scripts"

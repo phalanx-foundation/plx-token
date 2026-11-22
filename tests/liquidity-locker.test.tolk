@@ -66,7 +66,7 @@ get fun `test liquidity-locker: deploy stores empty locker state`() {
 }
 
 get fun `test liquidity-locker: lock then unlock after period`() {
-    val (lpMinter, locker, deployer, provider) = setupLiquidityLocker();
+    val (lpMinter, locker, _deployer, provider) = setupLiquidityLocker();
     val unlockAt = 1700000000 + LL_UNLOCK_DAYS;
 
     val lockRes = transferTokensTo(
@@ -98,7 +98,7 @@ get fun `test liquidity-locker: lock then unlock after period`() {
 }
 
 get fun `test liquidity-locker: early unlock rejected`() {
-    val (lpMinter, locker, deployer, provider) = setupLiquidityLocker();
+    val (lpMinter, locker, _deployer, provider) = setupLiquidityLocker();
     val unlockAt = 1700000000 + LL_UNLOCK_DAYS;
     transferTokensTo(lpMinter, provider, locker.address, LL_LOCK_AMOUNT, makeLockPayload(unlockAt));
 

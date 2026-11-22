@@ -39,7 +39,7 @@ fun makeStonfiConfig(
     router: address,
     pool: JettonMinter,
     pton: JettonMinter,
-    seedWalletCode: cell,
+    _seedWalletCode: cell,
 ): StonFiConfig {
     return StonFiConfig {
         routerAddress: router,
@@ -151,9 +151,9 @@ get fun `test midas-escrow: deploy in proposed state`() {
         _,
         _,
         _,
-        whale,
-        owner,
-        admin,
+        _whale,
+        _owner,
+        _admin,
         _,
     ) = setupEscrow();
     val (
@@ -1382,7 +1382,7 @@ get fun `test midas-escrow: approve emits two-leg provide_lp bodies`() {
     val (
         escrow,
         seedMinter,
-        ptonMinter,
+        _ptonMinter,
         _,
         whale,
         owner,

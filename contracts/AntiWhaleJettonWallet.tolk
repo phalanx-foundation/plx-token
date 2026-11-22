@@ -1,7 +1,6 @@
 import "@stdlib/gas-payments"
 import "errors"
 import "fees-management"
-import "jetton-utils"
 import "messages"
 import "sharding"
 import "storage"

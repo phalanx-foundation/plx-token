@@ -3,7 +3,6 @@ import "@acton/emulation/testing"
 import "@acton/testing/expect"
 
 import "@contracts/PlxStaking"
-import "@contracts/errors"
 import "@contracts/messages"
 import "@contracts/storage"
 import "@wrappers/JettonMinter.gen"
@@ -138,7 +137,7 @@ get fun `test staking: deposit increases totalStaked`() {
 }
 
 get fun `test staking: early unstake rejected`() {
-    val (minter, staking, deployer, user) = setupStaking();
+    val (minter, staking, _deployer, user) = setupStaking();
     userStakesToContract(minter, staking, user, MIN_LOCK, ONE_MONTH_SEC);
 
     val res = staking.sendUnstakePlx(user.address, 0, 0, { bounce: false, value: ton("0.2") });

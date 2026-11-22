@@ -1,6 +1,5 @@
 import "@acton/io"
 import "@acton/emulation/scripts"
-import "utils/common"
 
 fun printWallet(name: string) {
     val w = scripts.wallet(name);

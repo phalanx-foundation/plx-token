@@ -112,7 +112,7 @@ fun addressToClaimKey(addr: address): uint256 {
     return beginCell().storeAddress(addr).endCell().hash();
 }
 
-fun onBouncedMessage(in: InMessageBounced) {
+fun onBouncedMessage(_in: InMessageBounced) {
     // No state to restore on bounced jetton transfers
 }
 

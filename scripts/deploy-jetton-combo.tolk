@@ -83,7 +83,7 @@ fun main() {
     );
 }
 
-fun failClosed(message: string) {
+fun failClosed(message: string): never {
     // Printed before throwing so the operator sees the reason in the deploy log
     // instead of a bare Acton exit code.
     println("TOOLKIT ERROR={}", message);

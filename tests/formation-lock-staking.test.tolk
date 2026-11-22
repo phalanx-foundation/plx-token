@@ -3,7 +3,6 @@ import "@acton/emulation/testing"
 import "@acton/testing/expect"
 
 import "@contracts/PlxLockVault"
-import "@contracts/errors"
 import "@contracts/messages"
 import "@contracts/storage"
 import "@wrappers/JettonMinter.gen"

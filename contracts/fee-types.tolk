@@ -1,5 +1,4 @@
 import "sharding"
-import "storage"
 
 /// Storage for FeeJettonWallet — extends WalletStorage with fee configuration.
 /// feeBps: fee in basis points (100 bps = 1%, max 1000 bps = 10%)

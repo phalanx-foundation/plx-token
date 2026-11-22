@@ -2,14 +2,13 @@ import "@acton/env"
 import "@acton/io"
 import "@acton/emulation/network"
 import "@acton/emulation/scripts"
-import "utils/common"
 
 fun sendTon(from: ActonWallet, dest: address, amount: coins, label: string) {
     println("[treasury-sweep] {} -> {} amount {}", label, dest, amount);
     val msg = createMessage({
         bounce: false,
         value: amount,
-        dest: dest,
+        dest,
     });
     val res = net.send(from.address, msg);
     println(res.waitForTrace());

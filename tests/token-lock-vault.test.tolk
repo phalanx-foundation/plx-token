@@ -102,7 +102,7 @@ get fun `test token-lock-vault: deploy and fund reward pool`() {
 }
 
 get fun `test token-lock-vault: lock then release after maturity`() {
-    val (minter, vault, deployer, user) = setupLockVault();
+    val (minter, vault, _deployer, user) = setupLockVault();
 
     val lockRes = transferTokensTo(
         minter,
@@ -126,7 +126,7 @@ get fun `test token-lock-vault: lock then release after maturity`() {
 }
 
 get fun `test token-lock-vault: early release rejected`() {
-    val (minter, vault, deployer, user) = setupLockVault();
+    val (minter, vault, _deployer, user) = setupLockVault();
     transferTokensTo(minter, user, vault.address, LV_LOCK_AMOUNT, makeLockDepositPayload(0, false));
 
     val early = vault.sendReleaseLock(user.address, 0, 0, { bounce: false, value: ton("0.2") });

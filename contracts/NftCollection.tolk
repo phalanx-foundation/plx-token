@@ -1,5 +1,3 @@
-import "@stdlib/gas-payments"
-import "errors"
 import "messages"
 import "nft-messages"
 import "nft-storage"
@@ -88,7 +86,7 @@ fun onInternalMessage(in: InMessage) {
             val itemsCell = msg.items;
             var itemsSlice = itemsCell.beginParse();
             val count = itemsSlice.loadRef();
-            var itemSlice = count.beginParse();
+            val itemSlice = count.beginParse();
             while (itemSlice.remainingBitsCount() > 0 || itemSlice.remainingRefsCount() > 0) {
                 val item = lazy DeployNftItem.fromSlice(itemSlice);
                 assert (item.index == storage.nextItemIndex) throw 101;
@@ -173,7 +171,7 @@ get fun get_nft_address_by_index(index: int, owner: address, individualContent: 
     ).calculateAddress();
 }
 
-get fun get_nft_content(index: int, individualContent: cell): cell {
+get fun get_nft_content(_index: int, individualContent: cell): cell {
     val storage = lazy NftCollectionStorage.load();
 
     return beginCell().storeRef(storage.collectionContent).storeRef(individualContent).endCell();

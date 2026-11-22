@@ -124,7 +124,7 @@ fun onInternalMessage(in: InMessage) {
                     proofMsg.itemIndex,
                     storage.merkleRoot,
                 )
-            ) throw 104;                                                                                                // Invalid Merkle proof
+            ) throw 104; // Invalid Merkle proof
 
             val deployMsg = createMessage({
                 bounce: BounceMode.Only256BitsOfBody,

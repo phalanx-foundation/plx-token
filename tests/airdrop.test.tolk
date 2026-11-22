@@ -7,7 +7,6 @@ import "@contracts/errors"
 import "@contracts/messages"
 import "@contracts/storage"
 import "@wrappers/JettonMinter.gen"
-import "@wrappers/JettonWallet.gen"
 import "@wrappers/PlxAirdrop.gen"
 import "@wrappers/utils"
 
@@ -107,7 +106,7 @@ get fun `test airdrop: deploy and jetton wallet configured correctly`() {
 get fun `test airdrop: valid claim with single-leaf tree succeeds`() {
     val claimant = testing.treasury("airdrop-claimant1");
     val root = buildSingleLeafRoot(claimant.address, AIRDROP_AMOUNT);
-    val (minter, airdrop, _, _) = setupAirdrop(root);
+    val (_minter, airdrop, _, _) = setupAirdrop(root);
 
     expect(airdrop.isClaimed(claimant.address)).toEqual(false);
 

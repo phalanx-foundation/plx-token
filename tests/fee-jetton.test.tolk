@@ -2,15 +2,11 @@ import "@acton/emulation/network"
 import "@acton/emulation/testing"
 import "@acton/testing/expect"
 
-import "@contracts/FeeJettonMinter"
-import "@contracts/FeeJettonWallet"
 import "@contracts/errors"
 import "@contracts/fee-types"
 import "@contracts/messages"
-import "@contracts/storage"
 import "@wrappers/FeeJettonMinter.gen"
 import "@wrappers/FeeJettonWallet.gen"
-import "@wrappers/utils"
 
 import "test-utils"
 
@@ -79,7 +75,7 @@ fun sendFeeTransfer(
 }
 
 get fun `test fee-jetton: deploy initialises fee config`() {
-    val (minter, deployer, collector, _) = setupFeeJetton(TEST_FEE_BPS);
+    val (minter, _deployer, collector, _) = setupFeeJetton(TEST_FEE_BPS);
 
     val (feeBps, feeCollector) = minter.getFeeConfig();
     expect(feeBps).toEqual(TEST_FEE_BPS);

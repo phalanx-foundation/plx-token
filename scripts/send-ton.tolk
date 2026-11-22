@@ -2,7 +2,6 @@ import "@acton/env"
 import "@acton/io"
 import "@acton/emulation/network"
 import "@acton/emulation/scripts"
-import "utils/common"
 
 fun main() {
     val fromName = env<string>("FROM_WALLET") ?? "plx-treasury";

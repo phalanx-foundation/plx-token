@@ -6,7 +6,6 @@
 import "@acton/build"
 import "@acton/emulation/network"
 import "@acton/testing/assert"
-import "@contracts/FeeJettonMinter"
 import "@contracts/fee-types"
 import "@contracts/messages"
 import "@contracts/storage"

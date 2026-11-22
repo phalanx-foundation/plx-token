@@ -1,7 +1,5 @@
 import "@acton/env"
 import "@acton/io"
-import "@acton/emulation/scripts"
-import "utils/common"
 
 // Phase 2 companion — documents buyback burn after swap.
 // Actual Ston.fi swap is handled by scripts/buyback-swap-burn.py (queue processor).

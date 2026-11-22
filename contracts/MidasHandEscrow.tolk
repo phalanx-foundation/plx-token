@@ -973,7 +973,7 @@ fun startStonfiAddLiquidity(storage: MidasEscrowStorage, config: MidasEscrowConf
 // The vault parks a lone leg until the matching leg lands, then the pool mints
 // LP to the escrow's LP wallet (ADDING -> ACTIVE).
 fun startDedustAddLiquidity(
-    storage: MidasEscrowStorage,
+    _storage: MidasEscrowStorage,
     config: MidasEscrowConfig,
     tonAmount: coins,
     jettonAmount: coins,

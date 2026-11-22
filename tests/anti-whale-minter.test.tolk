@@ -2,7 +2,6 @@ import "@acton/emulation/network"
 import "@acton/emulation/testing"
 import "@acton/testing/expect"
 
-import "@contracts/AntiWhaleJettonWallet"
 import "@contracts/antiwhale-types"
 import "@contracts/errors"
 import "@contracts/messages"

@@ -90,7 +90,7 @@ get fun `test token-staking: deploy and fund reward pool`() {
 }
 
 get fun `test token-staking: stake then unstake after lock`() {
-    val (minter, staking, deployer, user) = setupTokenStaking(TS_APR_BPS);
+    val (minter, staking, _deployer, user) = setupTokenStaking(TS_APR_BPS);
 
     val stakeRes = transferTokensTo(
         minter,
@@ -119,7 +119,7 @@ get fun `test token-staking: stake then unstake after lock`() {
 }
 
 get fun `test token-staking: early unstake rejected`() {
-    val (minter, staking, deployer, user) = setupTokenStaking(TS_APR_BPS);
+    val (minter, staking, _deployer, user) = setupTokenStaking(TS_APR_BPS);
     transferTokensTo(
         minter,
         user,

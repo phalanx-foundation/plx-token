@@ -186,7 +186,7 @@ fun onInternalMessage(in: InMessage) {
 
         CastVote => {
             var storage = lazy GovernanceStorage.load();
-            val config = storage.config.load();
+            val _config = storage.config.load();
 
             val proposalEntry = storage.proposals.get(msg.proposalId);
             assert (proposalEntry.isFound) throw Errors.InvalidOp;

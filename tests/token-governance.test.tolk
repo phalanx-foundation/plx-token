@@ -109,7 +109,7 @@ get fun `test governance: deploy stores admin config`() {
 }
 
 get fun `test governance: non-admin cannot update config`() {
-    val (minter, gov, admin, voter) = setupGovernance();
+    val (_minter, gov, _admin, voter) = setupGovernance();
     val result = gov.sendUpdateConfig(
         voter.address,
         0,
@@ -127,7 +127,7 @@ get fun `test governance: non-admin cannot update config`() {
 }
 
 get fun `test governance: admin can update config`() {
-    val (minter, gov, admin, voter) = setupGovernance();
+    val (_minter, gov, admin, _voter) = setupGovernance();
     val result = gov.sendUpdateConfig(
         admin.address,
         0,
@@ -147,7 +147,7 @@ get fun `test governance: admin can update config`() {
 }
 
 get fun `test governance: admin can create a proposal`() {
-    val (minter, gov, admin, voter) = setupGovernance();
+    val (_minter, gov, admin, voter) = setupGovernance();
     createGovernanceProposal(gov, admin, voter.address);
 
     val proposal = gov.getProposal(0)!.load();
@@ -163,7 +163,7 @@ get fun `test governance: admin can create a proposal`() {
 }
 
 get fun `test governance: non-staked holder cannot create a proposal`() {
-    val (minter, gov, admin, voter) = setupGovernance();
+    val (_minter, gov, admin, voter) = setupGovernance();
     val result = gov.sendCreateProposal(
         voter.address,
         0,
@@ -261,7 +261,7 @@ get fun `test governance: staked voter can vote against a proposal`() {
 }
 
 get fun `test governance: vote without stake is rejected`() {
-    val (minter, gov, admin, voter) = setupGovernance();
+    val (_minter, gov, admin, voter) = setupGovernance();
     createGovernanceProposal(gov, admin, voter.address);
 
     val result = gov.sendCastVote(
@@ -426,7 +426,7 @@ get fun `test governance: executed proposal cannot be executed twice`() {
 }
 
 get fun `test governance: has_voted is false before voting`() {
-    val (minter, gov, admin, voter) = setupGovernance();
+    val (_minter, gov, admin, voter) = setupGovernance();
     createGovernanceProposal(gov, admin, voter.address);
     expect(gov.hasVoted(0, voter.address)).toEqual(false);
     expect(gov.hasVoted(0, admin.address)).toEqual(false);
@@ -499,7 +499,7 @@ get fun `test governance: cannot unstake more than staked`() {
 }
 
 get fun `test governance: next proposal id starts at zero and increments`() {
-    val (minter, gov, admin, voter) = setupGovernance();
+    val (_minter, gov, admin, voter) = setupGovernance();
     expect(gov.getNextProposalId()).toEqual(0);
 
     createGovernanceProposal(gov, admin, voter.address);

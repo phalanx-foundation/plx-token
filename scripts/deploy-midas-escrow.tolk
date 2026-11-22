@@ -1,14 +1,11 @@
-import "@stdlib/strings"
 import "@acton/env"
 import "@acton/io"
-import "@acton/prompts"
 import "@acton/emulation/network"
 import "@acton/emulation/scripts"
 import "@contracts/MidasHandEscrow"
 import "@contracts/storage"
 import "@wrappers/JettonMinter.gen"
 import "@wrappers/MidasHandEscrow.gen"
-import "@wrappers/utils"
 import "utils/common"
 
 /**
@@ -166,7 +163,7 @@ fun main() {
         minterAddress: minterAddr,
         seedWalletCode,
         adminMultisig: admin.toCell(),
-        proposalTimeoutSec: proposalTimeoutSec,
+        proposalTimeoutSec,
         dexType,
         stonfi,
         dedust,
