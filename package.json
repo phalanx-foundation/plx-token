@@ -5,5 +5,12 @@
   "overrides": {
     "undici": "^8.11.0",
     "ws": "^8.21.3"
+  },
+  "scripts": {
+    "build": "./scripts/acton-run.sh build",
+    "test": "./scripts/acton-run.sh test",
+    "lint": "./scripts/acton-run.sh check",
+    "fmt": "./scripts/acton-run.sh fmt --check",
+    "gate": "./scripts/acton-run.sh build && ./scripts/acton-run.sh fmt --check && ./scripts/acton-run.sh check && ./scripts/acton-run.sh test"
   }
 }
