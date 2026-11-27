@@ -56,26 +56,26 @@
       "required": true,
       "manual": false,
       "status": "pass",
-      "lastRun": "2026-11-27T01:41:47.669925+00:00",
-      "detail": "acton check exit 0; hanya warning non-blocking E028/E016/E019/S005",
-      "durationS": 8.2,
+      "lastRun": "2026-11-27T03:41:43.303845+00:00",
+      "detail": "For example: acton check --explain E016",
+      "durationS": 6.7,
       "note": "Re-verified live 27 Nov 2026 07:06 WIB: env -i non-login shell, npm run gate → EXIT=0 (build 19.9ms, fmt --check, check, 185 tests/21 files all pass). Workspace kanonik /home/dev/plx-token ADA — laporan \"blocked (workspace tidak ditemukan)\" adalah false positive scanner."
     },
     "build": {
       "cmd": "python3 -m compileall -q -x '(^|/)(venv|\\.venv|node_modules|__pycache__|\\.git|dist)/' .",
       "required": true,
       "status": "pass",
-      "lastRun": "2026-11-27T01:41:47.740545+00:00",
+      "lastRun": "2026-11-27T03:41:43.339086+00:00",
       "detail": "",
-      "durationS": 0.1
+      "durationS": 0.0
     },
     "test": {
       "cmd": "./scripts/acton-run.sh test",
       "required": true,
       "status": "pass",
-      "lastRun": "2026-11-27T01:41:49.154348+00:00",
+      "lastRun": "2026-11-27T03:41:44.257134+00:00",
       "detail": " ✓ 185 passed in 21 files",
-      "durationS": 1.4,
+      "durationS": 0.9,
       "note": "Suite nyata tests/*.test.tolk — 185 passed in 21 files, exit 0. pytest tidak dipakai proyek ini."
     },
     "workspace": {
@@ -92,7 +92,7 @@
   "userApproved": false,
   "approvedAt": null,
   "createdAt": "2026-11-23T01:34:48.081674+00:00",
-  "updatedAt": "2026-11-27T01:41:49.154393+00:00",
+  "updatedAt": "2026-11-27T03:41:44.257168+00:00",
   "progress": 95,
   "progressReason": "semua gerbang lulus, menunggu konfirmasi user"
 }
