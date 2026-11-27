@@ -1,0 +1,19 @@
+noErrors gate — fresh local pipeline run
+Time : 28 Nov 2026, ~22:31 WIB (Asia/Jakarta)
+Repo : /home/dev/plx-token @ 573f1a4 (master, in sync with origin/master)
+
+Step results (exit codes):
+  1. acton build (pass 1, gen bootstrap): 0
+  2. acton build (pass 2, real gate)    : 0
+  3. acton fmt --check                  : 0 — "All files are properly formatted"
+  4. acton check (lint)                 : 0
+  5. acton test                         : 0 — 185 passed in 21 files
+
+Metadata (TEP-74):
+  metadata/phalanx-metadata.json valid JSON — name=Phalanx, symbol=PLX, decimals=9,
+  image=https://plx.foundation/plx-logo.png (HTTP 200, image/png, verified live)
+  logo files: logo.png 256x256 RGBA PNG, logo-512.png 512x512 RGBA PNG
+
+CI:
+  .github/workflows/contracts.yml runs on push/PR to master:
+  pinned acton version (Acton.toml) -> init -> build x2 -> check -> fmt --check (blocking) -> acton test
