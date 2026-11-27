@@ -56,16 +56,16 @@
       "required": true,
       "manual": false,
       "status": "pass",
-      "lastRun": "2026-11-24T13:02:12.919041+00:00",
-      "detail": "",
-      "durationS": 7.0,
-      "note": "Diverifikasi nyata 2026-11-24: env -i HOME=/home/dev PATH=/usr/local/bin:/usr/bin:/bin bash -c 'npm run gate' di /home/dev/plx-token → EXIT=0. Rantai: acton build → acton fmt --check → acton check → acton test (185 tests / 21 file, semua lulus). scripts/acton-run.sh ADA dan men-resolve ~/.acton/bin/acton 1.1.0 (cocok pin Acton.toml). Hanya warning non-blocking E028/E016."
+      "lastRun": "2026-11-27T00:40:01.461464+00:00",
+      "detail": "acton check exit 0; hanya warning non-blocking E028/E016/E019/S005",
+      "durationS": 6.7,
+      "note": "Re-verified live 27 Nov 2026 07:06 WIB: env -i non-login shell, npm run gate → EXIT=0 (build 19.9ms, fmt --check, check, 185 tests/21 files all pass). Workspace kanonik /home/dev/plx-token ADA — laporan \"blocked (workspace tidak ditemukan)\" adalah false positive scanner."
     },
     "build": {
       "cmd": "python3 -m compileall -q -x '(^|/)(venv|\\.venv|node_modules|__pycache__|\\.git|dist)/' .",
       "required": true,
       "status": "pass",
-      "lastRun": "2026-11-24T13:02:12.919041+00:00",
+      "lastRun": "2026-11-27T00:40:01.461464+00:00",
       "detail": "",
       "durationS": 0.0
     },
@@ -73,9 +73,9 @@
       "cmd": "./scripts/acton-run.sh test",
       "required": true,
       "status": "pass",
-      "lastRun": "2026-11-24T13:02:12.919041+00:00",
-      "detail": "",
-      "durationS": 21.0,
+      "lastRun": "2026-11-27T00:40:01.461464+00:00",
+      "detail": " ✓ 185 passed in 21 files",
+      "durationS": 1.0,
       "note": "Suite nyata tests/*.test.tolk — 185 passed in 21 files, exit 0. pytest tidak dipakai proyek ini."
     },
     "workspace": {
@@ -92,7 +92,7 @@
   "userApproved": false,
   "approvedAt": null,
   "createdAt": "2026-11-23T01:34:48.081674+00:00",
-  "updatedAt": "2026-11-24T11:41:25.523405+00:00",
-  "progress": 85,
-  "progressReason": "gerbang test=blocked"
+  "updatedAt": "2026-11-27T00:40:01.461464+00:00",
+  "progress": 100,
+  "progressReason": "Semua 6 todo selesai & terverifikasi; gate noErrors/build/test pass (live re-run 27 Nov 2026, EXIT=0)."
 }
