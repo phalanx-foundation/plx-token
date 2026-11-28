@@ -1,0 +1,21 @@
+=== NOERRORS GATE REPORT — 28 Nov 2026 10:47 WIB ===
+Workspace kanonik: /home/dev/plx-token (branch master, head 7e3f086)
+Remote: https://github.com/phalanx-foundation/plx-token.git
+\n## 1. Workspace check
+contracts/
+.github/workflows/
+metadata/
+tests/
+wrappers/
+\n## 2. Clean-shell gate (env -i, HOME+PATH only)
+GATE EXIT=0
+    Finished in 6.979821ms
+warning[E028]: throw code should use `Errors.<Name>`
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_WALLET_LIMIT`
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+warning[E028]: throw code should use `Errors.<Name>`
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_TRANSFER_LIMIT`
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+warning[E028]: throw code should use `Errors.<Name>`
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_WALLET_LIMIT`
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
