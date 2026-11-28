@@ -94,7 +94,7 @@
       "path": "/home/dev/plx-token",
       "exists": true,
       "remote": "https://github.com/phalanx-foundation/plx-token",
-      "head": "4af3ee3",
+      "head": "42abbd2",
       "note": "Workspace kanonik ADA dan tervalidasi ulang 24 Nov 2026 (non-login shell / env -i). Laporan 'blocked (workspace tidak ditemukan)' adalah false positive dari scanner yang tidak tahu path kanonik.",
       "verifiedAt": "2026-11-24T13:02:12.919041+00:00",
       "status": "pass",
@@ -110,7 +110,7 @@
   "progressReason": "semua gerbang lulus (workspace, noErrors, build, test, lint, fmt) — menunggu konfirmasi user",
   "gate": "success",
   "buildStatus": "success",
-  "lastVerifiedAt": "28 Nov 2026 12:09 WIB — fresh verification run, head 4af3ee3 (pushed to origin)",
-  "lastVerifiedHead": "4af3ee3",
+  "lastVerifiedAt": "28 Nov 2026 12:09 WIB — fresh verification run, head 42abbd2 (pushed to origin)",
+  "lastVerifiedHead": "42abbd2",
   "progressPct": 100
 }
