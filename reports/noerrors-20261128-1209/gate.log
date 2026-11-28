@@ -1,0 +1,481 @@
+
+> gate
+> ./scripts/acton-run.sh build && ./scripts/acton-run.sh fmt --check && ./scripts/acton-run.sh check && ./scripts/acton-run.sh test
+
+   Compiling contracts
+    Finished in 27.548545ms
+All files are properly formatted
+    Checking AntiWhaleJettonMinter
+    Checking AntiWhaleJettonWallet
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:131:25
+    |
+131 |                 ) throw ANTI_WHALE_ERROR_WALLET_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_WALLET_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+warning[E016]: send with dangerous mode requires safety comment
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:165:34
+    |
+165 |                 excessesMsg.send(SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_IGNORE_ERRORS);
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ add `// SAFETY: ...` above this `send` call
+    |
+    = document why this dangerous send mode is safe in this context and which invariants are required
+
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:188:25
+    |
+188 |                 ) throw ANTI_WHALE_ERROR_TRANSFER_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_TRANSFER_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+    Checking CompressedNftCollection
+    Checking CustomStakingParams
+warning[E019]: division before multiplication may cause precision loss
+    --> /home/dev/plx-token/contracts/CustomStakingParams.tolk:168:49
+    |  
+166 |       val rewardDelta = storage.totalStaked * config.baseAprBps * elapsed /
+    | /-----------------------'
+167 | |     (10000 * CUSTOM_SECONDS_PER_YEAR);
+    | \-------------------------------------' division that feeds this multiplication happens here
+168 |       storage.rewardPerTokenStored += rewardDelta * CUSTOM_REWARD_SCALE / storage.totalStaked;
+    |                                                   ^ this multiplication uses a value produced by an earlier division
+    |  
+    = doing division first can change the result because precision is lost and rounding/truncation happens earlier
+      when arithmetic intent allows it, multiply first and divide afterward
+
+    Checking FeeJettonMinter
+    Checking FeeJettonWallet
+warning[E016]: send with dangerous mode requires safety comment
+   --> /home/dev/plx-token/contracts/FeeJettonWallet.tolk:91:34
+   |
+91 |                 excessesMsg.send(SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_IGNORE_ERRORS);
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ add `// SAFETY: ...` above this `send` call
+   |
+   = document why this dangerous send mode is safe in this context and which invariants are required
+
+    Checking PhalanxJettonMinter
+    Checking PhalanxJettonWallet
+    Checking LiquidityLocker
+    Checking MidasHandEscrow
+warning[S005]: message should be properly named
+    --> /home/dev/plx-token/contracts/MidasHandEscrow.tolk:445:9
+    |
+445 |     val msg = createMessage({
+    |         ^^^ message should be properly named, not `msg`
+    |
+    = use a descriptive message name, for example `deployMessage` or `transferMessage`
+
+    Checking NftCollection
+    Checking NftItem
+    Checking PaymentSplitter
+    Checking PlxAirdrop
+    Checking PlxLockVault
+    Checking PlxStaking
+warning[E019]: division before multiplication may cause precision loss
+    --> /home/dev/plx-token/contracts/PlxStaking.tolk:116:49
+    |
+115 |     val rewardDelta = storage.totalStaked * config.aprBps * elapsed / (10000 * SECONDS_PER_YEAR);
+    |                       -------------------------------------------------------------------------- division that feeds this multiplication happens here
+116 |     storage.rewardPerTokenStored += rewardDelta * REWARD_SCALE / storage.totalStaked;
+    |                                                 ^ this multiplication uses a value produced by an earlier division
+    |
+    = doing division first can change the result because precision is lost and rounding/truncation happens earlier
+      when arithmetic intent allows it, multiply first and divide afterward
+
+    Checking TeamVesting
+    Checking TokenGovernance
+    Checking TokenLockVault
+    Checking TokenStaking
+warning[E019]: division before multiplication may cause precision loss
+    --> /home/dev/plx-token/contracts/TokenStaking.tolk:114:49
+    |
+113 |     val rewardDelta = storage.totalStaked * config.aprBps * elapsed / (10000 * SECONDS_PER_YEAR);
+    |                       -------------------------------------------------------------------------- division that feeds this multiplication happens here
+114 |     storage.rewardPerTokenStored += rewardDelta * REWARD_SCALE / storage.totalStaked;
+    |                                                 ^ this multiplication uses a value produced by an earlier division
+    |
+    = doing division first can change the result because precision is lost and rounding/truncation happens earlier
+      when arithmetic intent allows it, multiply first and divide afterward
+
+    Checking scripts/buyback-burn.tolk
+    Checking scripts/buyback-swap-burn.tolk
+    Checking scripts/change-admin.tolk
+    Checking scripts/change-metadata.tolk
+    Checking scripts/claim-admin.tolk
+    Checking scripts/claim-cnft-item.tolk
+    Checking scripts/claim-vesting.tolk
+    Checking scripts/cnft-deploy-claim.tolk
+    Checking scripts/deploy-airdrop.tolk
+    Checking scripts/deploy-anti-whale.tolk
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:131:25
+    |
+131 |                 ) throw ANTI_WHALE_ERROR_WALLET_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_WALLET_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+warning[E016]: send with dangerous mode requires safety comment
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:165:34
+    |
+165 |                 excessesMsg.send(SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_IGNORE_ERRORS);
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ add `// SAFETY: ...` above this `send` call
+    |
+    = document why this dangerous send mode is safe in this context and which invariants are required
+
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:188:25
+    |
+188 |                 ) throw ANTI_WHALE_ERROR_TRANSFER_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_TRANSFER_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+    Checking scripts/deploy-client-jetton.tolk
+    Checking scripts/deploy-cnft-collection.tolk
+    Checking scripts/deploy-custom-staking.tolk
+    Checking scripts/deploy-distribution-client.tolk
+    Checking scripts/deploy-distribution.tolk
+    Checking scripts/deploy-fee-jetton.tolk
+    Checking scripts/deploy-jetton-combo.tolk
+    Checking scripts/deploy-liquidity-locker.tolk
+    Checking scripts/deploy-midas-escrow.tolk
+warning[S005]: message should be properly named
+    --> /home/dev/plx-token/contracts/MidasHandEscrow.tolk:445:9
+    |
+445 |     val msg = createMessage({
+    |         ^^^ message should be properly named, not `msg`
+    |
+    = use a descriptive message name, for example `deployMessage` or `transferMessage`
+
+    Checking scripts/deploy-nft-collection.tolk
+    Checking scripts/deploy-splitter.tolk
+    Checking scripts/deploy-token-governance.tolk
+    Checking scripts/deploy.tolk
+    Checking scripts/drop-admin.tolk
+    Checking scripts/finish-vesting.tolk
+    Checking scripts/info-distribution.tolk
+    Checking scripts/info.tolk
+    Checking scripts/mint-nft-item.tolk
+    Checking scripts/mint.tolk
+    Checking scripts/nft-change-collection-owner.tolk
+    Checking scripts/plx-treasury-jetton-sweep.tolk
+    Checking scripts/print-addrs.tolk
+    Checking scripts/refresh-metadata-testnet.tolk
+    Checking scripts/send-ton.tolk
+warning[S005]: message should be properly named
+   --> /home/dev/plx-token/scripts/send-ton.tolk:13:9
+   |
+13 |     val msg = createMessage({
+   |         ^^^ message should be properly named, not `msg`
+   |
+   = use a descriptive message name, for example `deployMessage` or `transferMessage`
+
+    Checking scripts/topup-minter.tolk
+    Checking scripts/transfer.tolk
+    Checking scripts/treasury-sweep.tolk
+warning[S005]: message should be properly named
+  --> /home/dev/plx-token/scripts/treasury-sweep.tolk:8:9
+  |
+8 |     val msg = createMessage({
+  |         ^^^ message should be properly named, not `msg`
+  |
+  = use a descriptive message name, for example `deployMessage` or `transferMessage`
+
+    Checking tests/MidasHandEscrow.test.tolk
+warning[S005]: message should be properly named
+    --> /home/dev/plx-token/contracts/MidasHandEscrow.tolk:445:9
+    |
+445 |     val msg = createMessage({
+    |         ^^^ message should be properly named, not `msg`
+    |
+    = use a descriptive message name, for example `deployMessage` or `transferMessage`
+
+    Checking tests/admin-and-governance.test.tolk
+    Checking tests/airdrop.test.tolk
+    Checking tests/anti-whale-minter.test.tolk
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:131:25
+    |
+131 |                 ) throw ANTI_WHALE_ERROR_WALLET_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_WALLET_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+warning[E016]: send with dangerous mode requires safety comment
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:165:34
+    |
+165 |                 excessesMsg.send(SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_IGNORE_ERRORS);
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ add `// SAFETY: ...` above this `send` call
+    |
+    = document why this dangerous send mode is safe in this context and which invariants are required
+
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:188:25
+    |
+188 |                 ) throw ANTI_WHALE_ERROR_TRANSFER_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_TRANSFER_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+    Checking tests/anti-whale.test.tolk
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:131:25
+    |
+131 |                 ) throw ANTI_WHALE_ERROR_WALLET_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_WALLET_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+warning[E016]: send with dangerous mode requires safety comment
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:165:34
+    |
+165 |                 excessesMsg.send(SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_IGNORE_ERRORS);
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ add `// SAFETY: ...` above this `send` call
+    |
+    = document why this dangerous send mode is safe in this context and which invariants are required
+
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:188:25
+    |
+188 |                 ) throw ANTI_WHALE_ERROR_TRANSFER_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_TRANSFER_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+    Checking tests/bounce-handling.test.tolk
+    Checking tests/custom-staking.test.tolk
+    Checking tests/distribution-client.test.tolk
+    Checking tests/fee-jetton.test.tolk
+    Checking tests/formation-lock-staking.test.tolk
+    Checking tests/formation-staking.test.tolk
+    Checking tests/gas.test.tolk
+    Checking tests/liquidity-locker.test.tolk
+    Checking tests/protocol-validation.test.tolk
+    Checking tests/splitter.test.tolk
+    Checking tests/state-init.test.tolk
+    Checking tests/token-governance.test.tolk
+    Checking tests/token-lock-vault.test.tolk
+    Checking tests/token-staking.test.tolk
+    Checking tests/vesting.test.tolk
+    Checking tests/wallet-behavior.test.tolk
+
+Use acton check --explain <CODE> to get detailed explanation of a rule.
+For example: acton check --explain E016
+   Compiling contracts
+    Finished in 6.852779ms
+     Running tests
+
+ TEST  /home/dev/plx-token
+
+ > tests/MidasHandEscrow.test.tolk (25 tests)
+  ✓ midas-escrow: deploy in proposed state 15ms
+  ✓ midas-escrow: whale deposits TON -> funded 7ms
+  ✓ midas-escrow: non-whale deposit rejected 7ms
+  ✓ midas-escrow: owner jetton deposit then approve -> adding 10ms
+  ✓ midas-escrow: non-owner jetton deposit rejected 8ms
+  ✓ midas-escrow: LP receipt -> active + lockUntil 11ms
+  ✓ midas-escrow: claim before unlock rejected 11ms
+  ✓ midas-escrow: refund timeout returns whale TON 8ms
+  ✓ midas-escrow: admin cancel returns funds 9ms
+  ✓ midas-escrow: settle -> burn LP -> distribute -> closed 18ms
+  ✓ midas-escrow dedust: approve emits native + jetton deposit legs 8ms
+  ✓ midas-escrow dedust: LP receipt -> active 11ms
+  ✓ midas-escrow dedust: admin cancel blocked during adding 8ms
+  ✓ midas-escrow dedust: cancel deposit before deadline rejected 8ms
+  ✓ midas-escrow dedust: cancel deposit rejected on stonfi escrow 8ms
+  ✓ midas-escrow dedust: cancel deposit after deadline recovers funds 9ms
+  ✓ midas-escrow dedust: recovered TON credited then refunded 10ms
+  ✓ midas-escrow dedust: native leg bounce restores whale bucket 8ms
+  ✓ midas-escrow dedust: settle pays native TON and seed jetton 14ms
+  ✓ midas-escrow dedust: bind stores the recovery address 6ms
+  ✓ midas-escrow dedust: approve rejected while unbound 7ms
+  ✓ midas-escrow dedust: bind rejected from non-admin 5ms
+  ✓ midas-escrow dedust: bind frozen once adding 8ms
+  ✓ midas-escrow dedust: bind rejected on stonfi escrow 8ms
+  ✓ midas-escrow: approve emits two-leg provide_lp bodies 9ms
+ > tests/admin-and-governance.test.tolk (14 tests)
+  ✓ admin: deploy should create minter without bounce 1ms
+  ✓ admin: minter admin should be able to mint jettons 4ms
+  ✓ admin: non-admin should not be able to mint jettons 1ms
+  ✓ admin: change-admin flow should work and only next admin can claim 3ms
+  ✓ admin: non-admin cannot change admin 1ms
+  ✓ admin: non-admin cannot drop admin access 1ms
+  ✓ admin: admin can drop admin access 2ms
+  ✓ admin: admin can change metadata uri 1ms
+  ✓ admin: non-admin cannot change metadata uri 1ms
+  ✓ admin: discovery should return expected wallet and optional owner 4ms
+  ✓ admin: discovery should return none for non-basechain owner 1ms
+  ✓ admin: non-admin should not be able to upgrade minter 1ms
+  ✓ admin: admin should be able to upgrade minter code and data 2ms
+  ✓ shard: wallet address should keep owner shard prefix in get/discovery/transfer 44ms
+ > tests/airdrop.test.tolk (10 tests)
+  ✓ airdrop: deploy and jetton wallet configured correctly 3ms
+  ✓ airdrop: valid claim with single-leaf tree succeeds 3ms
+  ✓ airdrop: duplicate claim is rejected 3ms
+  ✓ airdrop: invalid proof is rejected 2ms
+  ✓ airdrop: claim after deadline is rejected 2ms
+  ✓ airdrop: valid claim with 2-leaf tree succeeds 3ms
+  ✓ airdrop: admin can set new merkle root 2ms
+  ✓ airdrop: non-admin cannot set merkle root 2ms
+  ✓ airdrop: admin can set deadline 2ms
+  ✓ airdrop: WithdrawUnclaimed blocked before deadline 2ms
+ > tests/anti-whale-minter.test.tolk (8 tests)
+  ✓ anti-whale minter: deploy stores the caps and the minter metadata 1ms
+  ✓ anti-whale minter: mint credits the wallet the minter reports 2ms
+  ✓ anti-whale minter: mint from a non-admin is rejected 1ms
+  ✓ anti-whale minter: transfer above max transfer is rejected with 200 2ms
+  ✓ anti-whale minter: credit above max wallet balance is rejected with 201 2ms
+  ✓ anti-whale minter: transfer between two of its wallets lands where the minter says 2ms
+  ✓ anti-whale minter: zero cap means unlimited 2ms
+  ✓ anti-whale minter: admin handover waits for the new admin to claim 2ms
+ > tests/anti-whale.test.tolk (7 tests)
+  ✓ anti-whale: deploy stores whale config 1ms
+  ✓ anti-whale: transfer within limit succeeds 2ms
+  ✓ anti-whale: transfer exceeding max transfer rejected with error 200 1ms
+  ✓ anti-whale: receiving that would exceed max wallet balance rejected with error 201 1ms
+  ✓ anti-whale: UpdateWhaleConfig accepted from minterAddress 1ms
+  ✓ anti-whale: UpdateWhaleConfig rejected from non-minter 1ms
+  ✓ anti-whale: max transfer 0 means unlimited 1ms
+ > tests/bounce-handling.test.tolk (3 tests)
+  ✓ bounce: minter restores supply on internal_transfer bounce 2ms
+  ✓ bounce: wallet restores balance on internal_transfer bounce 3ms
+  ✓ bounce: wallet restores balance on burn_notification bounce 3ms
+ > tests/custom-staking.test.tolk (9 tests)
+  ✓ custom-staking: deposit increases totalStaked 5ms
+  ✓ custom-staking: effective APR with no tiers equals base APR 3ms
+  ✓ custom-staking: effective APR with tier bonus applies for qualifying stake 3ms
+  ✓ custom-staking: higher tier bonus overrides lower for large stake 3ms
+  ✓ custom-staking: early unstake rejected 4ms
+  ✓ custom-staking: unstake after lock period succeeds 5ms
+  ✓ custom-staking: admin can update bonus tiers 3ms
+  ✓ custom-staking: non-admin cannot update bonus tiers 3ms
+  ✓ custom-staking: reward pool funded via transfer notification 4ms
+ > tests/distribution-client.test.tolk (3 tests)
+  ✓ distribution: five-bucket split mints correct balances 8ms
+  ✓ distribution: vesting bucket funds the vesting contract 3ms
+  ✓ distribution: escrow hands minter admin to client 3ms
+ > tests/fee-jetton.test.tolk (8 tests)
+  ✓ fee-jetton: deploy initialises fee config 1ms
+  ✓ fee-jetton: mint succeeds and wallet has correct balance 2ms
+  ✓ fee-jetton: transfer deducts fee from recipient and sends to collector 4ms
+  ✓ fee-jetton: zero fee means no fee deduction 3ms
+  ✓ fee-jetton: UpdateFeeConfig on minter accepted from admin 1ms
+  ✓ fee-jetton: UpdateFeeConfig rejected if fee_bps > 1000 1ms
+  ✓ fee-jetton: UpdateFeeConfig on minter rejected from non-admin 1ms
+  ✓ fee-jetton: UpdateFeeConfig on wallet rejected from non-minter 2ms
+ > tests/formation-lock-staking.test.tolk (6 tests)
+  ✓ lock vault: deploy and lock creates position 5ms
+  ✓ lock vault: layered positions have independent unlock 6ms
+  ✓ lock vault: early claim rejected 4ms
+  ✓ lock vault: maturity claim returns principal and bonus 5ms
+  ✓ lock vault: event end before maturity forfeits bonus 6ms
+  ✓ lock vault: unauthorized claim rejected 4ms
+ > tests/formation-staking.test.tolk (3 tests)
+  ✓ staking: deposit increases totalStaked 5ms
+  ✓ staking: early unstake rejected 3ms
+  ✓ staking: unstake after lock period 5ms
+ > tests/gas.test.tolk (13 tests)
+  ✓ gas: transfer minimal value edge 3ms
+  ✓ gas: transfer minimal value is message-size aware 516μs
+  ✓ gas: transfer with forward amount requires second forward fee 3ms
+  ✓ gas: transfer forward fees should follow config 8ms
+  ✓ gas: transfer gas fee should follow config 7ms
+  ✓ gas: transfer storage fee should follow config 7ms
+  ✓ gas: forward ton transfer should fail when fees are insufficient 2ms
+  ✓ gas: burn minimal value edge 3ms
+  ✓ gas: burn custom payload should not affect minimal value 3ms
+  ✓ gas: burn forward fee should follow config 7ms
+  ✓ gas: burn gas fee should follow config 7ms
+  ✓ gas: burn should fail when sent tons are clearly insufficient 2ms
+  ✓ gas: wallet storage fee should be measurable 2ms
+ > tests/liquidity-locker.test.tolk (3 tests)
+  ✓ liquidity-locker: deploy stores empty locker state 3ms
+  ✓ liquidity-locker: lock then unlock after period 4ms
+  ✓ liquidity-locker: early unlock rejected 4ms
+ > tests/protocol-validation.test.tolk (7 tests)
+  ✓ validation: malformed forward payload should be rejected 3ms
+  ✓ validation: malformed custom payload should be rejected 3ms
+  ✓ validation: wallet cannot send to masterchain 3ms
+  ✓ validation: wallet should reject internal transfer from unauthorized sender 3ms
+  ✓ validation: minter accepts burn notification only from wallet 4ms
+  ✓ validation: minter cannot force burn tokens 4ms
+  ✓ validation: minter cannot force transfer tokens 4ms
+ > tests/splitter.test.tolk (12 tests)
+  ✓ splitter: deploy initialises storage with zero counters 3ms
+  ✓ splitter: jetton wallet address get matches minter 2ms
+  ✓ splitter: even amount splits exactly 50/50 5ms
+  ✓ splitter: odd amount remainder goes to treasury 5ms
+  ✓ splitter: tiny amount still settles 5ms
+  ✓ splitter: counters accumulate across multiple payments 9ms
+  ✓ splitter: notification from non-jetton-wallet is rejected 2ms
+  ✓ splitter: zero-amount notification is a no-op 3ms
+  ✓ splitter: admin can withdraw excess TON 2ms
+  ✓ splitter: non-admin cannot withdraw TON 2ms
+  ✓ splitter: top-up tons accepted from anyone 2ms
+  ✓ splitter: total burned + forwarded equals total processed 6ms
+ > tests/state-init.test.tolk (2 tests)
+  ✓ state: should mint max jetton value 2ms
+  ✓ state: wallet storage and init-state bounds should match fee constants 1ms
+ > tests/token-governance.test.tolk (24 tests)
+  ✓ governance: deploy stores admin config 2ms
+  ✓ governance: non-admin cannot update config 1ms
+  ✓ governance: admin can update config 2ms
+  ✓ governance: admin can create a proposal 2ms
+  ✓ governance: non-staked holder cannot create a proposal 2ms
+  ✓ governance: holder below threshold cannot create a proposal 4ms
+  ✓ governance: staked holder can create a proposal 4ms
+  ✓ governance: staked voter can vote for a proposal 5ms
+  ✓ governance: staked voter can vote against a proposal 5ms
+  ✓ governance: vote without stake is rejected 2ms
+  ✓ governance: double vote is rejected 5ms
+  ✓ governance: vote after voting period is rejected 4ms
+  ✓ governance: execute before voting ends is rejected 4ms
+  ✓ governance: execute before timelock elapses is rejected 4ms
+  ✓ governance: execute a not-passed proposal is rejected 5ms
+  ✓ governance: passed proposal executes after timelock 5ms
+  ✓ governance: executed proposal cannot be executed twice 5ms
+  ✓ governance: has_voted is false before voting 2ms
+  ✓ governance: voting power reflects staked balance 4ms
+  ✓ governance: staked holder cannot unstake while a vote is active 5ms
+  ✓ governance: staked holder can unstake after voting period 5ms
+  ✓ governance: cannot unstake more than staked 4ms
+  ✓ governance: next proposal id starts at zero and increments 2ms
+  ✓ governance: voter stake getter exposes amount and lock 5ms
+ > tests/token-lock-vault.test.tolk (3 tests)
+  ✓ token-lock-vault: deploy and fund reward pool 5ms
+  ✓ token-lock-vault: lock then release after maturity 7ms
+  ✓ token-lock-vault: early release rejected 6ms
+ > tests/token-staking.test.tolk (3 tests)
+  ✓ token-staking: deploy and fund reward pool 6ms
+  ✓ token-staking: stake then unstake after lock 7ms
+  ✓ token-staking: early unstake rejected 6ms
+ > tests/vesting.test.tolk (12 tests)
+  ✓ vesting: deploy populates config correctly 2ms
+  ✓ vesting: at t=start nothing is claimable 2ms
+  ✓ vesting: claim before unlock should fail 2ms
+  ✓ vesting: half-time linear release 2ms
+  ✓ vesting: claim half-time sends jettons to beneficiary 3ms
+  ✓ vesting: claim then claim again later releases more 4ms
+  ✓ vesting: full duration releases all 3ms
+  ✓ vesting: time after duration caps at total 2ms
+  ✓ vesting: claim twice at same time second should fail 2ms
+  ✓ vesting: revoke by admin sends vested to beneficiary and rest to admin 4ms
+  ✓ vesting: non-admin cannot revoke 2ms
+  ✓ vesting: jetton wallet address get matches expected 2ms
+ > tests/wallet-behavior.test.tolk (10 tests)
+  ✓ wallet: owner can send jettons 3ms
+  ✓ wallet: non-owner cannot send jettons 3ms
+  ✓ wallet: cannot send more jettons than balance 3ms
+  ✓ wallet: zero forward ton means no transfer notification 3ms
+  ✓ wallet: transfer notification should preserve forward payload 3ms
+  ✓ wallet: bare-ref forward payload is rejected (TEP-74 either required) 4ms
+  ✓ wallet: transfer to undeployed recipient wallet should still work 3ms
+  ✓ wallet: owner can burn jettons 3ms
+  ✓ wallet: non-owner cannot burn jettons 3ms
+  ✓ wallet: cannot burn more jettons than balance 3ms
+
+ ✓ 185 passed in 21 files

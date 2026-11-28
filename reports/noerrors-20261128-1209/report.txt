@@ -1,0 +1,7 @@
+Fresh verification 28 Nov 2026 12:09 WIB — head 76475d7
+- Workspace kanonik /home/dev/plx-token: ADA (remote https://github.com/phalanx-foundation/plx-token, branch master, clean)
+- env -i clean-shell npm run gate: EXIT=0
+  - acton build: 0 errors
+  - acton fmt --check: OK
+  - acton check: 0 errors
+  - acton test: 185/185 passed in 21 files
