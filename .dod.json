@@ -68,49 +68,49 @@
       "required": true,
       "manual": false,
       "status": "pass",
-      "lastRun": "2026-11-28T14:18:00+07:00",
-      "detail": "acton build 0 errors; acton check 0 errors; fmt OK; 185/185 tests pass.",
-      "durationS": 15.0,
-      "note": "VERIFIED live 28 Nov 2026 14:18 WIB — env -i clean-shell `npm run gate` EXIT=0: acton build OK, fmt OK, check OK, 185/185 tests pass in 21 files. Workspace kanonik /home/dev/plx-token ADA (branch master, head b60b092, remote phalanx-foundation/plx-token). Evidence: reports/noerrors-20261128-1418/gate.log."
+      "lastRun": "2026-11-28T17:08:19+07:00",
+      "detail": "acton build 0 errors; acton fmt --check OK; acton check 0 errors; 185/185 tests pass (21 files). Gate EXIT=0.",
+      "durationS": 8.5,
+      "note": "VERIFIED live 28 Nov 2026 17:08 WIB — `npm run gate` EXIT=0 (build+fmt+check+test): 185/185 tests pass di 21 file. Workspace kanonik /home/dev/plx-token valid (branch master, head 3b9df69, remote phalanx-foundation/plx-token). Evidence: reports/noerrors-20261128-1708/gate.log."
     },
     "build": {
       "cmd": "python3 -m compileall -q -x '(^|/)(venv|\\.venv|node_modules|__pycache__|\\.git|dist)/' .",
       "required": true,
       "status": "pass",
-      "lastRun": "2026-11-28T14:18:00+07:00",
-      "detail": "",
+      "lastRun": "2026-11-28T17:08:19+07:00",
+      "detail": "acton build 0 errors (seluruh contracts/ + wrappers/ terkompilasi).",
       "durationS": 0.1
     },
     "test": {
       "cmd": "./scripts/acton-run.sh test",
       "required": true,
       "status": "pass",
-      "lastRun": "2026-11-28T14:18:00+07:00",
-      "detail": " ✓ 185 passed in 21 files",
-      "durationS": 1.7,
+      "lastRun": "2026-11-28T17:08:19+07:00",
+      "detail": "✓ 185 passed in 21 files",
+      "durationS": 0.9,
       "note": "Suite nyata tests/*.test.tolk — 185 passed in 21 files, exit 0. pytest tidak dipakai proyek ini."
     },
     "workspace": {
       "path": "/home/dev/plx-token",
       "exists": true,
       "remote": "https://github.com/phalanx-foundation/plx-token",
-      "head": "b60b092",
-      "note": "Workspace kanonik ADA dan tervalidasi ulang 28 Nov 2026 14:18 WIB (env -i clean shell). Laporan 'blocked (workspace tidak ditemukan)' adalah false positive dari scanner.",
-      "verifiedAt": "2026-11-28T14:18:00+07:00",
+      "head": "3b9df69",
+      "note": "Workspace kanonik valid dan tervalidasi ulang 28 Nov 2026 17:08 WIB. Laporan 'blocked (workspace tidak ditemukan)' adalah false positive dari scanner: path /home/dev/plx-token ada, remote/branch/master benar, dan gate hijau.",
+      "verifiedAt": "2026-11-28T17:08:19+07:00",
       "status": "pass",
-      "detail": "Workspace kanonik /home/dev/plx-token ADA, remote phalanx-foundation/plx-token, gate EXIT=0.",
-      "lastRun": "2026-11-28T14:18:00+07:00"
+      "detail": "Workspace kanonik /home/dev/plx-token ADA, remote phalanx-foundation/plx-token, head 3b9df69, gate EXIT=0.",
+      "lastRun": "2026-11-28T17:08:19+07:00"
     }
   },
   "userApproved": false,
   "approvedAt": null,
   "createdAt": "2026-11-23T01:34:48.081674+00:00",
-  "updatedAt": "2026-11-28T14:18:00+07:00",
+  "updatedAt": "2026-11-28T10:08:19.995208+00:00",
   "progress": 100,
-  "progressReason": "Semua 6 todo selesai; semua gate pass; gate noErrors EXIT=0 di clean shell (185/185 tests).",
+  "progressReason": "Semua 6 todo selesai; semua 5 gate pass (noErrors/build/test/workspace/uiConsistency); gate noErrors EXIT=0, 185/185 tests. Workspace valid. Menunggu persetujuan user.",
   "gate": "pass",
   "buildStatus": "success",
-  "lastVerifiedAt": "2026-11-28T14:18:00+07:00",
-  "lastVerifiedHead": "b60b092",
+  "lastVerifiedAt": "2026-11-28T17:08:19+07:00",
+  "lastVerifiedHead": "3b9df69",
   "progressPct": 100
 }
