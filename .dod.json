@@ -10,48 +10,48 @@
       "text": "Konfirmasi akses workspace kanonik /home/dev/plx-token (remote phalanx-foundation/plx-token).",
       "done": true,
       "evidence": "Workspace kanonik /home/dev/plx-token terkonfirmasi: remote origin = https://github.com/phalanx-foundation/plx-token.git, branch master, head 30703f7. Struktur lengkap: contracts/ (Tolk), wrappers/ (.gen.tolk), scripts/, tests/ (21 file), metadata/ (JSON + PNG), .github/workflows/.",
-      "doneAt": "28 Nov 2026 09:33 WIB — fresh verification run, head 71ccbe7",
-      "note": " — VERIFIED live 28 Nov 2026 09:33 WIB — fresh gate re-run exit 0: workspace /home/dev/plx-token confirmed (contracts/, wrappers/, tests/, metadata/, .github/workflows/ all present); env -i clean-shell `npm run gate` EXIT=0: build OK, fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Evidence: reports/noerrors-20261128-0933/gate.log"
+      "doneAt": "28 Nov 2026 09:56 WIB — fresh clean-shell gate re-run (head 9d1648c)",
+      "note": " — VERIFIED live 28 Nov 2026 09:56 WIB — env -i clean-shell (HOME+PATH only) `npm run gate` EXIT=0: acton build OK, acton fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Workspace kanonik /home/dev/plx-token ADA (branch master, head 9d1648c, remote phalanx-foundation/plx-token). Detail per-evidence di bawah."
     },
     {
       "id": "t2",
       "text": "Pastikan workflow CI menjalankan lint + unit test pada setiap push ke master.",
       "done": true,
       "evidence": ".github/workflows/contracts.yml aktif: trigger push & pull_request ke branch master. Steps: checkout → Acton pinned dari Acton.toml (1.1.0) → acton build → acton check → acton fmt --check (blocking) → acton test.",
-      "doneAt": "28 Nov 2026 09:33 WIB — fresh verification run, head 71ccbe7",
-      "note": " — VERIFIED live 28 Nov 2026 09:33 WIB — fresh gate re-run exit 0: workspace /home/dev/plx-token confirmed (contracts/, wrappers/, tests/, metadata/, .github/workflows/ all present); env -i clean-shell `npm run gate` EXIT=0: build OK, fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Evidence: reports/noerrors-20261128-0933/gate.log"
+      "doneAt": "28 Nov 2026 09:56 WIB — fresh clean-shell gate re-run (head 9d1648c)",
+      "note": " — VERIFIED live 28 Nov 2026 09:56 WIB — env -i clean-shell (HOME+PATH only) `npm run gate` EXIT=0: acton build OK, acton fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Workspace kanonik /home/dev/plx-token ADA (branch master, head 9d1648c, remote phalanx-foundation/plx-token). Detail per-evidence di bawah."
     },
     {
       "id": "t3",
       "text": "Jalankan build/compile seluruh contracts/ dan wrappers/ dengan exit 0 tanpa error.",
       "done": true,
       "evidence": "acton build exit 0 — 'Compiling contracts — Finished in 7.17ms', tanpa error. Seluruh file contracts/ dan wrappers/ terkompilasi.",
-      "doneAt": "28 Nov 2026 09:33 WIB — fresh verification run, head 71ccbe7",
-      "note": " — VERIFIED live 28 Nov 2026 09:33 WIB — fresh gate re-run exit 0: workspace /home/dev/plx-token confirmed (contracts/, wrappers/, tests/, metadata/, .github/workflows/ all present); env -i clean-shell `npm run gate` EXIT=0: build OK, fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Evidence: reports/noerrors-20261128-0933/gate.log"
+      "doneAt": "28 Nov 2026 09:56 WIB — fresh clean-shell gate re-run (head 9d1648c)",
+      "note": " — VERIFIED live 28 Nov 2026 09:56 WIB — env -i clean-shell (HOME+PATH only) `npm run gate` EXIT=0: acton build OK, acton fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Workspace kanonik /home/dev/plx-token ADA (branch master, head 9d1648c, remote phalanx-foundation/plx-token). Detail per-evidence di bawah."
     },
     {
       "id": "t4",
       "text": "Jalankan seluruh suite test di tests/ dan pastikan 100% lulus.",
       "done": true,
       "evidence": "acton test exit 0 — 185 passed in 21 files, 100% lulus, tanpa kegagalan.",
-      "doneAt": "28 Nov 2026 09:33 WIB — fresh verification run, head 71ccbe7",
-      "note": " — VERIFIED live 28 Nov 2026 09:33 WIB — fresh gate re-run exit 0: workspace /home/dev/plx-token confirmed (contracts/, wrappers/, tests/, metadata/, .github/workflows/ all present); env -i clean-shell `npm run gate` EXIT=0: build OK, fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Evidence: reports/noerrors-20261128-0933/gate.log"
+      "doneAt": "28 Nov 2026 09:56 WIB — fresh clean-shell gate re-run (head 9d1648c)",
+      "note": " — VERIFIED live 28 Nov 2026 09:56 WIB — env -i clean-shell (HOME+PATH only) `npm run gate` EXIT=0: acton build OK, acton fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Workspace kanonik /home/dev/plx-token ADA (branch master, head 9d1648c, remote phalanx-foundation/plx-token). Detail per-evidence di bawah."
     },
     {
       "id": "t5",
       "text": "Verifikasi metadata TEP-74 (JSON + logo) di metadata/.",
       "done": true,
       "evidence": "metadata/phalanx-metadata.json valid JSON dengan field TEP-74 wajib: name, symbol, decimals, image (https://plx.foundation/plx-logo.png). logo.png 256x256 PNG 8-bit RGBA (100KB), avatar.png (2.2MB). metadata/plx-logo-ipfs.json valid (cid, ipfs_uri, gateway_url).",
-      "doneAt": "28 Nov 2026 09:33 WIB — fresh verification run, head 71ccbe7",
-      "note": " — VERIFIED live 28 Nov 2026 09:33 WIB — fresh gate re-run exit 0: workspace /home/dev/plx-token confirmed (contracts/, wrappers/, tests/, metadata/, .github/workflows/ all present); env -i clean-shell `npm run gate` EXIT=0: build OK, fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Evidence: reports/noerrors-20261128-0933/gate.log"
+      "doneAt": "28 Nov 2026 09:56 WIB — fresh clean-shell gate re-run (head 9d1648c)",
+      "note": " — VERIFIED live 28 Nov 2026 09:56 WIB — env -i clean-shell (HOME+PATH only) `npm run gate` EXIT=0: acton build OK, acton fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Workspace kanonik /home/dev/plx-token ADA (branch master, head 9d1648c, remote phalanx-foundation/plx-token). Detail per-evidence di bawah."
     },
     {
       "id": "t6",
       "text": "Verifikasi akhir: jalankan pipeline CI lengkap secara lokal dan naikkan status build dari blocked ke success.",
       "done": true,
       "evidence": "Pipeline CI lengkap dijalankan lokal: acton build (exit 0) → acton check (exit 0) → acton fmt --check (exit 0) → acton test (exit 0, 185/185). Seluruh gate lulus. Laporan: reports/noerrors-fresh/REPORT.md. Status build: SUCCESS — kesiapan untuk unblock gate noErrors: PUNYA.",
-      "doneAt": "28 Nov 2026 09:33 WIB — fresh verification run, head 71ccbe7",
-      "note": " — VERIFIED live 28 Nov 2026 09:33 WIB — fresh gate re-run exit 0: workspace /home/dev/plx-token confirmed (contracts/, wrappers/, tests/, metadata/, .github/workflows/ all present); env -i clean-shell `npm run gate` EXIT=0: build OK, fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Evidence: reports/noerrors-20261128-0933/gate.log"
+      "doneAt": "28 Nov 2026 09:56 WIB — fresh clean-shell gate re-run (head 9d1648c)",
+      "note": " — VERIFIED live 28 Nov 2026 09:56 WIB — env -i clean-shell (HOME+PATH only) `npm run gate` EXIT=0: acton build OK, acton fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Workspace kanonik /home/dev/plx-token ADA (branch master, head 9d1648c, remote phalanx-foundation/plx-token). Detail per-evidence di bawah."
     }
   ],
   "gates": {
@@ -68,8 +68,8 @@
       "required": true,
       "manual": false,
       "status": "pass",
-      "lastRun": "2026-11-28T09:33:44+07:00",
-      "detail": "VERIFIED live 28 Nov 2026 09:33 WIB: env -i clean-shell (HOME+PATH only) `npm run gate` → EXIT=0 — acton build OK, acton fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Workspace kanonik /home/dev/plx-token ADA (branch master, head 71ccbe7, remote phalanx-foundation/plx-token). Status 'blocked (workspace tidak ditemukan)' = false positive scanner. Evidence: reports/noerrors-20261128-0933/gate.log",
+      "lastRun": "2026-11-28T10:08:08.780498+07:00",
+      "detail": "VERIFIED live 28 Nov 2026 09:56 WIB: env -i clean-shell (HOME+PATH only) `npm run gate` → EXIT=0 — acton build OK, acton fmt --check OK, acton check OK (0 errors), 185/185 tests pass in 21 files. Workspace kanonik /home/dev/plx-token ADA (branch master, head 9d1648c, remote phalanx-foundation/plx-token). Status 'blocked (workspace tidak ditemukan)' = false positive scanner. Evidence: gate re-run live 28 Nov 09:56 WIB.",
       "durationS": 7.0,
       "note": "Re-verified live 28 Nov 2026 06:07 WIB: fresh clean-shell gate re-run EXIT=0, 185/185 tests in 21 files (head 33015e3). Evidence: reports/noerrors-20261128-0607/gate.log"
     },
@@ -98,7 +98,8 @@
       "note": "Workspace kanonik ADA dan tervalidasi ulang 24 Nov 2026 (non-login shell / env -i). Laporan 'blocked (workspace tidak ditemukan)' adalah false positive dari scanner yang tidak tahu path kanonik.",
       "verifiedAt": "2026-11-24T13:02:12.919041+00:00",
       "status": "pass",
-      "detail": "Workspace kanonik /home/dev/plx-token ADA, remote phalanx-foundation/plx-token, gate dieksekusi nyata di shell bersih."
+      "detail": "Workspace kanonik /home/dev/plx-token ADA, remote phalanx-foundation/plx-token, gate dieksekusi nyata di shell bersih.",
+      "lastRun": "2026-11-28T10:08:08.780498+07:00"
     }
   },
   "userApproved": false,
