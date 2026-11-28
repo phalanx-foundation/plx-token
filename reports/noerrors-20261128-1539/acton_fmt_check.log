@@ -1,0 +1,9 @@
+$ acton fmt --check 2>&1
+rc=0
+
+STDOUT:
+All files are properly formatted
+
+
+STDERR:
+

@@ -1,0 +1,268 @@
+$ acton check 2>&1
+rc=0
+
+STDOUT:
+    Checking AntiWhaleJettonMinter
+    Checking AntiWhaleJettonWallet
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:131:25
+    |
+131 |                 ) throw ANTI_WHALE_ERROR_WALLET_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_WALLET_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+warning[E016]: send with dangerous mode requires safety comment
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:165:34
+    |
+165 |                 excessesMsg.send(SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_IGNORE_ERRORS);
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ add `// SAFETY: ...` above this `send` call
+    |
+    = document why this dangerous send mode is safe in this context and which invariants are required
+
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:188:25
+    |
+188 |                 ) throw ANTI_WHALE_ERROR_TRANSFER_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_TRANSFER_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+    Checking CompressedNftCollection
+    Checking CustomStakingParams
+warning[E019]: division before multiplication may cause precision loss
+    --> /home/dev/plx-token/contracts/CustomStakingParams.tolk:168:49
+    |  
+166 |       val rewardDelta = storage.totalStaked * config.baseAprBps * elapsed /
+    | /-----------------------'
+167 | |     (10000 * CUSTOM_SECONDS_PER_YEAR);
+    | \-------------------------------------' division that feeds this multiplication happens here
+168 |       storage.rewardPerTokenStored += rewardDelta * CUSTOM_REWARD_SCALE / storage.totalStaked;
+    |                                                   ^ this multiplication uses a value produced by an earlier division
+    |  
+    = doing division first can change the result because precision is lost and rounding/truncation happens earlier
+      when arithmetic intent allows it, multiply first and divide afterward
+
+    Checking FeeJettonMinter
+    Checking FeeJettonWallet
+warning[E016]: send with dangerous mode requires safety comment
+   --> /home/dev/plx-token/contracts/FeeJettonWallet.tolk:91:34
+   |
+91 |                 excessesMsg.send(SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_IGNORE_ERRORS);
+   |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ add `// SAFETY: ...` above this `send` call
+   |
+   = document why this dangerous send mode is safe in this context and which invariants are required
+
+    Checking PhalanxJettonMinter
+    Checking PhalanxJettonWallet
+    Checking LiquidityLocker
+    Checking MidasHandEscrow
+warning[S005]: message should be properly named
+    --> /home/dev/plx-token/contracts/MidasHandEscrow.tolk:445:9
+    |
+445 |     val msg = createMessage({
+    |         ^^^ message should be properly named, not `msg`
+    |
+    = use a descriptive message name, for example `deployMessage` or `transferMessage`
+
+    Checking NftCollection
+    Checking NftItem
+    Checking PaymentSplitter
+    Checking PlxAirdrop
+    Checking PlxLockVault
+    Checking PlxStaking
+warning[E019]: division before multiplication may cause precision loss
+    --> /home/dev/plx-token/contracts/PlxStaking.tolk:116:49
+    |
+115 |     val rewardDelta = storage.totalStaked * config.aprBps * elapsed / (10000 * SECONDS_PER_YEAR);
+    |                       -------------------------------------------------------------------------- division that feeds this multiplication happens here
+116 |     storage.rewardPerTokenStored += rewardDelta * REWARD_SCALE / storage.totalStaked;
+    |                                                 ^ this multiplication uses a value produced by an earlier division
+    |
+    = doing division first can change the result because precision is lost and rounding/truncation happens earlier
+      when arithmetic intent allows it, multiply first and divide afterward
+
+    Checking TeamVesting
+    Checking TokenGovernance
+    Checking TokenLockVault
+    Checking TokenStaking
+warning[E019]: division before multiplication may cause precision loss
+    --> /home/dev/plx-token/contracts/TokenStaking.tolk:114:49
+    |
+113 |     val rewardDelta = storage.totalStaked * config.aprBps * elapsed / (10000 * SECONDS_PER_YEAR);
+    |                       -------------------------------------------------------------------------- division that feeds this multiplication happens here
+114 |     storage.rewardPerTokenStored += rewardDelta * REWARD_SCALE / storage.totalStaked;
+    |                                                 ^ this multiplication uses a value produced by an earlier division
+    |
+    = doing division first can change the result because precision is lost and rounding/truncation happens earlier
+      when arithmetic intent allows it, multiply first and divide afterward
+
+    Checking scripts/buyback-burn.tolk
+    Checking scripts/buyback-swap-burn.tolk
+    Checking scripts/change-admin.tolk
+    Checking scripts/change-metadata.tolk
+    Checking scripts/claim-admin.tolk
+    Checking scripts/claim-cnft-item.tolk
+    Checking scripts/claim-vesting.tolk
+    Checking scripts/cnft-deploy-claim.tolk
+    Checking scripts/deploy-airdrop.tolk
+    Checking scripts/deploy-anti-whale.tolk
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:131:25
+    |
+131 |                 ) throw ANTI_WHALE_ERROR_WALLET_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_WALLET_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+warning[E016]: send with dangerous mode requires safety comment
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:165:34
+    |
+165 |                 excessesMsg.send(SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_IGNORE_ERRORS);
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ add `// SAFETY: ...` above this `send` call
+    |
+    = document why this dangerous send mode is safe in this context and which invariants are required
+
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:188:25
+    |
+188 |                 ) throw ANTI_WHALE_ERROR_TRANSFER_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_TRANSFER_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+    Checking scripts/deploy-client-jetton.tolk
+    Checking scripts/deploy-cnft-collection.tolk
+    Checking scripts/deploy-custom-staking.tolk
+    Checking scripts/deploy-distribution-client.tolk
+    Checking scripts/deploy-distribution.tolk
+    Checking scripts/deploy-fee-jetton.tolk
+    Checking scripts/deploy-jetton-combo.tolk
+    Checking scripts/deploy-liquidity-locker.tolk
+    Checking scripts/deploy-midas-escrow.tolk
+warning[S005]: message should be properly named
+    --> /home/dev/plx-token/contracts/MidasHandEscrow.tolk:445:9
+    |
+445 |     val msg = createMessage({
+    |         ^^^ message should be properly named, not `msg`
+    |
+    = use a descriptive message name, for example `deployMessage` or `transferMessage`
+
+    Checking scripts/deploy-nft-collection.tolk
+    Checking scripts/deploy-splitter.tolk
+    Checking scripts/deploy-token-governance.tolk
+    Checking scripts/deploy.tolk
+    Checking scripts/drop-admin.tolk
+    Checking scripts/finish-vesting.tolk
+    Checking scripts/info-distribution.tolk
+    Checking scripts/info.tolk
+    Checking scripts/mint-nft-item.tolk
+    Checking scripts/mint.tolk
+    Checking scripts/nft-change-collection-owner.tolk
+    Checking scripts/plx-treasury-jetton-sweep.tolk
+    Checking scripts/print-addrs.tolk
+    Checking scripts/refresh-metadata-testnet.tolk
+    Checking scripts/send-ton.tolk
+warning[S005]: message should be properly named
+   --> /home/dev/plx-token/scripts/send-ton.tolk:13:9
+   |
+13 |     val msg = createMessage({
+   |         ^^^ message should be properly named, not `msg`
+   |
+   = use a descriptive message name, for example `deployMessage` or `transferMessage`
+
+    Checking scripts/topup-minter.tolk
+    Checking scripts/transfer.tolk
+    Checking scripts/treasury-sweep.tolk
+warning[S005]: message should be properly named
+  --> /home/dev/plx-token/scripts/treasury-sweep.tolk:8:9
+  |
+8 |     val msg = createMessage({
+  |         ^^^ message should be properly named, not `msg`
+  |
+  = use a descriptive message name, for example `deployMessage` or `transferMessage`
+
+    Checking tests/MidasHandEscrow.test.tolk
+warning[S005]: message should be properly named
+    --> /home/dev/plx-token/contracts/MidasHandEscrow.tolk:445:9
+    |
+445 |     val msg = createMessage({
+    |         ^^^ message should be properly named, not `msg`
+    |
+    = use a descriptive message name, for example `deployMessage` or `transferMessage`
+
+    Checking tests/admin-and-governance.test.tolk
+    Checking tests/airdrop.test.tolk
+    Checking tests/anti-whale-minter.test.tolk
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:131:25
+    |
+131 |                 ) throw ANTI_WHALE_ERROR_WALLET_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_WALLET_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+warning[E016]: send with dangerous mode requires safety comment
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:165:34
+    |
+165 |                 excessesMsg.send(SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_IGNORE_ERRORS);
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ add `// SAFETY: ...` above this `send` call
+    |
+    = document why this dangerous send mode is safe in this context and which invariants are required
+
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:188:25
+    |
+188 |                 ) throw ANTI_WHALE_ERROR_TRANSFER_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_TRANSFER_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+    Checking tests/anti-whale.test.tolk
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:131:25
+    |
+131 |                 ) throw ANTI_WHALE_ERROR_WALLET_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_WALLET_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+warning[E016]: send with dangerous mode requires safety comment
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:165:34
+    |
+165 |                 excessesMsg.send(SEND_MODE_CARRY_ALL_BALANCE | SEND_MODE_IGNORE_ERRORS);
+    |                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ add `// SAFETY: ...` above this `send` call
+    |
+    = document why this dangerous send mode is safe in this context and which invariants are required
+
+warning[E028]: throw code should use `Errors.<Name>`
+    --> /home/dev/plx-token/contracts/AntiWhaleJettonWallet.tolk:188:25
+    |
+188 |                 ) throw ANTI_WHALE_ERROR_TRANSFER_LIMIT;
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use `Errors.<Name>` instead of constant `ANTI_WHALE_ERROR_TRANSFER_LIMIT`
+    |
+    = declare symbolic exit codes in `enum Errors` and reference them as `Errors.<Name>` in `throw` expressions
+
+    Checking tests/bounce-handling.test.tolk
+    Checking tests/custom-staking.test.tolk
+    Checking tests/distribution-client.test.tolk
+    Checking tests/fee-jetton.test.tolk
+    Checking tests/formation-lock-staking.test.tolk
+    Checking tests/formation-staking.test.tolk
+    Checking tests/gas.test.tolk
+    Checking tests/liquidity-locker.test.tolk
+    Checking tests/protocol-validation.test.tolk
+    Checking tests/splitter.test.tolk
+    Checking tests/state-init.test.tolk
+    Checking tests/token-governance.test.tolk
+    Checking tests/token-lock-vault.test.tolk
+    Checking tests/token-staking.test.tolk
+    Checking tests/vesting.test.tolk
+    Checking tests/wallet-behavior.test.tolk
+
+Use acton check --explain <CODE> to get detailed explanation of a rule.
+For example: acton check --explain E016
+
+
+STDERR:
+

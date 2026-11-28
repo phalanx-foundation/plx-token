@@ -1,0 +1,222 @@
+$ acton test 2>&1
+rc=0
+
+STDOUT:
+   Compiling contracts
+    Finished in 8.970236ms
+     Running tests
+
+ TEST  /home/dev/plx-token
+
+ > tests/MidasHandEscrow.test.tolk (25 tests)
+  ✓ midas-escrow: deploy in proposed state 14ms
+  ✓ midas-escrow: whale deposits TON -> funded 9ms
+  ✓ midas-escrow: non-whale deposit rejected 8ms
+  ✓ midas-escrow: owner jetton deposit then approve -> adding 13ms
+  ✓ midas-escrow: non-owner jetton deposit rejected 10ms
+  ✓ midas-escrow: LP receipt -> active + lockUntil 15ms
+  ✓ midas-escrow: claim before unlock rejected 15ms
+  ✓ midas-escrow: refund timeout returns whale TON 10ms
+  ✓ midas-escrow: admin cancel returns funds 12ms
+  ✓ midas-escrow: settle -> burn LP -> distribute -> closed 23ms
+  ✓ midas-escrow dedust: approve emits native + jetton deposit legs 10ms
+  ✓ midas-escrow dedust: LP receipt -> active 13ms
+  ✓ midas-escrow dedust: admin cancel blocked during adding 11ms
+  ✓ midas-escrow dedust: cancel deposit before deadline rejected 11ms
+  ✓ midas-escrow dedust: cancel deposit rejected on stonfi escrow 11ms
+  ✓ midas-escrow dedust: cancel deposit after deadline recovers funds 12ms
+  ✓ midas-escrow dedust: recovered TON credited then refunded 13ms
+  ✓ midas-escrow dedust: native leg bounce restores whale bucket 12ms
+  ✓ midas-escrow dedust: settle pays native TON and seed jetton 19ms
+  ✓ midas-escrow dedust: bind stores the recovery address 8ms
+  ✓ midas-escrow dedust: approve rejected while unbound 9ms
+  ✓ midas-escrow dedust: bind rejected from non-admin 6ms
+  ✓ midas-escrow dedust: bind frozen once adding 11ms
+  ✓ midas-escrow dedust: bind rejected on stonfi escrow 11ms
+  ✓ midas-escrow: approve emits two-leg provide_lp bodies 11ms
+ > tests/admin-and-governance.test.tolk (14 tests)
+  ✓ admin: deploy should create minter without bounce 1ms
+  ✓ admin: minter admin should be able to mint jettons 6ms
+  ✓ admin: non-admin should not be able to mint jettons 2ms
+  ✓ admin: change-admin flow should work and only next admin can claim 4ms
+  ✓ admin: non-admin cannot change admin 2ms
+  ✓ admin: non-admin cannot drop admin access 1ms
+  ✓ admin: admin can drop admin access 3ms
+  ✓ admin: admin can change metadata uri 2ms
+  ✓ admin: non-admin cannot change metadata uri 2ms
+  ✓ admin: discovery should return expected wallet and optional owner 5ms
+  ✓ admin: discovery should return none for non-basechain owner 2ms
+  ✓ admin: non-admin should not be able to upgrade minter 2ms
+  ✓ admin: admin should be able to upgrade minter code and data 2ms
+  ✓ shard: wallet address should keep owner shard prefix in get/discovery/transfer 63ms
+ > tests/airdrop.test.tolk (10 tests)
+  ✓ airdrop: deploy and jetton wallet configured correctly 5ms
+  ✓ airdrop: valid claim with single-leaf tree succeeds 6ms
+  ✓ airdrop: duplicate claim is rejected 5ms
+  ✓ airdrop: invalid proof is rejected 4ms
+  ✓ airdrop: claim after deadline is rejected 4ms
+  ✓ airdrop: valid claim with 2-leaf tree succeeds 6ms
+  ✓ airdrop: admin can set new merkle root 4ms
+  ✓ airdrop: non-admin cannot set merkle root 4ms
+  ✓ airdrop: admin can set deadline 4ms
+  ✓ airdrop: WithdrawUnclaimed blocked before deadline 4ms
+ > tests/anti-whale-minter.test.tolk (8 tests)
+  ✓ anti-whale minter: deploy stores the caps and the minter metadata 3ms
+  ✓ anti-whale minter: mint credits the wallet the minter reports 4ms
+  ✓ anti-whale minter: mint from a non-admin is rejected 2ms
+  ✓ anti-whale minter: transfer above max transfer is rejected with 200 4ms
+  ✓ anti-whale minter: credit above max wallet balance is rejected with 201 4ms
+  ✓ anti-whale minter: transfer between two of its wallets lands where the minter says 5ms
+  ✓ anti-whale minter: zero cap means unlimited 5ms
+  ✓ anti-whale minter: admin handover waits for the new admin to claim 4ms
+ > tests/anti-whale.test.tolk (7 tests)
+  ✓ anti-whale: deploy stores whale config 2ms
+  ✓ anti-whale: transfer within limit succeeds 3ms
+  ✓ anti-whale: transfer exceeding max transfer rejected with error 200 2ms
+  ✓ anti-whale: receiving that would exceed max wallet balance rejected with error 201 3ms
+  ✓ anti-whale: UpdateWhaleConfig accepted from minterAddress 2ms
+  ✓ anti-whale: UpdateWhaleConfig rejected from non-minter 1ms
+  ✓ anti-whale: max transfer 0 means unlimited 3ms
+ > tests/bounce-handling.test.tolk (3 tests)
+  ✓ bounce: minter restores supply on internal_transfer bounce 4ms
+  ✓ bounce: wallet restores balance on internal_transfer bounce 6ms
+  ✓ bounce: wallet restores balance on burn_notification bounce 3ms
+ > tests/custom-staking.test.tolk (9 tests)
+  ✓ custom-staking: deposit increases totalStaked 6ms
+  ✓ custom-staking: effective APR with no tiers equals base APR 4ms
+  ✓ custom-staking: effective APR with tier bonus applies for qualifying stake 4ms
+  ✓ custom-staking: higher tier bonus overrides lower for large stake 4ms
+  ✓ custom-staking: early unstake rejected 6ms
+  ✓ custom-staking: unstake after lock period succeeds 7ms
+  ✓ custom-staking: admin can update bonus tiers 4ms
+  ✓ custom-staking: non-admin cannot update bonus tiers 4ms
+  ✓ custom-staking: reward pool funded via transfer notification 5ms
+ > tests/distribution-client.test.tolk (3 tests)
+  ✓ distribution: five-bucket split mints correct balances 12ms
+  ✓ distribution: vesting bucket funds the vesting contract 5ms
+  ✓ distribution: escrow hands minter admin to client 5ms
+ > tests/fee-jetton.test.tolk (8 tests)
+  ✓ fee-jetton: deploy initialises fee config 2ms
+  ✓ fee-jetton: mint succeeds and wallet has correct balance 3ms
+  ✓ fee-jetton: transfer deducts fee from recipient and sends to collector 5ms
+  ✓ fee-jetton: zero fee means no fee deduction 4ms
+  ✓ fee-jetton: UpdateFeeConfig on minter accepted from admin 2ms
+  ✓ fee-jetton: UpdateFeeConfig rejected if fee_bps > 1000 1ms
+  ✓ fee-jetton: UpdateFeeConfig on minter rejected from non-admin 1ms
+  ✓ fee-jetton: UpdateFeeConfig on wallet rejected from non-minter 3ms
+ > tests/formation-lock-staking.test.tolk (6 tests)
+  ✓ lock vault: deploy and lock creates position 6ms
+  ✓ lock vault: layered positions have independent unlock 7ms
+  ✓ lock vault: early claim rejected 6ms
+  ✓ lock vault: maturity claim returns principal and bonus 7ms
+  ✓ lock vault: event end before maturity forfeits bonus 7ms
+  ✓ lock vault: unauthorized claim rejected 6ms
+ > tests/formation-staking.test.tolk (3 tests)
+  ✓ staking: deposit increases totalStaked 6ms
+  ✓ staking: early unstake rejected 5ms
+  ✓ staking: unstake after lock period 7ms
+ > tests/gas.test.tolk (13 tests)
+  ✓ gas: transfer minimal value edge 4ms
+  ✓ gas: transfer minimal value is message-size aware 654μs
+  ✓ gas: transfer with forward amount requires second forward fee 4ms
+  ✓ gas: transfer forward fees should follow config 10ms
+  ✓ gas: transfer gas fee should follow config 9ms
+  ✓ gas: transfer storage fee should follow config 9ms
+  ✓ gas: forward ton transfer should fail when fees are insufficient 3ms
+  ✓ gas: burn minimal value edge 4ms
+  ✓ gas: burn custom payload should not affect minimal value 4ms
+  ✓ gas: burn forward fee should follow config 9ms
+  ✓ gas: burn gas fee should follow config 9ms
+  ✓ gas: burn should fail when sent tons are clearly insufficient 3ms
+  ✓ gas: wallet storage fee should be measurable 3ms
+ > tests/liquidity-locker.test.tolk (3 tests)
+  ✓ liquidity-locker: deploy stores empty locker state 4ms
+  ✓ liquidity-locker: lock then unlock after period 6ms
+  ✓ liquidity-locker: early unlock rejected 5ms
+ > tests/protocol-validation.test.tolk (7 tests)
+  ✓ validation: malformed forward payload should be rejected 3ms
+  ✓ validation: malformed custom payload should be rejected 4ms
+  ✓ validation: wallet cannot send to masterchain 3ms
+  ✓ validation: wallet should reject internal transfer from unauthorized sender 4ms
+  ✓ validation: minter accepts burn notification only from wallet 4ms
+  ✓ validation: minter cannot force burn tokens 4ms
+  ✓ validation: minter cannot force transfer tokens 5ms
+ > tests/splitter.test.tolk (12 tests)
+  ✓ splitter: deploy initialises storage with zero counters 3ms
+  ✓ splitter: jetton wallet address get matches minter 3ms
+  ✓ splitter: even amount splits exactly 50/50 7ms
+  ✓ splitter: odd amount remainder goes to treasury 6ms
+  ✓ splitter: tiny amount still settles 6ms
+  ✓ splitter: counters accumulate across multiple payments 11ms
+  ✓ splitter: notification from non-jetton-wallet is rejected 3ms
+  ✓ splitter: zero-amount notification is a no-op 4ms
+  ✓ splitter: admin can withdraw excess TON 3ms
+  ✓ splitter: non-admin cannot withdraw TON 3ms
+  ✓ splitter: top-up tons accepted from anyone 3ms
+  ✓ splitter: total burned + forwarded equals total processed 8ms
+ > tests/state-init.test.tolk (2 tests)
+  ✓ state: should mint max jetton value 3ms
+  ✓ state: wallet storage and init-state bounds should match fee constants 2ms
+ > tests/token-governance.test.tolk (24 tests)
+  ✓ governance: deploy stores admin config 3ms
+  ✓ governance: non-admin cannot update config 2ms
+  ✓ governance: admin can update config 2ms
+  ✓ governance: admin can create a proposal 2ms
+  ✓ governance: non-staked holder cannot create a proposal 2ms
+  ✓ governance: holder below threshold cannot create a proposal 5ms
+  ✓ governance: staked holder can create a proposal 6ms
+  ✓ governance: staked voter can vote for a proposal 6ms
+  ✓ governance: staked voter can vote against a proposal 6ms
+  ✓ governance: vote without stake is rejected 2ms
+  ✓ governance: double vote is rejected 6ms
+  ✓ governance: vote after voting period is rejected 5ms
+  ✓ governance: execute before voting ends is rejected 6ms
+  ✓ governance: execute before timelock elapses is rejected 6ms
+  ✓ governance: execute a not-passed proposal is rejected 6ms
+  ✓ governance: passed proposal executes after timelock 6ms
+  ✓ governance: executed proposal cannot be executed twice 6ms
+  ✓ governance: has_voted is false before voting 3ms
+  ✓ governance: voting power reflects staked balance 5ms
+  ✓ governance: staked holder cannot unstake while a vote is active 6ms
+  ✓ governance: staked holder can unstake after voting period 7ms
+  ✓ governance: cannot unstake more than staked 6ms
+  ✓ governance: next proposal id starts at zero and increments 4ms
+  ✓ governance: voter stake getter exposes amount and lock 9ms
+ > tests/token-lock-vault.test.tolk (3 tests)
+  ✓ token-lock-vault: deploy and fund reward pool 10ms
+  ✓ token-lock-vault: lock then release after maturity 13ms
+  ✓ token-lock-vault: early release rejected 11ms
+ > tests/token-staking.test.tolk (3 tests)
+  ✓ token-staking: deploy and fund reward pool 11ms
+  ✓ token-staking: stake then unstake after lock 14ms
+  ✓ token-staking: early unstake rejected 12ms
+ > tests/vesting.test.tolk (12 tests)
+  ✓ vesting: deploy populates config correctly 4ms
+  ✓ vesting: at t=start nothing is claimable 4ms
+  ✓ vesting: claim before unlock should fail 4ms
+  ✓ vesting: half-time linear release 4ms
+  ✓ vesting: claim half-time sends jettons to beneficiary 6ms
+  ✓ vesting: claim then claim again later releases more 7ms
+  ✓ vesting: full duration releases all 6ms
+  ✓ vesting: time after duration caps at total 4ms
+  ✓ vesting: claim twice at same time second should fail 5ms
+  ✓ vesting: revoke by admin sends vested to beneficiary and rest to admin 7ms
+  ✓ vesting: non-admin cannot revoke 4ms
+  ✓ vesting: jetton wallet address get matches expected 4ms
+ > tests/wallet-behavior.test.tolk (10 tests)
+  ✓ wallet: owner can send jettons 7ms
+  ✓ wallet: non-owner cannot send jettons 5ms
+  ✓ wallet: cannot send more jettons than balance 5ms
+  ✓ wallet: zero forward ton means no transfer notification 4ms
+  ✓ wallet: transfer notification should preserve forward payload 4ms
+  ✓ wallet: bare-ref forward payload is rejected (TEP-74 either required) 5ms
+  ✓ wallet: transfer to undeployed recipient wallet should still work 4ms
+  ✓ wallet: owner can burn jettons 5ms
+  ✓ wallet: non-owner cannot burn jettons 4ms
+  ✓ wallet: cannot burn more jettons than balance 4ms
+
+ ✓ 185 passed in 21 files
+
+
+STDERR:
+

@@ -1,0 +1,10 @@
+$ acton build 2>&1
+rc=0
+
+STDOUT:
+   Compiling contracts
+    Finished in 6.936839ms
+
+
+STDERR:
+
